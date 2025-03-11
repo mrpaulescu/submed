@@ -577,7 +577,6 @@ footer {
     padding: 20px;
     width: 100%;
     background: var(--primary);
-    display: flex;
     align-items: center;
     justify-content: center;
 
