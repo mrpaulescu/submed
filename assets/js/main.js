@@ -31,7 +31,7 @@ function updateCountdown2() {
     const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
     // Display the time left until May 22
-    document.getElementById("timeUntilMarch9").innerHTML = ` ${days} zile, ${hours} ore, ${minutes} minute, ${seconds} secunde.⏰`;
+    document.getElementById("timeUntilMay11").innerHTML = ` ${days} zile, ${hours} ore, ${minutes} minute, ${seconds} secunde.⏰`;
 }
 // Update countdown every second
 setInterval(updateCountdown2, 1000);
