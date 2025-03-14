@@ -76,6 +76,7 @@ setInterval(updateCountdown2, 1000);
 // Update countdown every second
 setInterval(updateCountdown, 1000);
 
+
 function handleCurrentYear() {
     const year = new Date().getFullYear()
     const currenYear = document.querySelector("#currentYear")
