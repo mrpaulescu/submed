@@ -472,7 +472,7 @@ h3 {
     gap: 10px;                   /* Adds space between checkbox and text */
 }
 
-#timeUntilMay22, #timeUntilMarch9 {
+#timeUntilMay22, #timeUntilMay11 {
     font-size: 26px;
     color: #333;
     margin-left: 40px;           /* Adds space between label and countdown */
@@ -495,7 +495,7 @@ h3 {
         font-size: 16px;          /* Adjust label font size for mobile */
     }
 
-    #timeUntilMay22, #timeUntilMarch9 {
+    #timeUntilMay22, #timeUntilMay11 {
         font-size: 14px;          /* Adjust font size of countdown */
         margin-left: 10px;        /* Reduce margin between label and time */
     }
