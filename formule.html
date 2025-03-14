@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Formule Lewis</title>
+    <!-- Încarcă biblioteca 3Dmol.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol.js/1.5.2/3Dmol-min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #formula-container { margin: 20px auto; width: 300px; height: 300px; }
+        .options { margin-top: 20px; }
+        button { margin: 5px; padding: 10px; cursor: pointer; }
+        #feedback { margin-top: 10px; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <h1>Quiz Formule Lewis</h1>
+    <label for="category">Alege o categorie:</label>
+    <select id="category">
+        <option value="alcooli">Alcooli</option>
+        <option value="alcani">Alcani</option>
+        <option value="acizi">Acizi Carboxilici</option>
+    </select>
+    <button onclick="generateCompound()">Începe</button>
+
+    <div id="formula-container"></div>
+    <div class="options" id="options"></div>
+    <p id="feedback"></p>
+
+    <script>
+        // Definirea compușilor chimici
+        const compounds = {
+            alcooli: [
+                { name: "Etanol", smiles: "CCO" },
+                { name: "Metanol", smiles: "CO" },
+                { name: "Propilenglicol", smiles: "C3H8O2" },
+                { name: "Butanol", smiles: "CCCCO" },
+                { name: "Glicerină", smiles: "C3H8O3" },
+                { name: "Isopropanol", smiles: "CC(C)O" },
+                { name: "Fenol", smiles: "C6H5OH" },
+                { name: "Metil alcool", smiles: "CH3OH" },
+                // Adaugă mai mulți compuși aici
+            ],
+            alcani: [
+                { name: "Metan", smiles: "C" },
+                { name: "Etan", smiles: "CC" },
+                { name: "Propan", smiles: "CCC" },
+                { name: "Butan", smiles: "CCCC" },
+                { name: "Pentane", smiles: "CCCCC" },
+                { name: "Hexan", smiles: "CCCCCC" },
+                // Adaugă mai mulți compuși aici
+            ],
+            acizi: [
+                { name: "Acid acetic", smiles: "CC(=O)O" },
+                { name: "Acid formic", smiles: "C(=O)O" },
+                { name: "Acid propionic", smiles: "CCC(=O)O" },
+                { name: "Acid butiric", smiles: "CCCC(=O)O" },
+                { name: "Acid lactic", smiles: "C3H6O3" },
+                { name: "Acid citric", smiles: "C6H8O7" },
+                // Adaugă mai mulți compuși aici
+            ]
+        };
+
+        // Funcția pentru a genera un compus chimic aleatoriu
+        function generateCompound() {
+            const category = document.getElementById("category").value;
+            const compList = compounds[category];
+            const randomComp = compList[Math.floor(Math.random() * compList.length)];
+
+            // Inițializează vizualizarea modelului 3D folosind 3Dmol.js
+            const viewer = new 3Dmol.Viewer("formula-container", {
+                defaultcolors: 3Dmol.rasmolElementColors
+            });
+
+            // Adăugăm modelul SMILES al compusului selectat
+            viewer.addModel(randomComp.smiles, "smiles");
+            viewer.setStyle({}, {stick: {}});
+            viewer.setBackgroundColor("white");
+            viewer.zoomTo();
+            viewer.render();
+
+            // Generează opțiunile pentru răspunsuri
+            generateOptions(randomComp.name, compList);
+        }
+
+        // Funcția pentru a genera opțiunile de răspuns
+        function generateOptions(correctName, compList) {
+            let optionsDiv = document.getElementById("options");
+            optionsDiv.innerHTML = "";
+            let names = compList.map(c => c.name).sort(() => 0.5 - Math.random());
+            names.forEach(name => {
+                let btn = document.createElement("button");
+                btn.innerText = name;
+                btn.onclick = () => checkAnswer(name, correctName);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        // Funcția pentru a verifica răspunsul
+        function checkAnswer(selected, correct) {
+            const feedback = document.getElementById("feedback");
+            if (selected === correct) {
+                feedback.innerText = "Corect!";
+                feedback.style.color = "green";
+            } else {
+                feedback.innerText = "Greșit!";
+                feedback.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>

@@ -68,8 +68,9 @@
               <span>Subiecte admitere medicină</span>
               <div class="buttons">
                 <a href="cluj.html"><button class="btn">Subiecte Cluj-Napoca</button> </a>
-               <!-- <button class="btn">Grile</button> --->
+                <!-- nu merge sa fie alinia frumos bag pula <a href="iasi.html"><button class="btn">Subiecte Iași</a> -->
               </div>
+              
             </div>
           </div>
           <div class="col-xl-6 col-md-5 col-sm-12 d-sm-none d-xl-flex d-md-flex bg-white">
@@ -78,50 +79,7 @@
         </div>
    </section>
    <section class="selection container">
-<h2 class="m-5 titlu-sectiune">Simulări</h2>
-<h3>Cluj🎯</h3>
-   <!-- Martie 22 Presimulare Section -->
-<div class="presimulare">
-  <label>
-      <input type="checkbox" id="presimulareCheckbox">
-      22 Martie Presimulare UMFCluj
-  </label>
-  <span id="timeUntilMay22"></span>
-</div>
-<!--
-<h3>Iași🚀</h3>
-   Martie 9 Presimulare Section 
-<div class="presimulare">
-  <label>
-      <input type="checkbox" id="presimulareCheckbox">
-      9 Martie Simulare SSMI Iași
-  </label>
-  <span id="timeUntilMarch9"></span>
-</div>
-</section>
--->
 
-   <!-- Countdown Timer -->
-   <section class="countdown container text-center my-5">
-    <h2 id="admitere-title">Admitere 13 Iulie, 2025</h2>
-    <div id="countdown" class="fs-1 fw-bold"></div>
- </section>
- <script>
-      function updateCountdown() {
-          const targetDate = new Date("July 13, 2025 00:00:00").getTime();
-          const now = new Date().getTime();
-          const timeLeft = targetDate - now;
-
-          const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-          document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-      }
-      updateCountdown();
-      setInterval(updateCountdown, 1000);
- </script>
    <!-- Facultăți -->
 
    <section class="selection container">
@@ -143,12 +101,12 @@
         </a>
         </div>
         <div class="col-lg-4 col-md-4 col-12 mb-5 mb-lg-4 mb-md-4">
-          <a href="desprecontact.html">
+          <a href="iasi.html">
           <div class="card text-bg-dark">
               <img src="assets/images/Artboard 3.png" class="card-img" alt="...">
               <div class="title"><span>Iași</span></div>
               <div class="card-img-overlay">
-                <h6 class="card-title">Urmează</h6>
+                <h6 class="card-title">Universitatea de Medicină și Farmacie „Grigore T. Popa”, Iași</h6>
               </div>
             </div>
           </a>
@@ -208,6 +166,49 @@
  
   
    </section>
+   <h2 class="m-5 titlu-sectiune">Simulări</h2>
+<h3>Cluj🎯</h3>
+   <!-- Martie 22 Presimulare Section -->
+<div class="presimulare">
+  <label>
+      <input type="checkbox" id="presimulareCheckbox">
+      22 Martie Presimulare UMFCluj
+  </label>
+  <span id="timeUntilMay22"></span>
+</div>
+
+<h3>Iași🚀</h3>
+<div class="presimulare">
+  <label>
+      <input type="checkbox" id="presimulareCheckbox">
+      11 Mai Simulare SSMI Iași
+  </label>
+  <span id="timeUntilMarch9"></span>
+</div>
+</section>
+
+
+   <!-- Countdown Timer -->
+   <section class="countdown container text-center my-5">
+    <h2 id="admitere-title">Admitere 13 Iulie, 2025</h2>
+    <div id="countdown" class="fs-1 fw-bold"></div>
+ </section>
+ <script>
+      function updateCountdown() {
+          const targetDate = new Date("July 13, 2025 00:00:00").getTime();
+          const now = new Date().getTime();
+          const timeLeft = targetDate - now;
+
+          const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+          document.getElementById("countdown").innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      }
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+ </script>
     <!-- Footer -->
     <footer>
        <ul>

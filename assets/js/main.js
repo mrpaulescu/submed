@@ -21,7 +21,7 @@ function updateCountdown() {
 }
 
 function updateCountdown2() {
-    const targetDate = new Date("March 9, 2025 00:00:00").getTime();
+    const targetDate = new Date("May 11, 2025 00:00:00").getTime();
     const now = new Date().getTime();
     const timeLeft = targetDate - now;
 
@@ -53,11 +53,11 @@ function updateCountdown() {
     const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
     // Display the time left until May 22
-    document.getElementById("timeUntilMay22").innerHTML = ` ${days} zile, ${hours} ore, ${minutes} minute, ${seconds} secunde.⏰`;
+    document.getElementById("timeUntilMarch9").innerHTML = ` ${days} zile, ${hours} ore, ${minutes} minute, ${seconds} secunde.⏰`;
 }
 
 function updateCountdown2() {
-    const targetDate = new Date("March 9, 2025 00:00:00").getTime();
+    const targetDate = new Date("May 11, 2025 00:00:00").getTime();
     const now = new Date().getTime();
     const timeLeft = targetDate - now;
 
@@ -67,7 +67,7 @@ function updateCountdown2() {
     const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
     // Display the time left until May 22
-    document.getElementById("timeUntilMarch9").innerHTML = ` ${days} zile, ${hours} ore, ${minutes} minute, ${seconds} secunde.⏰`;
+    document.getElementById("timeUntilMay11").innerHTML = ` ${days} zile, ${hours} ore, ${minutes} minute, ${seconds} secunde.⏰`;
 }
 // Update countdown every second
 setInterval(updateCountdown2, 1000);
