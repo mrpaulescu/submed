@@ -169,3 +169,126 @@ body.night-mode #timeUntilMay22,
 body.night-mode #timeUntilMarch9 {
     color: #ffffff !important; /* White text for better contrast */
 }
+/* =============================== */
+/* SUBMED ROADMAP – IZOLAT TOTAL */
+/* =============================== */
+
+.submed-roadmap-section {
+  margin-top: 80px;
+  margin-bottom: 80px;
+}
+
+/* Title – folosim titlu-sectiune deja existent */
+
+/* FEATURE CARDS */
+.submed-features-grid {
+  margin-top: 40px;
+}
+
+.submed-feature-card {
+  background: #fff;
+  border: 2px solid #ececec;
+  padding: 30px 25px;
+  height: 100%;
+  transition: 0.2s ease;
+}
+
+.submed-feature-card:hover {
+  border-color: #407BFF;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(64,123,255,0.12);
+}
+
+.submed-feature-icon {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.submed-feature-card h5 {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.submed-feature-card p {
+  font-size: 0.9rem;
+  color: #5a5a6a;
+  margin-bottom: 12px;
+}
+
+.submed-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  text-transform: uppercase;
+  background: #407BFF;
+  color: white;
+}
+
+.submed-badge.soon {
+  background: #ddd;
+  color: #777;
+}
+
+/* TIMELINE */
+.submed-timeline {
+  position: relative;
+  margin-top: 50px;
+  padding-left: 30px;
+  border-left: 3px solid #407BFF;
+}
+
+.submed-timeline-item {
+  position: relative;
+  margin-bottom: 50px;
+}
+
+.submed-timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -41px;
+  top: 5px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ccc;
+}
+
+.submed-timeline-item.done::before {
+  background: #22c55e;
+}
+
+.submed-timeline-item.active::before {
+  background: #407BFF;
+}
+
+.submed-phase {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  color: #407BFF;
+}
+
+.submed-phase.done-phase {
+  color: #22c55e;
+}
+
+.submed-date {
+  font-size: 0.8rem;
+  color: #888;
+  display: block;
+  margin-top: 10px;
+}
+
+/* Responsive fix */
+@media (max-width: 768px) {
+  .submed-timeline {
+    padding-left: 20px;
+  }
+
+  .submed-timeline-item::before {
+    left: -31px;
+  }
+}

@@ -1,113 +1,424 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Formule Lewis</title>
-    <!-- Încarcă biblioteca 3Dmol.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol.js/1.5.2/3Dmol-min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        #formula-container { margin: 20px auto; width: 300px; height: 300px; }
-        .options { margin-top: 20px; }
-        button { margin: 5px; padding: 10px; cursor: pointer; }
-        #feedback { margin-top: 10px; font-size: 18px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Roadmap & Features – SubMed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --background: #fffffc;
+      --primary: #407BFF;
+      --secondary: #ececec;
+      --text-color: rgb(41, 41, 43);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--background);
+      color: var(--text-color);
+      padding: 60px 0 0;
+    }
+
+    /* ── Section heading style (matches existing) ── */
+    .titlu-sectiune {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary);
+      position: relative;
+      display: inline-block;
+      margin: 2.5rem 2.5rem 3.5rem;
+    }
+    .titlu-sectiune::after {
+      content: '';
+      position: absolute;
+      bottom: -7px;
+      left: 0;
+      width: 130px;
+      height: 7px;
+      background: var(--primary);
+    }
+
+    /* ════════════════════════════════════════
+       FEATURES SECTION
+    ════════════════════════════════════════ */
+    .features-section {
+      padding: 20px 40px 80px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 28px;
+      margin-top: 10px;
+    }
+
+    .feature-card {
+      background: #fff;
+      border: 2px solid var(--secondary);
+      border-radius: 0px;
+      padding: 36px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 6px; height: 100%;
+      background: var(--primary);
+      transition: width 180ms ease;
+    }
+    .feature-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(64,123,255,0.13);
+    }
+    .feature-card:hover::before {
+      width: 100%;
+      opacity: 0.05;
+    }
+
+    .feature-icon {
+      font-size: 2.6rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .feature-card h4 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-color);
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: #5a5a6a;
+    }
+
+    .feature-badge {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 10px;
+      border-radius: 2px;
+      background: var(--primary);
+      color: #fff;
+    }
+    .feature-badge.soon {
+      background: var(--secondary);
+      color: #888;
+    }
+
+    /* ════════════════════════════════════════
+       ROADMAP SECTION
+    ════════════════════════════════════════ */
+    .roadmap-section {
+      padding: 20px 40px 100px;
+      background: #f5f7ff;
+    }
+
+    .roadmap-track {
+      position: relative;
+      margin-top: 16px;
+      padding-top: 20px;
+    }
+
+    /* central line */
+    .roadmap-track::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 4px;
+      background: var(--primary);
+      transform: translateX(-50%);
+    }
+
+    .roadmap-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 36px;
+      margin-bottom: 52px;
+      position: relative;
+    }
+
+    /* alternating sides */
+    .roadmap-item:nth-child(odd) {
+      flex-direction: row;
+    }
+    .roadmap-item:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    .roadmap-card {
+      flex: 1;
+      background: #fff;
+      border: 2px solid var(--secondary);
+      padding: 28px 30px;
+      position: relative;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+    .roadmap-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 8px 32px rgba(64,123,255,0.12);
+    }
+
+    .roadmap-dot {
+      position: absolute;
+      left: 50%;
+      top: 28px;
+      transform: translateX(-50%);
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 4px solid var(--background);
+      z-index: 2;
+      box-shadow: 0 0 0 3px var(--primary);
+    }
+    .roadmap-dot.done {
+      background: #22c55e;
+      box-shadow: 0 0 0 3px #22c55e;
+    }
+    .roadmap-dot.active {
+      background: var(--primary);
+      animation: pulse 1.6s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(64,123,255,0.6); }
+      50%       { box-shadow: 0 0 0 8px rgba(64,123,255,0.15); }
+    }
+
+    /* spacer on opposite side */
+    .roadmap-spacer { flex: 1; }
+
+    .roadmap-phase {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .roadmap-phase.done-phase { color: #22c55e; }
+    .roadmap-phase.soon-phase { color: #f59e0b; }
+
+    .roadmap-card h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-color);
+      margin-bottom: 8px;
+    }
+
+    .roadmap-card p {
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: #5a5a6a;
+    }
+
+    .roadmap-card ul {
+      margin-top: 10px;
+      padding-left: 0;
+      list-style: none;
+    }
+    .roadmap-card ul li {
+      font-size: 0.84rem;
+      color: #5a5a6a;
+      padding: 3px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .roadmap-card ul li::before {
+      content: '→';
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .roadmap-date {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #888;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .titlu-sectiune { font-size: 2rem; margin: 1.5rem 1.2rem 2.5rem; }
+      .features-section, .roadmap-section { padding: 16px 16px 60px; }
+      .features-grid { gap: 16px; }
+
+      .roadmap-track::before { left: 20px; }
+      .roadmap-item,
+      .roadmap-item:nth-child(even) {
+        flex-direction: column;
+        padding-left: 50px;
+      }
+      .roadmap-spacer { display: none; }
+      .roadmap-dot { left: 20px; top: 30px; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Quiz Formule Lewis</h1>
-    <label for="category">Alege o categorie:</label>
-    <select id="category">
-        <option value="alcooli">Alcooli</option>
-        <option value="alcani">Alcani</option>
-        <option value="acizi">Acizi Carboxilici</option>
-    </select>
-    <button onclick="generateCompound()">Începe</button>
 
-    <div id="formula-container"></div>
-    <div class="options" id="options"></div>
-    <p id="feedback"></p>
+<!-- ════════════════════════════════════════
+     FEATURES SECTION
+════════════════════════════════════════ -->
+<section class="features-section">
+  <h2 class="titlu-sectiune">Funcționalități</h2>
 
-    <script>
-        // Definirea compușilor chimici
-        const compounds = {
-            alcooli: [
-                { name: "Etanol", smiles: "CCO" },
-                { name: "Metanol", smiles: "CO" },
-                { name: "Propilenglicol", smiles: "C3H8O2" },
-                { name: "Butanol", smiles: "CCCCO" },
-                { name: "Glicerină", smiles: "C3H8O3" },
-                { name: "Isopropanol", smiles: "CC(C)O" },
-                { name: "Fenol", smiles: "C6H5OH" },
-                { name: "Metil alcool", smiles: "CH3OH" },
-                // Adaugă mai mulți compuși aici
-            ],
-            alcani: [
-                { name: "Metan", smiles: "C" },
-                { name: "Etan", smiles: "CC" },
-                { name: "Propan", smiles: "CCC" },
-                { name: "Butan", smiles: "CCCC" },
-                { name: "Pentane", smiles: "CCCCC" },
-                { name: "Hexan", smiles: "CCCCCC" },
-                // Adaugă mai mulți compuși aici
-            ],
-            acizi: [
-                { name: "Acid acetic", smiles: "CC(=O)O" },
-                { name: "Acid formic", smiles: "C(=O)O" },
-                { name: "Acid propionic", smiles: "CCC(=O)O" },
-                { name: "Acid butiric", smiles: "CCCC(=O)O" },
-                { name: "Acid lactic", smiles: "C3H6O3" },
-                { name: "Acid citric", smiles: "C6H8O7" },
-                // Adaugă mai mulți compuși aici
-            ]
-        };
+  <div class="features-grid">
 
-        // Funcția pentru a genera un compus chimic aleatoriu
-        function generateCompound() {
-            const category = document.getElementById("category").value;
-            const compList = compounds[category];
-            const randomComp = compList[Math.floor(Math.random() * compList.length)];
+    <div class="feature-card">
+      <span class="feature-icon">📚</span>
+      <h4>Subiecte organizate pe universități</h4>
+      <p>Toate grilele și subiectele clasificate după UMF Cluj și UMF Iași, exact cum apar la admitere.</p>
+      <span class="feature-badge">Disponibil</span>
+    </div>
 
-            // Inițializează vizualizarea modelului 3D folosind 3Dmol.js
-            const viewer = new 3Dmol.Viewer("formula-container", {
-                defaultcolors: 3Dmol.rasmolElementColors
-            });
+    <div class="feature-card">
+      <span class="feature-icon">🎯</span>
+      <h4>Simulări complete</h4>
+      <p>Examene simulate cu timp limitat și punctaj în timp real — condiții identice cu admiterea oficială.</p>
+      <span class="feature-badge">Disponibil</span>
+    </div>
 
-            // Adăugăm modelul SMILES al compusului selectat
-            viewer.addModel(randomComp.smiles, "smiles");
-            viewer.setStyle({}, {stick: {}});
-            viewer.setBackgroundColor("white");
-            viewer.zoomTo();
-            viewer.render();
+    <div class="feature-card">
+      <span class="feature-icon">⏱️</span>
+      <h4>Countdown admitere</h4>
+      <p>Numărătoare inversă live până la data admiterii, ca să știi mereu câte zile, ore și secunde mai ai.</p>
+      <span class="feature-badge">Disponibil</span>
+    </div>
 
-            // Generează opțiunile pentru răspunsuri
-            generateOptions(randomComp.name, compList);
-        }
+    <div class="feature-card">
+      <span class="feature-icon">📊</span>
+      <h4>Statistici personale</h4>
+      <p>Urmărește-ți progresul, punctele slabe și evoluția notelor de la o sesiune de simulare la alta.</p>
+      <span class="feature-badge soon">În curând</span>
+    </div>
 
-        // Funcția pentru a genera opțiunile de răspuns
-        function generateOptions(correctName, compList) {
-            let optionsDiv = document.getElementById("options");
-            optionsDiv.innerHTML = "";
-            let names = compList.map(c => c.name).sort(() => 0.5 - Math.random());
-            names.forEach(name => {
-                let btn = document.createElement("button");
-                btn.innerText = name;
-                btn.onclick = () => checkAnswer(name, correctName);
-                optionsDiv.appendChild(btn);
-            });
-        }
+    <div class="feature-card">
+      <span class="feature-icon">🔔</span>
+      <h4>Notificări & remindere</h4>
+      <p>Primești alerte pentru presimulări, termene și noutăți direct în browser, fără să ratezi nimic.</p>
+      <span class="feature-badge soon">În curând</span>
+    </div>
 
-        // Funcția pentru a verifica răspunsul
-        function checkAnswer(selected, correct) {
-            const feedback = document.getElementById("feedback");
-            if (selected === correct) {
-                feedback.innerText = "Corect!";
-                feedback.style.color = "green";
-            } else {
-                feedback.innerText = "Greșit!";
-                feedback.style.color = "red";
-            }
-        }
-    </script>
+    <div class="feature-card">
+      <span class="feature-icon">🏫</span>
+      <h4>Mai multe universități</h4>
+      <p>Extindere planificată la UMF Carol Davila București, UMF Târgu Mureș și altele.</p>
+      <span class="feature-badge soon">Planificat</span>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════
+     ROADMAP SECTION
+════════════════════════════════════════ -->
+<section class="roadmap-section">
+  <h2 class="titlu-sectiune">Roadmap</h2>
+
+  <div class="roadmap-track">
+
+    <!-- Step 1 – DONE -->
+    <div class="roadmap-item">
+      <div class="roadmap-card">
+        <div class="roadmap-phase done-phase">✔ Finalizat</div>
+        <h4>Lansarea platformei</h4>
+        <p>Prima versiune SubMed, cu subiecte pentru UMF Cluj și UMF Iași.</p>
+        <ul>
+          <li>Grile organizate pe ani</li>
+          <li>Interfață responsive</li>
+          <li>Countdown până la admitere</li>
+        </ul>
+        <span class="roadmap-date">Ianurie 2025</span>
+      </div>
+      <div class="roadmap-dot done"></div>
+      <div class="roadmap-spacer"></div>
+    </div>
+
+    <!-- Step 2 – DONE -->
+    <div class="roadmap-item">
+      <div class="roadmap-spacer"></div>
+      <div class="roadmap-dot done"></div>
+      <div class="roadmap-card">
+        <div class="roadmap-phase done-phase">✔ Finalizat</div>
+        <h4>Presimulări</h4>
+        <p>Simulări complete organizate în parteneriat cu comunitatea viitorilor mediciniști.</p>
+        <ul>
+          <li>Presimulare Cluj – 22 Martie &amp; 17 Mai 2025</li>
+          <li>Simulare Iași – 22 Martie &amp; 11 Mai 2025</li>
+        </ul>
+        <span class="roadmap-date">Martie – Mai 2025</span>
+      </div>
+    </div>
+
+    <!-- Step 3 – ACTIVE -->
+    <div class="roadmap-item">
+      <div class="roadmap-card">
+        <div class="roadmap-phase">🚀 În desfășurare</div>
+        <h4>Statistici &amp; progres personal</h4>
+        <p>Dashboard cu evoluția notelor, capitolele cu cele mai multe greșeli și recomandări personalizate.</p>
+        <ul>
+          <li>Grafice de progres</li>
+          <li>Analiza punctelor slabe</li>
+          <li>Istoric simulări</li>
+        </ul>
+        <span class="roadmap-date">Vara 2025</span>
+      </div>
+      <div class="roadmap-dot active"></div>
+      <div class="roadmap-spacer"></div>
+    </div>
+
+    <!-- Step 4 – SOON -->
+    <div class="roadmap-item">
+      <div class="roadmap-spacer"></div>
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-card">
+        <div class="roadmap-phase soon-phase">⏳ În curând</div>
+        <h4>Extindere universități</h4>
+        <p>Adăugarea UMF Carol Davila București, UMF Târgu Mureș și alte centre universitare de medicină.</p>
+        <ul>
+          <li>UMF Carol Davila – București</li>
+          <li>UMF Târgu Mureș</li>
+          <li>Alte universități</li>
+        </ul>
+        <span class="roadmap-date">Toamna 2025</span>
+      </div>
+    </div>
+
+    <!-- Step 5 – PLANNED -->
+    <div class="roadmap-item">
+      <div class="roadmap-card">
+        <div class="roadmap-phase soon-phase">🗓️ Planificat</div>
+        <h4>Notificări &amp; comunitate</h4>
+        <p>Sistem de remindere, forum de întrebări și posibilitatea de a te conecta cu alți candidați.</p>
+        <ul>
+          <li>Alerte pentru simulări viitoare</li>
+          <li>Forum Q&amp;A</li>
+          <li>Grupuri pe specialități</li>
+        </ul>
+        <span class="roadmap-date">2026</span>
+      </div>
+      <div class="roadmap-dot"></div>
+      <div class="roadmap-spacer"></div>
+    </div>
+
+  </div>
+</section>
+
 </body>
 </html>

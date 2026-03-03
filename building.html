@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SubMed — În construcție</title>
+  <meta name="description" content="SubMed.ro este momentan în construcție. Revenim în curând!" />
+  <style>
+    /* --- Global / layout --- */
+    :root{
+      --bg:#0f1724; /* deep blue-gray */
+      --card:#0b1220;
+      --accent:#7dd3fc; /* cyan-ish */
+      --muted:#9ca3af;
+      --glass: rgba(255,255,255,0.04);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(1000px 600px at 10% 10%, rgba(125,211,252,0.06), transparent),
+                  radial-gradient(900px 500px at 90% 90%, rgba(99,102,241,0.04), transparent),
+                  var(--bg);
+      color:#e6eef8; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      display:flex;align-items:center;justify-content:center;padding:32px;
+    }
+
+    /* Card */
+    .card{
+      width:100%;max-width:920px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);padding:36px;border-radius:18px;box-shadow:0 10px 30px rgba(2,6,23,0.6);
+      backdrop-filter: blur(6px);
+    }
+
+    header{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+    .logo{
+      width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#6366f1);display:flex;align-items:center;justify-content:center;font-weight:700;color:#04263b;font-size:20px;box-shadow:0 6px 18px rgba(13,31,44,0.5);
+    }
+    h1{margin:0;font-size:22px;letter-spacing:0.2px}
+    p.lead{margin:4px 0 18px;color:var(--muted)}
+
+    .content{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+
+    /* Countdown */
+    .countdown{display:flex;gap:12px;align-items:center}
+    .timebox{background:var(--card);border-radius:10px;padding:12px 16px;min-width:86px;text-align:center;border:1px solid var(--glass)}
+    .num{font-size:28px;font-weight:700;line-height:1;color:var(--accent)}
+    .label{font-size:12px;color:var(--muted);text-transform:uppercase;margin-top:6px;letter-spacing:0.12em}
+
+    .message{flex:1;min-width:220px}
+    .sub{color:var(--muted);margin-top:8px}
+
+    footer{display:flex;justify-content:space-between;align-items:center;margin-top:22px;color:var(--muted);font-size:13px}
+
+    /* Utilities */
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.04);cursor:pointer}
+
+    @media (max-width:680px){
+      .content{flex-direction:column;align-items:stretch}
+      .countdown{justify-content:center}
+    }
+  </style>
+</head>
+<body>
+  <div class="card" role="main">
+    <header>
+      <div class="logo"><img src=""C:\Users\Paul G\Downloads\ChatGPT Image Dec 3, 2025, 11_42_48 PM.png"" alt="Submed.ro"></div>
+      <div>
+        <h1>SubMed — site în construcție</h1>
+        <p class="lead">Lucrăm la o experiență educațională mai bună. Ne revedem cu formule și alte inovații. Revenim în timp util pentru Admitere 2026!</p>
+      </div>
+    </header>
+
+    <section class="content">
+      <div class="message">
+        <strong style="font-size:15px">Pagina va fi gata în:</strong>
+        <p class="sub">Suntem o echipă extrem de mică în spatele acestui site, iar timpul personal rămas în afara facultății este folosit aici, pentru a disponibiliza accesul la educație medicală pentru admitere tuturor, fără paywall și fără compromisuri, așa că sit thight că revenim!
+        
+        </p>
+
+      </div>
+
+      <div>
+        <div class="countdown" aria-live="polite" aria-atomic="true">
+          <div class="timebox">
+            <div id="days" class="num">--</div>
+            <div class="label">zile</div>
+          </div>
+          <div class="timebox">
+            <div id="hours" class="num">--</div>
+            <div class="label">ore</div>
+          </div>
+          <div class="timebox">
+            <div id="minutes" class="num">--</div>
+            <div class="label">minute</div>
+          </div>
+          <div class="timebox">
+            <div id="seconds" class="num">--</div>
+            <div class="label">secunde</div>
+          </div>
+        </div>
+
+        <p style="text-align:center;margin-top:12px;color:var(--muted);font-size:13px" id="readyAt">Data estimată: —</p>
+      </div>
+    </section>
+
+    <footer>
+      <span>SubMed.ro • Ne vom pregăti împreună din nou pentru admitere!</span>
+      <span id="tz"></span>
+    </footer>
+  </div>
+
+  <script>
+    // Compute target date: exactly one month from now (preserves day where possible)
+    function targetOneMonthFrom(now){
+      // create copy
+      const t = new Date(now.getTime());
+      const originalDay = t.getDate();
+      t.setMonth(t.getMonth() + 1);
+      // If month overflow changed the day (e.g., Jan 31 -> Mar 3), try to clamp to last day of target month
+      if (t.getDate() !== originalDay){
+        // move to last day of previous month
+        t.setDate(0); // sets to last day of previous month
+      }
+      return t;
+    }
+
+    const now = new Date();
+    const target = targetOneMonthFrom(now);
+
+    // show estimated date in user's locale (Romanian/Bucharest timezone if available)
+    const readyAtEl = document.getElementById('readyAt');
+    const opts = { year:'numeric', month:'long', day:'numeric' };
+    readyAtEl.textContent = 'Data estimată: ' + target.toLocaleDateString(undefined, opts);
+
+    // show timezone label
+    document.getElementById('tz').textContent = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+
+    // Countdown updater
+    function update(){
+      const now = new Date();
+      let diff = target - now;
+      if (diff <= 0){
+        document.getElementById('days').textContent = '0';
+        document.getElementById('hours').textContent = '0';
+        document.getElementById('minutes').textContent = '0';
+        document.getElementById('seconds').textContent = '0';
+        readyAtEl.textContent = 'Site-ul ar trebui să fie gata — verifică actualizările!';
+        clearInterval(interval);
+        return;
+      }
+      const sec = Math.floor(diff / 1000) % 60;
+      const min = Math.floor(diff / (1000*60)) % 60;
+      const hr  = Math.floor(diff / (1000*60*60)) % 24;
+      const days = Math.floor(diff / (1000*60*60*24));
+      document.getElementById('days').textContent = days;
+      document.getElementById('hours').textContent = String(hr).padStart(2,'0');
+      document.getElementById('minutes').textContent = String(min).padStart(2,'0');
+      document.getElementById('seconds').textContent = String(sec).padStart(2,'0');
+    }
+
+    update();
+    const interval = setInterval(update,1000);
+
+    // Utility: copy current page URL
+    function copyShare(){
+      const u = location.href;
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(u).then(()=>{
+          alert('Link copiat: ' + u);
+        }, ()=>{
+          prompt('Copiază manual URL-ul:', u);
+        });
+      } else {
+        prompt('Copiază manual URL-ul:', u);
+      }
+    }
+  </script>
+</body>
+</html>

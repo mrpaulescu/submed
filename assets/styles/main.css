@@ -139,6 +139,9 @@ h6 {
 ul {
     margin-bottom: 0px;
 }
+footer2 {
+    margin-bottom: 0px;
+}
 
 p {
     font-size: 14px;
@@ -378,7 +381,7 @@ HERO
 section.hero {
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 80vh;
     background-image: repeating-linear-gradient(45deg, #719eff 0, #0856ff 10px, transparent 0, transparent 50%);
     background-size: 67px 67px;
     background-color: var(--primary);
