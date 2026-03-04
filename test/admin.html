@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Examene</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f5f4f0;--card:#fff;--border:#e2e0d8;--text:#1a1a18;--muted:#7a7870;--green:#16a34a;--green-bg:#dcfce7;--red:#dc2626;--red-bg:#fee2e2;--radius:16px;--shadow:0 2px 12px rgba(0,0,0,.07)}
+body{background:var(--bg);color:var(--text);font-family:'Figtree',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+header{width:100%;max-width:800px;padding:28px 24px 0;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-weight:800;font-size:1.1rem;letter-spacing:-.02em;}.logo span{opacity:.4;}
+.back{font-size:.75rem;color:var(--muted);text-decoration:none;font-family:'JetBrains Mono',monospace;padding:5px 10px;border:1px solid var(--border);border-radius:8px;transition:all .2s;}.back:hover{color:var(--text);border-color:var(--text);}
+main{width:100%;max-width:800px;padding:40px 24px 80px;flex:1;}
+
+/* login gate */
+#login-gate{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:40px;max-width:400px;margin:0 auto;text-align:center;box-shadow:var(--shadow);}
+#login-gate h2{font-size:1.3rem;font-weight:800;margin-bottom:8px;}
+#login-gate p{color:var(--muted);font-size:.88rem;margin-bottom:24px;}
+.login-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:.9rem;outline:none;margin-bottom:12px;transition:border-color .18s;}
+.login-input:focus{border-color:var(--text);}
+.login-btn{width:100%;padding:13px;background:var(--text);color:#fff;border:none;border-radius:10px;font-family:'Figtree',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:opacity .2s;}.login-btn:hover{opacity:.85;}
+.login-err{color:var(--red);font-size:.82rem;margin-top:8px;display:none;}
+
+/* main panel */
+#panel{display:none;}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+h1{font-size:1.8rem;font-weight:800;letter-spacing:-.03em;}
+.btn-new{padding:10px 20px;background:var(--text);color:#fff;border:none;font-family:'Figtree',sans-serif;font-weight:600;font-size:.9rem;border-radius:10px;cursor:pointer;transition:opacity .2s;}.btn-new:hover{opacity:.8;}
+
+.exam-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;align-items:center;gap:16px;}
+.exam-card-info{flex:1;}.exam-card-name{font-weight:600;font-size:1rem;margin-bottom:3px;}.exam-card-meta{font-size:.78rem;font-family:'JetBrains Mono',monospace;color:var(--muted);}
+.actions{display:flex;gap:8px;}
+.btn-edit{padding:7px 14px;font-size:.82rem;font-weight:600;border:1px solid var(--border);border-radius:8px;background:none;color:var(--text);cursor:pointer;font-family:'Figtree',sans-serif;transition:all .2s;}.btn-edit:hover{border-color:var(--text);}
+.btn-del{padding:7px 14px;font-size:.82rem;font-weight:600;border:1px solid #fca5a5;border-radius:8px;background:none;color:var(--red);cursor:pointer;font-family:'Figtree',sans-serif;transition:all .2s;}.btn-del:hover{background:var(--red-bg);}
+.empty{text-align:center;padding:48px;background:var(--card);border:1px dashed var(--border);border-radius:var(--radius);color:var(--muted);}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:16px;}
+.overlay.open{display:flex;}
+.modal{background:var(--card);border-radius:var(--radius);padding:32px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.modal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.modal h2{font-size:1.2rem;font-weight:800;}
+.close-btn{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);line-height:1;}
+label{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px;color:var(--muted);}
+input[type=text],input[type=date],textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'Figtree',sans-serif;font-size:.93rem;color:var(--text);background:#fff;outline:none;transition:border-color .18s;margin-bottom:16px;}
+input[type=text]:focus,input[type=date]:focus,textarea:focus{border-color:var(--text);}
+textarea{font-family:'JetBrains Mono',monospace;font-size:.8rem;height:220px;resize:vertical;margin-bottom:0;}
+.fields-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* visual builder inside modal */
+.builder-sect{margin:16px 0;}
+.builder-sect h3{font-size:.88rem;font-weight:700;margin-bottom:4px;}
+.builder-sect p{font-size:.78rem;color:var(--muted);margin-bottom:12px;}
+.ptabs{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
+.ptab{padding:5px 12px;border-radius:7px;border:1.5px solid var(--border);background:none;color:var(--muted);cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.73rem;transition:all .15s;}
+.ptab.active{border-color:var(--text);color:var(--text);background:#f9f8f4;}
+.gh{display:grid;grid-template-columns:40px repeat(5,1fr);gap:3px;margin-bottom:5px;font-size:.68rem;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.07em;}
+.gs{max-height:360px;overflow-y:auto;}
+.gs::-webkit-scrollbar{width:3px;}.gs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.qr{display:grid;grid-template-columns:40px repeat(5,1fr);gap:3px;margin-bottom:3px;align-items:center;}
+.qr span{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);text-align:right;padding-right:4px;}
+.qr input[type=checkbox]{appearance:none;width:100%;aspect-ratio:1;max-width:26px;justify-self:center;border:1.5px solid var(--border);border-radius:5px;background:#fff;cursor:pointer;transition:all .15s;}
+.qr input[type=checkbox]:checked{background:var(--text);border-color:var(--text);}
+.gen-btn{width:100%;padding:10px;background:#f0efe9;border:1.5px solid var(--border);border-radius:9px;color:var(--text);font-family:'Figtree',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;margin:10px 0 16px;transition:all .2s;}.gen-btn:hover{background:#e8e7e0;}
+
+.save-btn{width:100%;padding:14px;background:var(--text);color:#fff;border:none;border-radius:var(--radius);font-family:'Figtree',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin-top:16px;transition:opacity .2s;}.save-btn:hover{opacity:.85;}
+.modal-err{color:var(--red);font-size:.82rem;margin-top:8px;display:none;}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:12px 20px;border-radius:10px;font-size:.88rem;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:200;}
+.toast.show{opacity:1;}
+footer{width:100%;text-align:center;padding:20px;font-size:.72rem;color:var(--muted);border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">submed<span>.ro</span> · admin</div>
+  <a class="back" href="index.html">← site student</a>
+</header>
+<main>
+  <!-- Login gate -->
+  <div id="login-gate">
+    <h2>Panou administrare</h2>
+    <p>Introdu parola secretă pentru a accesa gestionarea examenelor.</p>
+    <input class="login-input" type="password" id="secret-input" placeholder="Parola secretă…" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Intră →</button>
+    <div class="login-err" id="login-err">Parolă incorectă.</div>
+  </div>
+
+  <!-- Main panel -->
+  <div id="panel">
+    <div class="top">
+      <h1>Examene</h1>
+      <button class="btn-new" onclick="openModal(null)">+ Examen nou</button>
+    </div>
+    <div id="exam-list"><div class="empty">Se încarcă…</div></div>
+  </div>
+</main>
+
+<!-- Edit / Create modal -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-top">
+      <h2 id="modal-title">Examen nou</h2>
+      <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+
+    <div class="fields-row">
+      <div><label>Nume examen *</label><input type="text" id="m-name" placeholder="ex. Simulare Mai 2024"></div>
+      <div><label>Data</label><input type="date" id="m-date"></div>
+    </div>
+
+    <div class="builder-sect">
+      <h3>Constructor vizual</h3>
+      <p>Bifează răspunsurile corecte, apoi apasă Generează JSON.</p>
+      <div class="ptabs" id="ptabs"></div>
+      <div class="gh"><span></span><span>a</span><span>b</span><span>c</span><span>d</span><span>e</span></div>
+      <div class="gs" id="gs"></div>
+      <button class="gen-btn" onclick="buildJSON()">⬇ Generează JSON din selecție</button>
+    </div>
+
+    <label>Cheie JSON</label>
+    <textarea id="m-key" spellcheck="false" placeholder='{"1":["b"],"2":["a","c"]}'></textarea>
+    <div class="modal-err" id="modal-err"></div>
+    <button class="save-btn" onclick="saveExam()">Salvează</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<footer>www.submed.ro · panou administrare</footer>
+
+<script>
+// ▶ CHANGE THIS to your Render.com API URL
+const API = "https://YOUR-APP-NAME.onrender.com";
+
+let secret = "", editId = null;
+const TOTAL = 150, PER = 50;
+let answers = Array.from({length: TOTAL}, () => new Set());
+let bpage = 0;
+
+// ── login ──────────────────────────────────────────────────────────────────
+function doLogin() {
+  secret = document.getElementById("secret-input").value.trim();
+  if (!secret) return;
+  // Test with a real API call
+  fetch(API + "/admin/exams", { headers: { "X-Admin-Secret": secret } })
+    .then(r => {
+      if (r.ok) { document.getElementById("login-gate").style.display = "none"; document.getElementById("panel").style.display = "block"; loadExams(); }
+      else { document.getElementById("login-err").style.display = "block"; }
+    })
+    .catch(() => { document.getElementById("login-err").textContent = "Nu s-a putut conecta la API."; document.getElementById("login-err").style.display = "block"; });
+}
+
+// ── exams list ─────────────────────────────────────────────────────────────
+function loadExams() {
+  fetch(API + "/admin/exams", { headers: { "X-Admin-Secret": secret } })
+    .then(r => r.json())
+    .then(exams => {
+      const el = document.getElementById("exam-list");
+      if (!exams.length) { el.innerHTML = '<div class="empty">Niciun examen. Creează primul →</div>'; return; }
+      el.innerHTML = exams.map(e => `
+        <div class="exam-card">
+          <div class="exam-card-info">
+            <div class="exam-card-name">${e.name}</div>
+            <div class="exam-card-meta">${e.date||'—'} · id: ${e.id}</div>
+          </div>
+          <div class="actions">
+            <button class="btn-edit" onclick="openModal('${e.id}')">Editează</button>
+            <button class="btn-del" onclick="delExam('${e.id}','${e.name}')">Șterge</button>
+          </div>
+        </div>`).join("");
+    });
+}
+
+// ── delete ─────────────────────────────────────────────────────────────────
+function delExam(id, name) {
+  if (!confirm(`Ștergi examenul «${name}»?`)) return;
+  fetch(API + "/admin/exams/" + id, { method: "DELETE", headers: { "X-Admin-Secret": secret } })
+    .then(() => { showToast("Examen șters."); loadExams(); });
+}
+
+// ── modal ──────────────────────────────────────────────────────────────────
+function openModal(id) {
+  editId = id;
+  answers = Array.from({length: TOTAL}, () => new Set());
+  bpage   = 0;
+  document.getElementById("m-name").value = "";
+  document.getElementById("m-date").value = "";
+  document.getElementById("m-key").value  = "";
+  document.getElementById("modal-err").style.display = "none";
+  document.getElementById("modal-title").textContent = id ? "Editează examenul" : "Examen nou";
+
+  if (id) {
+    fetch(API + "/admin/exams/" + id, { headers: { "X-Admin-Secret": secret } })
+      .then(r => r.json())
+      .then(e => {
+        document.getElementById("m-name").value = e.name;
+        document.getElementById("m-date").value = e.date || "";
+        document.getElementById("m-key").value  = JSON.stringify(e.key, null, 2);
+        // pre-fill builder
+        for (const [k,v] of Object.entries(e.key||{})) {
+          const i = parseInt(k)-1;
+          if (i>=0&&i<TOTAL) v.forEach(l => answers[i].add(l));
+        }
+        renderTabs(); renderGrid();
+      });
+  } else { renderTabs(); renderGrid(); }
+
+  document.getElementById("overlay").classList.add("open");
+}
+
+function closeModal() { document.getElementById("overlay").classList.remove("open"); }
+
+// ── save ───────────────────────────────────────────────────────────────────
+function saveExam() {
+  const name = document.getElementById("m-name").value.trim();
+  const date = document.getElementById("m-date").value.trim();
+  const keyRaw = document.getElementById("m-key").value.trim();
+  const errEl  = document.getElementById("modal-err");
+  errEl.style.display = "none";
+
+  if (!name) { errEl.textContent = "Numele este obligatoriu."; errEl.style.display = "block"; return; }
+
+  let key = {};
+  if (keyRaw) {
+    try { key = JSON.parse(keyRaw); } catch(e) { errEl.textContent = "JSON invalid: " + e.message; errEl.style.display = "block"; return; }
+  }
+
+  const method = editId ? "PUT" : "POST";
+  const url    = editId ? API + "/admin/exams/" + editId : API + "/admin/exams";
+
+  fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json", "X-Admin-Secret": secret },
+    body: JSON.stringify({ name, date, key })
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.error) { errEl.textContent = d.error; errEl.style.display = "block"; return; }
+    closeModal(); loadExams(); showToast(editId ? "Examen actualizat." : "Examen creat.");
+  })
+  .catch(e => { errEl.textContent = "Eroare: " + e.message; errEl.style.display = "block"; });
+}
+
+// ── visual builder ─────────────────────────────────────────────────────────
+function renderTabs() {
+  const c = document.getElementById("ptabs"); c.innerHTML = "";
+  for (let p = 0; p < Math.ceil(TOTAL/PER); p++) {
+    const b = document.createElement("button"); b.type="button";
+    b.className = "ptab" + (p===bpage?" active":"");
+    b.textContent = `Q${p*PER+1}–Q${Math.min((p+1)*PER,TOTAL)}`;
+    b.onclick = () => { bpage=p; renderTabs(); renderGrid(); };
+    c.appendChild(b);
+  }
+}
+function renderGrid() {
+  const g = document.getElementById("gs"); g.innerHTML = "";
+  for (let q = bpage*PER; q < Math.min((bpage+1)*PER,TOTAL); q++) {
+    const row = document.createElement("div"); row.className = "qr";
+    row.innerHTML = `<span>Q${q+1}</span>` +
+      ["a","b","c","d","e"].map(l =>
+        `<input type="checkbox" data-q="${q}" data-l="${l}" ${answers[q].has(l)?"checked":""}>`
+      ).join("");
+    g.appendChild(row);
+  }
+  g.querySelectorAll("input").forEach(cb => {
+    cb.addEventListener("change", () => {
+      cb.checked ? answers[+cb.dataset.q].add(cb.dataset.l)
+                 : answers[+cb.dataset.q].delete(cb.dataset.l);
+    });
+  });
+}
+function buildJSON() {
+  const obj={};
+  for(let q=0;q<TOTAL;q++) if(answers[q].size) obj[q+1]=[...answers[q]].sort();
+  document.getElementById("m-key").value = JSON.stringify(obj,null,2);
+  document.getElementById("m-key").scrollIntoView({behavior:"smooth"});
+}
+
+// ── toast ──────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2500);
+}
+</script>
+</body>
+</html>

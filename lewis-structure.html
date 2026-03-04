@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1"/>
+    <title>Lewis Builder | Submed</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@600&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --submed-blue: #407BFF;
+            --submed-bg: #fffffc;
+            --submed-text: #29292b;
+            --submed-border: #ececec;
+            --accent-dim: #407bff22;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--submed-bg);
+            color: var(--submed-text);
+            padding-top: 110px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar Style from your main.css */
+        nav.navbar.scrolled {
+            background: white;
+            border-bottom: 1px solid var(--submed-border);
+            height: 80px;
+        }
+        .navbar-brand-2 h1 {
+            color: var(--submed-blue) !important;
+            font-size: 2.2rem !important;
+            font-weight: 800 !important;
+            margin: 0;
+        }
+
+        .builder-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            background: white;
+            border: 1px solid var(--submed-border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .tool-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-right: 12px;
+            border-right: 1px solid var(--submed-border);
+        }
+        .tool-group:last-child { border-right: none; }
+
+        .tool-group label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #888;
+        }
+
+        .btn-submed-tool {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--submed-border);
+            background: #fdfdfd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-submed-tool:hover {
+            border-color: var(--submed-blue);
+            color: var(--submed-blue);
+        }
+
+        .btn-submed-tool.active {
+            background: var(--submed-blue);
+            color: white !important;
+            border-color: var(--submed-blue);
+        }
+
+        /* Canvas */
+        .canvas-wrap {
+            background: white;
+            border: 1px solid var(--submed-border);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+        }
+
+        #lewisCanvas {
+            background: #fafafa;
+            border-radius: 8px;
+            cursor: crosshair;
+            border: 1px solid #f0f0f0;
+        }
+
+        /* Footer from your main.css */
+        footer {
+            background: var(--submed-blue);
+            padding: 30px;
+            color: white;
+            text-align: center;
+            margin-top: 50px;
+        }
+        footer ul {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            list-style: none;
+            padding: 0;
+            margin-bottom: 15px;
+        }
+        footer a { color: white; text-decoration: none; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg fixed-top scrolled">
+        <div class="container-fluid px-lg-5">
+            <a class="navbar-brand-2" href="#"><h1>Submed</h1></a>
+            <div class="collapse navbar-collapse justify-content-end">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="#">Acasă</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Subiecte</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="builder-container">
+        <div class="text-center mb-4">
+            <h2 style="font-weight: 800; color: var(--submed-blue);">Lewis Structure Builder</h2>
+            <p style="color: #666;">Instrument pentru exersarea structurilor chimice</p>
+        </div>
+
+        <div class="toolbar">
+            <div class="tool-group">
+                <label>Mod</label>
+                <button class="btn-submed-tool active" data-tool="atom">Atom</button>
+                <button class="btn-submed-tool" data-tool="bond">Legătură</button>
+                <button class="btn-submed-tool" data-tool="lone">Perechi</button>
+                <button class="btn-submed-tool" data-tool="delete">Șterge</button>
+            </div>
+            <div class="tool-group">
+                <label>Element</label>
+                <button class="btn-submed-tool active" data-element="C">C</button>
+                <button class="btn-submed-tool" data-element="H">H</button>
+                <button class="btn-submed-tool" data-element="O">O</button>
+                <button class="btn-submed-tool" data-element="N">N</button>
+            </div>
+            <div class="tool-group">
+                <label>Legătură</label>
+                <button class="btn-submed-tool active" data-order="1">S</button>
+                <button class="btn-submed-tool" data-order="2">D</button>
+                <button class="btn-submed-tool" data-order="3">T</button>
+            </div>
+            <button class="btn-submed-tool text-danger ms-auto" id="btn-clear">Reset</button>
+        </div>
+
+        <div class="canvas-wrap">
+            <svg id="lewisCanvas" width="800" height="360" viewBox="0 0 800 360"></svg>
+        </div>
+
+        <div class="mt-4 p-3 bg-white border rounded-3">
+            <label class="fw-bold mb-2">Denumire Moleculă</label>
+            <input type="text" class="form-control" id="substanceName" placeholder="Ex: Dioxid de carbon">
+        </div>
+    </div>
+
+    <footer>
+        <ul>
+            <li><a href="#">Acasă</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Termeni</a></li>
+        </ul>
+        <p>© 2026 Submed. Pregătire Admitere Medicină.</p>
+    </footer>
+
+    <script>
+    (function() {
+        const svg = document.getElementById('lewisCanvas');
+        const NS = 'http://www.w3.org/2000/svg';
+
+        let atoms = [];
+        let bonds = [];
+        let nextId = 1;
+        let tool = 'atom';
+        let currentElement = 'C';
+        let bondOrder = 1;
+        let bondFirst = null;
+        let dragAtom = null;
+        let dragOffset = { x: 0, y: 0 };
+
+        const R = 20;
+        const LONE_R = 3;
+        const LONE_OFF = 12;
+
+        function getPt(e) {
+            const rect = svg.getBoundingClientRect();
+            return {
+                x: (e.clientX - rect.left) * (svg.viewBox.baseVal.width / rect.width),
+                y: (e.clientY - rect.top) * (svg.viewBox.baseVal.height / rect.height)
+            };
+        }
+
+        function findAtomAt(x, y) {
+            return atoms.find(a => Math.hypot(a.x - x, a.y - y) <= R * 1.5);
+        }
+
+        function render() {
+            while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+            // Draw Bonds
+            bonds.forEach(b => {
+                const dx = b.to.x - b.from.x;
+                const dy = b.to.y - b.from.y;
+                const len = Math.hypot(dx, dy);
+                const ux = dx / len;
+                const uy = dy / len;
+                const perpX = -uy;
+                const perpY = ux;
+                const sep = 5;
+
+                for (let i = 0; i < b.order; i++) {
+                    const line = document.createElementNS(NS, 'line');
+                    const off = (b.order === 1) ? 0 : (i - (b.order - 1) / 2) * sep;
+                    line.setAttribute('x1', b.from.x + perpX * off);
+                    line.setAttribute('y1', b.from.y + perpY * off);
+                    line.setAttribute('x2', b.to.x + perpX * off);
+                    line.setAttribute('y2', b.to.y + perpY * off);
+                    line.setAttribute('stroke', '#407BFF');
+                    line.setAttribute('stroke-width', 2);
+                    svg.appendChild(line);
+                }
+            });
+
+            // Draw Atoms
+            atoms.forEach(a => {
+                const g = document.createElementNS(NS, 'g');
+                
+                const circle = document.createElementNS(NS, 'circle');
+                circle.setAttribute('cx', a.x);
+                circle.setAttribute('cy', a.y);
+                circle.setAttribute('r', R);
+                circle.setAttribute('fill', 'white');
+                circle.setAttribute('stroke', bondFirst === a ? '#407BFF' : '#ececec');
+                circle.setAttribute('stroke-width', 2);
+                g.appendChild(circle);
+
+                // Lone Pairs
+                const lp = a.lonePairs || 0;
+                const offsets = [
+                    [],
+                    [{x: LONE_OFF, y:0}],
+                    [{x: -LONE_OFF, y:0}, {x: LONE_OFF, y:0}],
+                    [{x: -LONE_OFF, y:0}, {x: LONE_OFF, y:0}, {x:0, y:-LONE_OFF}],
+                    [{x: -LONE_OFF, y:0}, {x: LONE_OFF, y:0}, {x:0, y:-LONE_OFF}, {x:0, y:LONE_OFF}]
+                ];
+                (offsets[lp] || []).forEach(o => {
+                    const dot = document.createElementNS(NS, 'circle');
+                    dot.setAttribute('cx', a.x + o.x);
+                    dot.setAttribute('cy', a.y + o.y);
+                    dot.setAttribute('r', LONE_R);
+                    dot.setAttribute('fill', '#407BFF');
+                    g.appendChild(dot);
+                });
+
+                const text = document.createElementNS(NS, 'text');
+                text.setAttribute('x', a.x);
+                text.setAttribute('y', a.y);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('dominant-baseline', 'central');
+                text.setAttribute('font-family', 'JetBrains Mono');
+                text.setAttribute('font-weight', 'bold');
+                text.textContent = a.element;
+                g.appendChild(text);
+
+                svg.appendChild(g);
+            });
+        }
+
+        svg.addEventListener('mousedown', (e) => {
+            const pt = getPt(e);
+            const atom = findAtomAt(pt.x, pt.y);
+
+            if (tool === 'atom' && !atom) {
+                atoms.push({ id: nextId++, element: currentElement, x: pt.x, y: pt.y, lonePairs: 0 });
+            } else if (tool === 'delete' && atom) {
+                atoms = atoms.filter(a => a !== atom);
+                bonds = bonds.filter(b => b.from !== atom && b.to !== atom);
+            } else if (tool === 'lone' && atom) {
+                atom.lonePairs = (atom.lonePairs + 1) % 5;
+            } else if (tool === 'bond' && atom) {
+                if (!bondFirst) {
+                    bondFirst = atom;
+                } else {
+                    if (bondFirst !== atom) {
+                        const existing = bonds.find(b => (b.from === bondFirst && b.to === atom) || (b.from === atom && b.to === bondFirst));
+                        if (existing) existing.order = bondOrder;
+                        else bonds.push({ from: bondFirst, to: atom, order: bondOrder });
+                    }
+                    bondFirst = null;
+                }
+            }
+            render();
+        });
+
+        // Event Listeners for Buttons
+        document.querySelectorAll('[data-tool]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('[data-tool]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                tool = this.dataset.tool;
+                bondFirst = null;
+                render();
+            });
+        });
+
+        document.querySelectorAll('[data-element]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('[data-element]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentElement = this.dataset.element;
+            });
+        });
+
+        document.querySelectorAll('[data-order]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('[data-order]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                bondOrder = parseInt(this.dataset.order);
+            });
+        });
+
+        document.getElementById('btn-clear').addEventListener('click', () => {
+            atoms = []; bonds = []; render();
+        });
+
+        render();
+    })();
+    </script>
+</body>
+</html>
