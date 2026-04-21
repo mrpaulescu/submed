@@ -12,10 +12,337 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0"/>
     <link rel="stylesheet" href="assets/styles/main.css">
-   
     <link rel="stylesheet" href="assets/styles/styles.css">
 </head>
 <body>
+  <style>
+:root {
+  --primary:      #407BFF;
+  --background:   #f5f4f0;
+  --card:         #ffffff;
+  --border:       #e2e0d8;
+  --text-color:   #1a1a18;
+  --muted:        #7a7870;
+  --green:        #16a34a;
+  --green-bg:     #dcfce7;
+  --green-bd:     #86efac;
+  --red:          #dc2626;
+  --red-bg:       #fee2e2;
+  --orange:       #ea580c;
+  --orange-bg:    #ffedd5;
+  --radius:       14px;
+  --shadow:       0 2px 12px rgba(0,0,0,.07);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--background);
+  color: var(--text-color);
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+/* ════════════════════════════════════════════════════
+   NAVBAR — provided CSS
+════════════════════════════════════════════════════ */
+nav.navbar {
+  position: fixed;
+  top: 7px;
+  left: 0;
+  width: 100%;
+  min-height: 80px;
+  height: 80px;
+  border-width: 0px;
+  transition: all 200ms ease-out, top 50ms linear, background 100ms ease;
+  border: none;
+}
+nav.navbar h1 { color: white; }
+nav.navbar a:not(.dropdown-item) { color: var(--text-color); }
+nav.navbar .navbar-brand svg path { fill: var(--background); }
+nav.navbar .hamburger path { stroke: var(--background); }
+nav.navbar .nav-link.active { color: var(--background) !important; }
+
+.navbar-brand-2 h1 {
+  color: #407BFF !important;
+  font-size: 2.5rem !important;
+  font-weight: 800 !important;
+}
+
+nav.navbar.scrolled {
+  border-bottom: 1px solid rgba(128,128,128,.685);
+  top: 0;
+  height: 80px;
+  background: var(--background);
+}
+nav.navbar.scrolled h1 { color: var(--primary); }
+nav.navbar.scrolled a:not(.dropdown-item) { color: var(--text-color); }
+nav.navbar.scrolled .navbar-brand svg path { fill: var(--text-color); }
+nav.navbar.scrolled .hamburger path { stroke: var(--text-color); }
+nav.navbar.scrolled .nav-link.active { color: var(--primary) !important; }
+
+.active { color: var(--primary); }
+.navbar-brand svg { height: 50px; width: 50px; }
+.navbar-brand path { fill: var(--primary); }
+
+.hamburger { cursor: pointer; }
+.hamburger input { display: none; }
+.hamburger svg {
+  height: 3em;
+  transition: transform 600ms cubic-bezier(0.4,0,0.2,1);
+}
+.line {
+  fill: none; stroke: black;
+  stroke-linecap: round; stroke-linejoin: round; stroke-width: 1;
+  transition: stroke-dasharray 600ms cubic-bezier(0.4,0,0.2,1),
+              stroke-dashoffset 600ms cubic-bezier(0.4,0,0.2,1);
+}
+.line-top-bottom { stroke-dasharray: 12 63; }
+.hamburger input:checked + svg { transform: rotate(-45deg); }
+.hamburger input:checked + svg .line-top-bottom {
+  stroke-dasharray: 20 300;
+  stroke-dashoffset: -32.42;
+}
+
+.nav-item { font-weight: 500; }
+.dropdown-menu { padding: 0; border-radius: 5px; }
+.dropdown-item {
+  --bs-dropdown-link-active-bg: var(--primary);
+  padding: 8px 28px;
+}
+.nav-link.active { color: var(--primary) !important; }
+
+/* user pill in nav */
+.nav-user-pill {
+  display: flex; align-items: center; gap: 9px;
+  margin-left: 16px;
+}
+.nav-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .78rem; font-weight: 700; color: #fff;
+  overflow: hidden; flex-shrink: 0;
+}
+.nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.nav-uname { font-size: .88rem; font-weight: 600; color: var(--text-color); }
+.btn-logout {
+  font-size: .76rem; font-weight: 600;
+  padding: 5px 12px; border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: transparent; color: var(--muted);
+  cursor: pointer; font-family: 'Figtree', sans-serif;
+  transition: all .15s;
+}
+.btn-logout:hover { color: var(--red); border-color: #fca5a5; background: var(--red-bg); }
+
+/* ════════════════════════════════════════════════════
+   LAYOUT SHELL
+════════════════════════════════════════════════════ */
+.dash-shell {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 108px 20px 56px;
+}
+
+/* ── Greeting ─────────────────────────────────────── */
+.greeting { margin-bottom: 24px; }
+.greeting h2 {
+  font-size: clamp(1.55rem, 4vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -.04em;
+  margin-bottom: 4px;
+}
+.greeting p { color: var(--muted); font-size: .91rem; }
+
+/* ── Stats ────────────────────────────────────────── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 9px;
+  margin-bottom: 28px;
+}
+.stat-pill {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 13px 11px;
+  box-shadow: var(--shadow);
+}
+.stat-pill-label {
+  font-size: .6rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-bottom: 4px;
+}
+.stat-pill-val {
+  font-size: 1.6rem; font-weight: 800; letter-spacing: -.05em; line-height: 1;
+}
+.stat-pill-sub { font-size: .68rem; color: var(--muted); margin-top: 2px; }
+
+/* ── Section label ───────────────────────────────── */
+.sec-lbl {
+  font-size: .65rem; font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase; letter-spacing: .13em; color: var(--muted);
+  margin-bottom: 9px; margin-top: 24px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sec-lbl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ════════════════════════════════════════════════════
+   FEATURE ROWS — one per line
+════════════════════════════════════════════════════ */
+.feature-list { display: flex; flex-direction: column; gap: 8px; }
+
+.frow {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  text-decoration: none; color: var(--text-color);
+  box-shadow: var(--shadow);
+  transition: border-color .16s, box-shadow .16s, transform .14s;
+  position: relative; overflow: hidden;
+}
+.frow::after {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: transparent; transition: background .16s;
+}
+.frow:hover { border-color: #c0bdb4; box-shadow: 0 4px 18px rgba(0,0,0,.1); transform: translateX(2px); color: var(--text-color); }
+.frow:hover::after { background: var(--primary); }
+
+/* primary variant */
+.frow-primary {
+  background: var(--text-color);
+  border-color: var(--text-color); color: #fff;
+}
+.frow-primary::after { background: var(--primary); }
+.frow-primary:hover { background: #2c2c2a; border-color: #2c2c2a; color: #fff; }
+
+/* disabled */
+.frow-disabled { opacity: .5; pointer-events: none; }
+
+.frow-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: #f0efe9; border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.frow-icon svg { width: 18px; height: 18px; stroke: var(--text-color); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frow-primary .frow-icon { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.2); }
+.frow-primary .frow-icon svg { stroke: #fff; }
+
+.frow-body { flex: 1; min-width: 0; }
+.frow-name { font-size: .95rem; font-weight: 700; line-height: 1.2; }
+.frow-desc { font-size: .77rem; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.frow-primary .frow-desc { color: rgba(255,255,255,.55); }
+
+.frow-badge {
+  font-size: .63rem; font-family: 'JetBrains Mono', monospace;
+  padding: 2px 8px; border-radius: 999px;
+  background: #f0efe9; border: 1px solid var(--border); color: var(--muted);
+  white-space: nowrap; flex-shrink: 0;
+}
+.frow-badge-new { background: var(--green-bg); border-color: var(--green-bd); color: var(--green); }
+.frow-badge-soon { background: #f0efe9; color: var(--muted); }
+.frow-primary .frow-badge { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.2); color: rgba(255,255,255,.7); }
+
+.frow-arrow {
+  width: 18px; height: 18px; flex-shrink: 0;
+  stroke: currentColor; fill: none; stroke-width: 2;
+  opacity: .35; transition: opacity .15s, transform .15s;
+}
+.frow:hover .frow-arrow { opacity: .8; transform: translateX(3px); }
+
+/* ════════════════════════════════════════════════════
+   PROGRESS
+════════════════════════════════════════════════════ */
+.progress-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+.panel {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px 18px 14px;
+  box-shadow: var(--shadow);
+}
+.panel-title { font-size: .84rem; font-weight: 700; margin-bottom: 12px; }
+.panel-title small { font-size: .66rem; font-family: 'JetBrains Mono', monospace; color: var(--muted); font-weight: 400; margin-left: 5px; }
+
+.wq-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+.wq-num { font-family: 'JetBrains Mono', monospace; font-size: .73rem; width: 32px; flex-shrink: 0; color: var(--muted); }
+.wq-bar-wrap { flex: 1; height: 6px; background: #f0efe9; border-radius: 4px; overflow: hidden; }
+.wq-bar { height: 100%; border-radius: 4px; transition: width .7s ease; }
+.wq-pct { font-size: .71rem; font-family: 'JetBrains Mono', monospace; width: 32px; text-align: right; flex-shrink: 0; }
+
+/* ── History ─────────────────────────────────────── */
+.hist-table { width: 100%; border-collapse: collapse; font-size: .83rem; }
+.hist-table th {
+  padding: 8px 12px; background: #f9f8f4;
+  font-size: .64rem; text-transform: uppercase; letter-spacing: .09em;
+  color: var(--muted); font-family: 'JetBrains Mono', monospace;
+  border-bottom: 1px solid var(--border); text-align: left;
+}
+.hist-table td { padding: 9px 12px; border-bottom: 1px solid #f0efe9; vertical-align: middle; }
+.hist-table tr:last-child td { border-bottom: none; }
+.hist-table tr:hover td { background: #fafaf8; }
+.pct-pill {
+  display: inline-block; padding: 2px 9px; border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace; font-size: .73rem; font-weight: 600;
+}
+.pg { background: var(--green-bg); color: var(--green); }
+.pm { background: var(--orange-bg); color: var(--orange); }
+.pb { background: var(--red-bg); color: var(--red); }
+.empty-hint {
+  text-align: center; padding: 24px; color: var(--muted);
+  font-size: .82rem; font-style: italic;
+}
+
+/* ════════════════════════════════════════════════════
+   MOBILE BOTTOM NAV
+════════════════════════════════════════════════════ */
+.bottom-nav {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
+  background: var(--card); border-top: 1px solid var(--border);
+  padding: 7px 0 max(7px, env(safe-area-inset-bottom));
+  box-shadow: 0 -2px 12px rgba(0,0,0,.06);
+}
+.bn-items { display: flex; justify-content: space-around; align-items: flex-end; }
+.bn-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 4px 10px; text-decoration: none; color: var(--muted);
+
+  text-transform: uppercase; letter-spacing: .04em;
+  transition: color .15s; min-width: 46px;
+}
+.bn-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.bn-item.active { color: var(--text-color); }
+.bn-scan {
+  background: var(--text-color); color: #fff !important;
+  border-radius: 13px; padding: 7px 14px; margin-bottom: 3px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.22);
+}
+.bn-scan svg { stroke: #fff; }
+
+/* ════════════════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════════════════ */
+@media(max-width: 768px) {
+  body { padding-bottom: 78px; }
+  .dash-shell { padding: 96px 14px 48px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .progress-grid { grid-template-columns: 1fr; }
+  .bottom-nav { display: block; }
+  .nav-user-pill { display: none !important; }
+  .frow-desc { display: none; }
+  .frow-badge { display: none; }
+}
+@media(max-width: 480px) {
+  .stat-pill-val { font-size: 1.35rem; }
+}
+</style>
     <!-- Navbar -->
 
     <nav class="navbar navbar-expand-lg px-lg-5 px-md-5 px-sm-4 p-section fixed-top container-fluid">
@@ -69,7 +396,7 @@
               <p>La Medicină!</p>
               <span>Subiecte admitere medicină</span>
               <div class="buttons">
-                <a href="cluj.html"><button class="btn">Subiecte Cluj-Napoca</button> </a>
+                <a href="dashboard.html"><button class="btn">Accesează dashboard și începe să înveți</button> </a>
                 
               </div>
               
@@ -81,189 +408,110 @@
         </div>
    </section>
 
-    <!-- ROADMAP & FEATURES -->
-<section class="container submed-roadmap-section">
-
-  <h2 class="m-5 titlu-sectiune">Funcționalități</h2>
-
-  <div class="row submed-features-grid">
-
-    <div class="col-lg-4 col-md-6 col-12 mb-4">
-      <div class="submed-feature-card">
-        <span class="submed-feature-icon">📚</span>
-        <h5>Subiecte din anii anteriori</h5>
-        <p>Rezolvă subiectele din anii anteriori pentru centrele universitare din Cluj și Iași.</p>
-        <a href="facultati.html" class='submed-badge'>Disponibil</a>
+    <main class="landing-content">
+    
+    <section class="mb-5">
+        <span class="section-label">De ce Submed?</span>
+        <h2 class="section-headline">Pregătire fără compromisuri</h2>
         
-      </div>
-    </div>
-
-    <div class="col-lg-4 col-md-6 col-12 mb-4">
-      <div class="submed-feature-card">
-        <span class="submed-feature-icon">🎯</span>
-        <h5>Scanează și corectează baremul instant</h5>
-        <p>Scanează baremul și primești un raport instant despre punctele tale forte și capitolele ce trebuie îmbunătățite.</p>
-        <span class="submed-badge soon">În curând</span>
-      </div>
-    </div>
-
-    <div class="col-lg-4 col-md-6 col-12 mb-4">
-      <div class="submed-feature-card">
-        <span class="submed-feature-icon">📊</span>
-        <h5>Învață compușii și detaliile mai ușor</h5>
-        <p>Pregătim tooluri pentru învățare interactivă, cu explicații detaliate și exemple practice.</p>
-        <span class="submed-badge soon">În curând</span>
-      </div>
-    </div>
-
-  </div>
-
-
-  <h2 class="m-5 titlu-sectiune">Roadmap</h2>
-
-  <div class="submed-timeline">
-
-    <div class="submed-timeline-item done">
-      <div class="submed-phase done-phase">✔ Finalizat</div>
-      <h5>Lansarea platformei</h5>
-      <p>Prima versiune SubMed cu subiecte pentru Cluj și Iași.</p>
-      <span class="submed-date">Martie 2025</span>
-    </div>
-
-    <div class="submed-timeline-item active">
-      <div class="submed-phase">🚀 În lucru</div>
-      <h5>Scanare și corectare barem automată</h5>
-      <p>Pregătim abilitatea de a scana, corecta, și ulterior de a-ți salva timpul cu rapoarte și sugestii oferite instant bazate pe performanța ta</p>
-      <span class="submed-date">Martie 2026</span>
-    </div>
-
-    <div class="submed-timeline-item">
-      <div class="submed-phase">⏳ În curând</div>
-      <h5>Extindere universități</h5>
-      <p>Adăugarea subiectelor UMF Târgu Mureș, Suceava și Craiova</p>
-      <span class="submed-date">Săptămâna a 4-a din Martie</span>
-    </div>
-    <div class="submed-timeline-item">
-      <div class="submed-phase">🗓️ Planificat</div>
-      <h5>Formule Lewis interactive și carduri Anki</h5>
-      <p>Avem planificat un sistem interactiv de a reține mai ușor materia pentru admitere.</p>
-      <span class="submed-date">Aprilie 2026</span>
-    </div>
-    <div class="submed-timeline-item">
-      <div class="submed-phase">🗓️ Planificat</div>
-      <h5>Subiecte personalizate pentru fiecare candidat</h5>
-      <p>Creare de subiecte adaptate nevoilor individuale ale fiecărui candidat.</p>
-      <span class="submed-date">Iunie 2026</span>
-    </div>
-    <div class="submed-timeline-item">
-      <div class="submed-phase">🗓️ Planificat</div>
-      <h5>Notificări & comunitate</h5>
-      <p>Sistem de remindere și posibilitate de conectare între candidați.</p>
-      <span class="submed-date">Post admitere 2026</span>
-    </div>
-
-  </div>
-
-</section>
-   <section class="selection container">
-    <!-- Noutăți -->
-    <!--<section class="selection container">
-      <h2 class="m-5 titlu-sectiune">Ultimele subiecte adăugate</h2>
-     
-      <a href="cluj.html">
-        <h4>Click pentru a accesa Simulare Mai Cluj 2025</h4>  
-      </a>
-    </div>-->
-   <!-- Facultăți -->
-
-   <section class="selection container">
-    <h2 class="m-5 titlu-sectiune"><a href="facultati.html">Universități</a></h2>
-    <div>
-      <div class="row">
-
-        <div class="col-lg-4 col-md-4 col-12 mb-5 mb-lg-4 mb-md-4">  
-          <a href="cluj.html">
-          <div class="card text-bg-dark">
-            
-            <img src="assets/images/Artboard 2.png" class="card-img" alt="..."> 
-            <div class="title"><span>Cluj</span></div>
-            <div class="card-img-overlay">
-              
-              <h6 class="card-title">Universitatea de Medicină și Farmacie „Iuliu Hațieganu”, Cluj-Napoca</h6>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <span class="feature-icon">📂</span>
+                    <h5 class="fw-bold">Subiecte din anii anterior</h5>
+                    <p class="text-muted small mb-0">Rezolvă subiectele din anii anteriori pentru centrele universitare din Cluj și Iași, organizate pe ani și centre universitare, accesibile oricând.</p>
+                </div>
             </div>
-          </div>
-        </a>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <span class="feature-icon">📸</span>
+                    <h5 class="fw-bold">Scanează și corectează baremul instant</h5>
+                    <p class="text-muted small mb-0">Scanează baremul și primești un raport instant despre punctele tale forte și capitolele ce trebuie îmbunătățite.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <span class="feature-icon">🧠</span>
+                    <h5 class="fw-bold">Învață compușii și detaliile mai ușor</h5>
+                    <p class="text-muted small mb-0">Carduri Anki și vizualizări Lewis pentru a reține materia de chimie și biologie mult mai rapid.</p>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-4 col-md-4 col-12 mb-5 mb-lg-4 mb-md-4">
-          <a href="iasi.html">
-          <div class="card text-bg-dark">
-              <img src="assets/images/Artboard 3.png" class="card-img" alt="...">
-              <div class="title"><span>Iași</span></div>
-              <div class="card-img-overlay">
-                <h6 class="card-title">Universitatea de Medicină și Farmacie „Grigore T. Popa”, Iași</h6>
-              </div>
+    </section>
+
+    <section class="my-5 pt-5" id="universitati">
+        <span class="section-label">Centre Universitare</span>
+        <h2 class="section-headline">Unde vrei să fii admis?</h2>
+        
+        <div class="uni-grid">
+            <a href="cluj.html" class="uni-link-card">
+                <img src="assets/images/Artboard 2.png" alt="UMF Cluj">
+                <div class="uni-badge">CLUJ-NAPOCA</div>
+                <div class="uni-overlay">
+                    <h4>UMF „Iuliu Hațieganu”</h4>
+                </div>
+            </a>
+
+            <a href="iasi.html" class="uni-link-card">
+                <img src="assets/images/Artboard 3.png" alt="UMF Iasi">
+                <div class="uni-badge">IAȘI</div>
+                <div class="uni-overlay">
+                    <h4>UMF „Grigore T. Popa”</h4>
+                </div>
+            </a>
+
+            <div class="uni-link-card" style="opacity: 0.6; cursor: not-allowed;">
+                <img src="assets/images/Artboard 5.png" alt="UMF Bucuresti">
+                <div class="uni-badge">Târgul Mureș</div>
+                <div class="uni-overlay">
+                    <h4>UMFST „George Emil Palade” (În curând)</h4>
+                </div>
             </div>
-          </a>
-          </div> 
-        
-       
-          <!--<div class="col-lg-4 col-md-4 col-12 mb-5 mb-lg-4 mb-md-4">
-            <a href="index.html">
-            <div class="card text-bg-dark">
-              <img src="assets/images/Artboard 1.png" class="card-img" alt="...">
-              <div class="title"><span>în viitor</span></div>
-              <div class="card-img-overlay">
-                <h6 class="card-title">Universitatea de Medicină și Farmacie „Carol Davila”, București</h6>
-              </div>
-            </div>
-          </a>
-          </div>  -->
-        
-        
-          
-        
-      </div>
-      <!-- <div class="row">
-        <div class="col-lg-4 col-md-4 col-12 mb-4">
-          <div class="card text-bg-dark">
-            <img src="assets/images/Artboard 5.png" class="card-img" alt="...">
-            <div class="title"><span>TÂRGU MUREȘ</span></div>
-            <div class="card-img-overlay">
-              <h5 class="card-title">Universitatea de Medicină și Farmacie „Grigore T. Popa”, Iași</h5>
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            </div>
-          </div>
         </div>
+    </section>
 
-        <div class="col-lg-4 col-md-4 col-12 mb-4">
-          <div class="card text-bg-dark">
-            <img src="assets/images/Artboard 6.png" class="card-img" alt="...">
-            <div class="title"><span>SUCEAVA</span></div>
-            <div class="card-img-overlay">
-              <h5 class="card-title">Universitatea de Medicină și Farmacie „Carol Davila”, București</h5>
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+    <section class="my-5 pt-5">
+        <span class="section-label">Roadmap - Evoluția Platformei</span>
+        <h2 class="section-headline">Viitorul pregătirii tale</h2>
+        
+        <div class="roadmap-shell">
+            <div class="roadmap-item active">
+                <h6 class="fw-bold mb-1">Lansarea platformei</h6>
+                <p class="text-muted small mb-0">Prima versiune SubMed cu subiecte pentru Cluj și Iași.</p>
+                <span class="roadmap-tag">FINALIZAT, 2025 Martie</span>
             </div>
-          </div>
-        </div>
 
-        <div class="col-lg-4 col-md-4 col-12 mb-4">  
-          <div class="card text-bg-dark">
-            <img src="assets/images/Artboard 4.png" class="card-img" alt="...">
-            <div class="title"><span>Timișoara</span></div>
-            <div class="card-img-overlay">
-              <h5 class="card-title">Universitatea de Medicină și Farmacie „Iuliu Hațieganu”, Cluj-Napoca</h5>
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+            <div class="roadmap-item active">
+                <h6 class="fw-bold mb-1">Scanare și corectare barem automată</h6>
+                <p class="text-muted small mb-0">Corectare automată prin cameră și statistici de performanță.</p>
+                <span class="roadmap-tag-2" style="background: #ffee8c; color: var(--primary);">ÎN LUCRU · MARTIE 2026</span>
             </div>
-          </div>
+
+             <div class="roadmap-item">
+                <h6 class="fw-bold mb-1">Extindere universități</h6>
+                <p class="text-muted small mb-0">Adăugarea subiectelor UMF Târgu Mureș, Suceava și Craiova</p>
+                <span class="roadmap-tag";> PLANIFICAT · MARTIE 2026</span>
+            </div>
+             <div class="roadmap-item">
+                <h6 class="fw-bold mb-1">Formule Lewis interactive și carduri Anki</h6>
+                <p class="text-muted small mb-0">Avem planificat un sistem interactiv de a reține mai ușor materia pentru admitere.</p>
+                <span class="roadmap-tag";> PLANIFICAT · APRILIE 2026</span>
+            </div>
+            <div class="roadmap-item">
+                <h6 class="fw-bold mb-1">Subiecte personalizate pentru fiecare candidat</h6>
+                <p class="text-muted small mb-0">Creare de subiecte adaptate nevoilor individuale ale fiecărui candidat</p>
+                <span class="roadmap-tag">PLANIFICAT · IUNIE 2026</span>
+            </div>
+            <div class="roadmap-item">
+                <h6 class="fw-bold mb-1">Notificări & comunitate</h6>
+                <p class="text-muted small mb-0">Sistem de remindere și posibilitate de conectare între candidați.</p>
+                <span class="roadmap-tag">PLANIFICAT · POST ADMITERE 2026</span>
+            </div>
         </div>
-    </div> -->
- 
-  
-   </section>
+    </section>
 
-
-   
-   <h2 class="m-5 titlu-sectiune">Simulări</h2>
+    
+   <!--<h2 class="section-headline">Simulări</h2>
 <h3>Cluj🎯</h3>
 
 <div class="presimulare">
@@ -283,9 +531,8 @@
  
 </div>
 </section>
-
-
-   <!-- Countdown Timer -->
+-->
+     <!-- Countdown Timer -->
    <section class="countdown container text-center my-5">
     <h2 id="admitere-title">Admitere 26 Iulie, 2026</h2>
     <div id="countdown" class="fs-1 fw-bold"></div>
@@ -308,6 +555,8 @@
       setInterval(updateCountdown, 1000);
  </script>
  </section>
+
+</main>
 
 
 

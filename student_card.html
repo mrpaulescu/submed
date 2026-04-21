@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submed · Codul tău de student</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f5f4f0;--card:#fff;--border:#e2e0d8;--text:#1a1a18;--muted:#7a7870;--green:#16a34a;--green-bg:#dcfce7;--radius:16px;--shadow:0 4px 24px rgba(0,0,0,.08);}
+body{background:var(--bg);font-family:'Figtree',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 24px;}
+header{width:100%;max-width:640px;display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;}
+.logo{font-weight:800;font-size:1.05rem;letter-spacing:-.02em;}.logo span{opacity:.4;}
+.skip{font-size:.8rem;color:var(--muted);text-decoration:none;font-family:'JetBrains Mono',monospace;padding:5px 10px;border:1px solid var(--border);border-radius:8px;}
+.skip:hover{color:var(--text);border-color:var(--text);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:40px;width:100%;max-width:640px;box-shadow:var(--shadow);}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--green-bg);border:1px solid #86efac;border-radius:999px;padding:4px 14px;font-size:.78rem;font-weight:600;color:var(--green);margin-bottom:20px;}
+h1{font-size:1.8rem;font-weight:800;letter-spacing:-.03em;margin-bottom:10px;}
+.sub{color:var(--muted);font-size:.93rem;line-height:1.6;margin-bottom:32px;}
+/* Code display */
+.code-big{font-size:4rem;font-weight:800;font-family:'JetBrains Mono',monospace;letter-spacing:.1em;text-align:center;margin:24px 0;}
+/* Bubble grid */
+.grid-section{background:#f9f8f4;border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:28px;}
+.grid-section h2{font-size:.88rem;font-weight:700;margin-bottom:4px;}
+.grid-section p{font-size:.8rem;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+.bubble-grid{display:inline-block;}
+.grid-header-row{display:flex;gap:0;margin-bottom:4px;}
+.gh-cell{width:40px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-family:'JetBrains Mono',monospace;color:var(--muted);font-weight:600;}
+.grid-row{display:flex;align-items:center;gap:0;margin-bottom:6px;}
+.row-label{width:24px;font-size:.72rem;font-family:'JetBrains Mono',monospace;color:var(--muted);}
+.bub{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:600;font-family:'JetBrains Mono',monospace;}
+.bub-filled{background:var(--text);color:#fff;}
+.bub-empty{background:#fff;border:2px solid var(--border);color:var(--muted);}
+/* Download btn */
+.btn-dl{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:var(--text);color:#fff;border:none;border-radius:12px;font-family:'Figtree',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;text-decoration:none;margin-bottom:12px;transition:opacity .2s;}
+.btn-dl:hover{opacity:.85;}
+.btn-cont{display:block;text-align:center;padding:12px;border:1.5px solid var(--border);border-radius:12px;font-weight:600;font-size:.9rem;color:var(--text);text-decoration:none;transition:all .2s;}
+.btn-cont:hover{border-color:var(--text);}
+.warning{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:14px 16px;font-size:.82rem;color:#92400e;margin-bottom:24px;line-height:1.55;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">submed<span>.ro</span></div>
+  <a class="skip" href="dashboard.html">Sari peste →</a>
+</header>
+
+<div class="card">
+  <div class="badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    Cont creat cu succes
+  </div>
+  <h1>Acesta este codul tău unic</h1>
+  <p class="sub">
+    Bifează aceste bule o singură dată pe orice foaie de examen
+    în zona <strong>"număr de concurs"</strong>.
+    Aplicația te va recunoaște automat la fiecare scanare.
+  </p>
+
+  <div class="warning">
+    ⚠ <strong>Important:</strong> Descarcă sau fotografiază acest card acum.
+    Codul tău este permanent, dar această pagină nu va mai apărea după ce pleci.
+    Îl poți regăsi oricând în secțiunea <em>Profilul meu</em>.
+  </div>
+
+  <div class="code-big" id="code-display">—</div>
+
+  <div class="grid-section">
+    <h2>Cum să bifezi pe foaie</h2>
+    <p>Completează exact bulele colorate cu negru în zona "număr de concurs" (4 rânduri × 5 coloane):</p>
+    <div class="bubble-grid">
+      <div class="grid-header-row">
+        <div class="gh-cell"></div>
+        <div class="gh-cell">a</div><div class="gh-cell">b</div>
+        <div class="gh-cell">c</div><div class="gh-cell">d</div><div class="gh-cell">e</div>
+      </div>
+      <div id="bubble-rows"></div>
+    </div>
+  </div>
+
+  <a class="btn-dl" id="dl-btn" href="#" download>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    Descarcă cardul PNG
+  </a>
+  <a class="btn-cont" href="dashboard.html">Continuă la dashboard →</a>
+</div>
+
+<script src="config.js"></script>
+<script>
+Auth.requireLogin();
+const user = Auth.getUser();
+
+async function init() {
+  // Preia info cod student
+  const info = await apiGet(`${CPANEL_API}/student_card.php?info=1`);
+  if (info.error) { toast(info.error, "err"); return; }
+
+  const code = String(info.student_code).padStart(5, "0");
+  document.getElementById("code-display").textContent = code;
+
+  // Desenează grid-ul de bule
+  const grid = info.grid; // array[4][5] cu 0/1
+  const container = document.getElementById("bubble-rows");
+  const opts = ["a","b","c","d","e"];
+  for (let row = 0; row < 4; row++) {
+    const div = document.createElement("div");
+    div.className = "grid-row";
+    div.innerHTML = `<div class="row-label">${row+1}</div>`;
+    for (let col = 0; col < 5; col++) {
+      const filled = grid[row][col];
+      div.innerHTML += `<div class="bub ${filled ? "bub-filled" : "bub-empty"}">${filled ? "●" : opts[col]}</div>`;
+    }
+    container.appendChild(div);
+  }
+
+  // Link descărcare card PNG
+  document.getElementById("dl-btn").href = `${CPANEL_API}/student_card.php`;
+}
+
+init();
+</script>
+</body>
+</html>

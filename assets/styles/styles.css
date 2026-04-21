@@ -292,3 +292,166 @@ body.night-mode #timeUntilMarch9 {
     left: -31px;
   }
 }
+/* Stiluri pentru Secțiunile de sub Hero */
+.landing-content {
+    max-width: 1200px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 60px 0;
+}
+
+.section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--primary);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.section-headline {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 40px;
+}
+
+/* --- CARDURI BENEFICII (DASHBOARD LOOK) --- */
+.feature-box {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(226, 224, 216, 0.8);
+    border-radius: 10px; /* Mai puțin rotunjit */
+    padding: 35px;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.feature-box:hover {
+    border-color: var(--primary);
+    background: white;
+    transform: translateY(-3px);
+}
+
+.feature-icon {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    display: block;
+}
+
+/* --- UNIVERSITĂȚI (STILUL TĂU CU IMAGINI) --- */
+.uni-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.uni-link-card {
+    position: relative;
+    height: 280px;
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.uni-link-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.uni-link-card:hover img {
+    transform: scale(1.05);
+}
+
+.uni-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 25px;
+}
+
+.uni-overlay h4 {
+    color: white;
+    font-weight: 700;
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.uni-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+/* --- ROADMAP / TIMELINE --- */
+.roadmap-shell {
+    margin-top: 80px;
+    border-left: 2px solid rgba(200, 198, 188, 0.5);
+    padding-left: 30px;
+    position: relative;
+}
+
+.roadmap-item {
+    background: white;
+    border: 1px solid rgba(226, 224, 216, 0.8);
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.roadmap-item::before {
+    content: '';
+    position: absolute;
+    left: -37px;
+    top: 30px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #c8c6bc;
+    border: 3px solid var(--background);
+}
+
+.roadmap-item.active { border-left: 4px solid var(--primary); }
+
+.roadmap-item.active::before { background: var(--primary); }
+
+.roadmap-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    background: #f0efe9;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    margin-top: 10px;
+    display: inline-block;
+}
+.roadmap-tag-2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    background: #f0efe9;
+    color: yellow;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    margin-top: 10px;
+    display: inline-block;
+    animation: pulse 2s infinite;
+}

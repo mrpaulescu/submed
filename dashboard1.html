@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta name="title" content="Grile Admitere Medicină 2026 - Teste Biologie și Chimie Online">
+<meta name="description" content="Pregătește-te pentru admiterea la UMF cu mii de grile explicate, simulări cronometrate și statistici de performanță. Platforma nr. 1 pentru viitorii studenți la medicină.">
+<meta name="keywords" content="grile medicina, admitere medicina 2026, subiecte medicina, teste biologie admitere, grile chimie medicina, simulare umf, pregatire admitere medicina">
+<meta name="robots" content="index, follow">
+<meta name="language" content="Romanian">
+<meta name="revisit-after" content="2 days">
+<meta name="author" content="Numele Brandului Tău">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.siteultau.ro/">
+<meta property="og:title" content="Grile Admitere Medicină 2026 - Teste Biologie și Chimie Online">
+<meta property="og:description" content="Exersează eficient cu mii de grile actualizate conform bibliografiei noi. Verifică-ți nivelul cu simulări reale!">
+<meta property="og:image" content="https://www.siteultau.ro/imagine-preview.jpg"> <meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://www.siteultau.ro/">
+<meta property="twitter:title" content="Grile Admitere Medicină 2026 - Teste Biologie și Chimie Online">
+<meta property="twitter:description" content="Cea mai eficientă metodă de a învăța pentru admiterea la medicină. Grile explicate și simulări online.">
+<meta property="twitter:image" content="https://www.siteultau.ro/imagine-preview.jpg">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://www.siteultau.ro/" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SubMed · panou principal pentru grile, universități, structuri chimice și resurse pentru admiterea la medicină.">
+<title>Submed · Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ── Tokens ─────────────────────────────────────────── */
+:root {
+  --primary:    #407BFF;
+  --bg:         #f5f4f0;
+  --card:       #ffffff;
+  --border:     #e2e0d8;
+  --text:       #1a1a18;
+  --muted:      #7a7870;
+  --green:      #16a34a;
+  --green-bg:   #dcfce7;
+  --green-bd:   #86efac;
+  --red:        #dc2626;
+  --red-bg:     #fee2e2;
+  --orange:     #ea580c;
+  --orange-bg:  #ffedd5;
+  --radius:     16px;
+  --shadow:     0 2px 14px rgba(0,0,0,.07);
+  --shadow-md:  0 4px 24px rgba(0,0,0,.11);
+}
+
+/* Fluid base font — bigger on larger screens */
+html { font-size: 15px; }
+@media (min-width: 768px)  { html { font-size: 16px; } }
+@media (min-width: 992px)  { html { font-size: 17px; } }
+@media (min-width: 1400px) { html { font-size: 18px; } }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Figtree', sans-serif;
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+/* ══════════════════════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════════════════════ */
+nav.navbar {
+  position: fixed; top: 7px; left: 0; width: 100%;
+  min-height: 80px; height: 80px;
+  border: none; border-width: 0;
+  transition: all 200ms ease-out, top 50ms linear, background 100ms ease;
+  font-family: 'Figtree', sans-serif;
+}
+nav.navbar h1 { color: white; }
+nav.navbar a:not(.dropdown-item) { color: var(--text); }
+nav.navbar .nav-link.active { color: var(--primary) !important; }
+
+.navbar-brand-2 h1 {
+  color: #407BFF !important;
+  font-size: 2.2rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -.03em;
+  line-height: 1;
+  margin: 0;
+}
+
+nav.navbar.scrolled {
+  top: 0;
+  height: 80px;
+  background: var(--bg);
+  border-bottom: 1px solid rgba(128,128,128,.4);
+  box-shadow: 0 2px 16px rgba(0,0,0,.06);
+}
+nav.navbar.scrolled h1 { color: var(--primary); }
+nav.navbar.scrolled .nav-link.active { color: var(--primary) !important; }
+
+/* nav links */
+.navbar-nav .nav-link {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 6px 14px !important;
+  border-radius: 10px;
+  transition: background .15s, color .15s;
+}
+.navbar-nav .nav-link:hover { background: rgba(0,0,0,.05); }
+.navbar-nav .nav-link.active { color: var(--primary) !important; }
+.dropdown-menu { padding: 4px; border-radius: 10px; border: 1px solid var(--border); box-shadow: var(--shadow-md); }
+.dropdown-item { padding: 8px 16px; border-radius: 7px; font-weight: 500; }
+.dropdown-item:active { background: var(--primary); }
+
+/* user area */
+.nav-user-pill { display: flex; align-items: center; gap: 10px; margin-left: 12px; }
+.nav-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .82rem; font-weight: 700; color: #fff;
+  overflow: hidden; flex-shrink: 0;
+  border: 2px solid rgba(64,123,255,.25);
+}
+.nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.nav-uname { font-size: .95rem; font-weight: 600; color: var(--text); }
+.btn-logout {
+  font-size: .82rem; font-weight: 600;
+  padding: 6px 14px; border-radius: 9px;
+  border: 1.5px solid var(--border);
+  background: transparent; color: var(--muted);
+  cursor: pointer; font-family: 'Figtree', sans-serif;
+  transition: all .15s;
+}
+.btn-logout:hover { color: var(--red); border-color: #fca5a5; background: var(--red-bg); }
+
+/* ── Bootstrap hamburger override ───────────────────── */
+/* Make the default Bootstrap toggler look cleaner */
+.navbar-toggler {
+  border: none;
+  padding: 6px 8px;
+  border-radius: 10px;
+  transition: background .15s;
+}
+.navbar-toggler:focus { box-shadow: none; }
+.navbar-toggler:hover { background: rgba(0,0,0,.06); }
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%231a1a18' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  width: 26px; height: 22px;
+}
+
+/* Mobile collapse panel */
+.navbar-collapse {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 12px 16px 16px;
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+@media (min-width: 992px) {
+  .navbar-collapse {
+    background: transparent;
+    border: none; border-radius: 0;
+    padding: 0; margin: 0;
+    box-shadow: none;
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   SHELL — 75% width on desktop
+══════════════════════════════════════════════════════ */
+.dash-shell {
+  width: 92%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 108px 0 72px;
+}
+@media (min-width: 992px)  { .dash-shell { width: 78%; } }
+@media (min-width: 1400px) { .dash-shell { width: 74%; } }
+
+/* ── Greeting ─────────────────────────────────────── */
+.greeting { margin-bottom: 28px; }
+.greeting h2 {
+  font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -.04em;
+  margin-bottom: 5px;
+}
+.greeting p { color: var(--muted); font-size: 1rem; }
+
+/* ── Stats row ────────────────────────────────────── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.stat-pill {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 18px 14px;
+  box-shadow: var(--shadow);
+}
+.stat-pill-label {
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-bottom: 6px;
+}
+.stat-pill-val {
+  font-size: 2rem; font-weight: 800; letter-spacing: -.05em; line-height: 1;
+}
+.stat-pill-sub { font-size: .75rem; color: var(--muted); margin-top: 3px; }
+
+/* ── Section label ───────────────────────────────── */
+.sec-lbl {
+  font-size: .72rem; font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase; letter-spacing: .13em; color: var(--muted);
+  margin-bottom: 12px; margin-top: 32px;
+  display: flex; align-items: center; gap: 12px;
+}
+.sec-lbl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ══════════════════════════════════════════════════════
+   FEATURE ROWS
+══════════════════════════════════════════════════════ */
+.feature-list { display: flex; flex-direction: column; gap: 10px; }
+
+.frow {
+  display: flex; align-items: center; gap: 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  text-decoration: none; color: var(--text);
+  box-shadow: var(--shadow);
+  transition: border-color .16s, box-shadow .16s, transform .14s;
+  position: relative; overflow: hidden;
+}
+.frow::after {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: transparent; transition: background .16s;
+  border-radius: 3px 0 0 3px;
+}
+.frow:hover {
+  border-color: #c0bdb4;
+  box-shadow: var(--shadow-md);
+  transform: translateX(3px);
+  color: var(--text);
+}
+.frow:hover::after { background: var(--primary); }
+
+.frow-primary {
+  background: var(--text); border-color: var(--text); color: #fff;
+}
+.frow-primary::after { background: var(--primary); }
+.frow-primary:hover { background: #2c2c2a; border-color: #2c2c2a; color: #fff; }
+
+.frow-disabled { opacity: .48; pointer-events: none; }
+
+.frow-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: #f0efe9; border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.frow-icon svg {
+  width: 22px; height: 22px;
+  stroke: var(--text); fill: none; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.frow-primary .frow-icon { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.2); }
+.frow-primary .frow-icon svg { stroke: #fff; }
+
+.frow-body { flex: 1; min-width: 0; }
+.frow-name { font-size: 1.05rem; font-weight: 700; line-height: 1.2; }
+.frow-desc {
+  font-size: .85rem; color: var(--muted); margin-top: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.frow-primary .frow-desc { color: rgba(255,255,255,.55); }
+
+.frow-badge {
+  font-size: .7rem; font-family: 'JetBrains Mono', monospace;
+  padding: 3px 10px; border-radius: 999px;
+  background: #f0efe9; border: 1px solid var(--border); color: var(--muted);
+  white-space: nowrap; flex-shrink: 0;
+}
+.frow-badge-new  { background: var(--green-bg); border-color: var(--green-bd); color: var(--green); }
+.frow-badge-soon { background: #f0efe9; color: var(--muted); }
+.frow-primary .frow-badge { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.2); color: rgba(255,255,255,.75); }
+
+.frow-arrow {
+  width: 20px; height: 20px; flex-shrink: 0;
+  stroke: currentColor; fill: none; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+  opacity: .3; transition: opacity .15s, transform .15s;
+}
+.frow:hover .frow-arrow { opacity: .8; transform: translateX(4px); }
+
+/* ══════════════════════════════════════════════════════
+   PROGRESS
+══════════════════════════════════════════════════════ */
+.progress-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 12px;
+  margin-top: 4px;
+}
+.panel {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px 22px 18px;
+  box-shadow: var(--shadow);
+}
+.panel-title { font-size: .95rem; font-weight: 700; margin-bottom: 16px; }
+.panel-title small {
+  font-size: .72rem; font-family: 'JetBrains Mono', monospace;
+  color: var(--muted); font-weight: 400; margin-left: 6px;
+}
+
+.wq-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+.wq-num { font-family: 'JetBrains Mono', monospace; font-size: .78rem; width: 36px; flex-shrink: 0; color: var(--muted); }
+.wq-bar-wrap { flex: 1; height: 7px; background: #f0efe9; border-radius: 4px; overflow: hidden; }
+.wq-bar { height: 100%; border-radius: 4px; transition: width .7s ease; }
+.wq-pct { font-size: .75rem; font-family: 'JetBrains Mono', monospace; width: 36px; text-align: right; flex-shrink: 0; }
+
+/* ── History ─────────────────────────────────────── */
+.hist-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.hist-table th {
+  padding: 11px 14px; background: #f9f8f4;
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .09em;
+  color: var(--muted); font-family: 'JetBrains Mono', monospace;
+  border-bottom: 1px solid var(--border); text-align: left;
+}
+.hist-table td { padding: 12px 14px; border-bottom: 1px solid #f0efe9; vertical-align: middle; }
+.hist-table tr:last-child td { border-bottom: none; }
+.hist-table tr:hover td { background: #fafaf8; }
+.pct-pill {
+  display: inline-block; padding: 3px 11px; border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace; font-size: .78rem; font-weight: 600;
+}
+.pg { background: var(--green-bg); color: var(--green); }
+.pm { background: var(--orange-bg); color: var(--orange); }
+.pb { background: var(--red-bg); color: var(--red); }
+.empty-hint {
+  text-align: center; padding: 28px; color: var(--muted);
+  font-size: .88rem; font-style: italic;
+}
+
+/* ══════════════════════════════════════════════════════
+   MOBILE BOTTOM NAV
+══════════════════════════════════════════════════════ */
+.bottom-nav {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
+  background: var(--card); border-top: 1px solid var(--border);
+  padding: 7px 0 max(7px, env(safe-area-inset-bottom));
+  box-shadow: 0 -2px 12px rgba(0,0,0,.06);
+}
+.bn-items { display: flex; justify-content: space-around; align-items: flex-end; }
+.bn-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 4px 10px; text-decoration: none; color: var(--muted);
+  font-size: .58rem; font-weight: 600; font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase; letter-spacing: .04em;
+  transition: color .15s; min-width: 48px;
+}
+.bn-item svg { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.bn-item.active { color: var(--text); }
+.bn-scan {
+  background: var(--text); color: #fff !important;
+  border-radius: 14px; padding: 7px 16px; margin-bottom: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.22);
+}
+.bn-scan svg { stroke: #fff; }
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════ */
+@media (max-width: 991px) {
+  .nav-user-pill { display: none !important; }
+  /* show user info inside the collapse instead */
+  .mobile-user-row {
+    display: flex !important;
+    align-items: center; gap: 10px;
+    padding: 10px 4px 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+}
+@media (min-width: 992px) {
+  .mobile-user-row { display: none !important; }
+}
+
+@media (max-width: 768px) {
+  body { padding-bottom: 80px; }
+  .dash-shell { padding: 96px 0 50px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .progress-grid { grid-template-columns: 1fr; }
+  .bottom-nav { display: block; }
+  .frow-desc { display: none; }
+  .frow-badge { display: none; }
+  .frow-icon { width: 42px; height: 42px; }
+  .frow-name { font-size: .97rem; }
+}
+
+@media (max-width: 480px) {
+  .stat-pill-val { font-size: 1.6rem; }
+  .frow { padding: 14px 15px; gap: 13px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     NAVBAR — Bootstrap toggler (works out of the box)
+══════════════════════════════════════════════════════ -->
+<nav class="navbar navbar-expand-lg px-lg-5 px-md-4 px-3 fixed-top container-fluid">
+  <div class="container-fluid fw-medium">
+
+    <!-- Brand -->
+    <a class="navbar-brand-2 text-decoration-none" href="dashboard.html">
+      <h1>Submed</h1>
+    </a>
+
+    <!-- Bootstrap toggler — this actually works with Bootstrap JS -->
+    <button class="navbar-toggler ms-auto me-2" type="button"
+            data-bs-toggle="collapse" data-bs-target="#mainNav"
+            aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+
+      <!-- User info shown only inside mobile collapse -->
+      <div class="mobile-user-row" style="display:none">
+        <div class="nav-avatar" id="mobile-avatar"></div>
+        <div>
+          <div style="font-weight:700;font-size:.95rem" id="mobile-name"></div>
+          <div style="font-size:.78rem;color:var(--muted)" id="mobile-email"></div>
+        </div>
+        <button class="btn-logout ms-auto" onclick="logout()">Ieșire</button>
+      </div>
+
+      <ul class="navbar-nav align-items-lg-center gap-lg-1 ms-auto">
+  <li class="nav-item"><a class="nav-link active" href="dashboard.html">Acasă</a></li>
+  <li class="nav-item"><a class="nav-link" href="index.html">Scanare grilă</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Subiecte</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="cluj.html">UMF Cluj</a></li>
+            <li><a class="dropdown-item" href="iasi.html">UMF Iași</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="lewis-structure.html">Chimie</a></li>
+        <li class="nav-item"><a class="nav-link" href="flashcards.html">Flashcards</a></li>
+        <li class="nav-item"><a class="nav-link" href="desprecontact.html">Contact</a></li>
+      </ul>
+
+      <!-- Desktop user pill — right side -->
+      <div class="nav-user-pill d-flex align-items-center ms-lg-3" id="nav-user-pill">
+        <div class="nav-avatar me-2" id="nav-avatar"></div>
+        <span class="nav-uname me-2" id="nav-name"></span>
+        <button class="btn-logout" onclick="logout()">Ieșire</button>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════
+     MOBILE BOTTOM NAV
+══════════════════════════════════════════════════════ -->
+<div class="bottom-nav">
+  <div class="bn-items">
+    <a class="bn-item active" href="dashboard.html">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      acasă
+    </a>
+    <a class="bn-item" href="lewis-structure.html">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><line x1="12" y1="3" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="21"/><line x1="3" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="21" y2="12"/></svg>
+      chimie
+    </a>
+    <a class="bn-item bn-scan" href="index.html">
+      <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      scan
+    </a>
+    <a class="bn-item" href="facultati.html">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      univ.
+    </a>
+    <a class="bn-item" href="student_card.html">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      profil
+    </a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     MAIN
+══════════════════════════════════════════════════════ -->
+<main class="dash-shell">
+
+  <!-- Greeting -->
+  <div class="greeting">
+    <h2>Bună, <span id="greeting-name">—</span> 👋</h2>
+    <p>Totul pentru admiterea la medicină, într-un singur loc.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-pill">
+      <div class="stat-pill-label">Examene</div>
+      <div class="stat-pill-val" id="s-total">—</div>
+      <div class="stat-pill-sub">susținute</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-pill-label">Medie</div>
+      <div class="stat-pill-val" id="s-avg">—</div>
+      <div class="stat-pill-sub">generală</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-pill-label">Record</div>
+      <div class="stat-pill-val" id="s-best">—</div>
+      <div class="stat-pill-sub">cel mai bun</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-pill-label">Corecte</div>
+      <div class="stat-pill-val" id="s-correct">—</div>
+      <div class="stat-pill-sub" id="s-correct-sub">răspunsuri</div>
+    </div>
+  </div>
+
+  <!-- ── INSTRUMENTE ─────────────────────────────────── -->
+  <div class="sec-lbl">Instrumente</div>
+  <div class="feature-list">
+
+    <a class="frow frow-primary" href="index.html">
+      <div class="frow-icon">
+        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+      <div class="frow-body">
+        <div class="frow-name">Scanare foaie de grilă</div>
+        <div class="frow-desc">Fotografiază grila completată și primești scorul instant cu greșelile marcate.</div>
+      </div>
+      <span class="frow-badge frow-badge-new">principal</span>
+      <svg class="frow-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+
+    <a class="frow" href="lewis-structure.html">
+      <div class="frow-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><line x1="12" y1="3" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="21"/><line x1="3" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="21" y2="12"/></svg>
+      </div>
+      <div class="frow-body">
+        <div class="frow-name">Structuri chimice — Lewis Builder</div>
+        <div class="frow-desc">Exersează reprezentarea Lewis pentru chimia anorganică și organică.</div>
+      </div>
+      <span class="frow-badge">chimie</span>
+      <svg class="frow-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+
+    <a class="frow" href="flashcards.html">
+      <div class="frow-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      </div>
+      <div class="frow-body">
+        <div class="frow-name">Flashcards</div>
+        <div class="frow-desc">Repetă concepte cheie și formule în sesiuni scurte de revizie.</div>
+      </div>
+      <span class="frow-badge">memorie</span>
+      <svg class="frow-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+
+    <a class="frow" href="student_card.html">
+      <div class="frow-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="frow-body">
+        <div class="frow-name">Profilul meu &amp; cod student</div>
+        <div class="frow-desc">Codul unic de bule pentru identificarea automată pe foaia de examen.</div>
+      </div>
+      <span class="frow-badge">cont</span>
+      <svg class="frow-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+
+  </div>
+
+  <!-- ── UNIVERSITĂȚI ──────────────────────────────────── -->
+  <div class="sec-lbl">Subiecte pe universități</div>
+  <div class="feature-list">
+
+    <a class="frow" href="cluj.html">
+      <div class="frow-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="frow-body">
+        <div class="frow-name">UMF Cluj-Napoca</div>
+        <div class="frow-desc">Subiecte, simulări și grile din anii trecuți pentru Cluj.</div>
+      </div>
+      <span class="frow-badge">biologie · chimie</span>
+      <svg class="frow-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+
+    <a class="frow" href="iasi.html">
+      <div class="frow-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="frow-body">
+        <div class="frow-name">UMF Iași</div>
+        <div class="frow-desc">Antrenează-te pe structura specifică Iașiului, cât mai aproape de realitate.</div>
+      </div>
+      <span class="frow-badge">grile oficiale</span>
+      <svg class="frow-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+
+    <div class="frow frow-disabled">
+      <div class="frow-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="frow-body">
+        <div class="frow-name">Alte centre</div>
+        <div class="frow-desc">București, Târgu Mureș și alte orașe — în pregătire.</div>
+      </div>
+      <span class="frow-badge frow-badge-soon">roadmap 2026</span>
+    </div>
+
+  </div>
+
+  <!-- ── PROGRES ─────────────────────────────────────── -->
+  <div class="sec-lbl">Progresul tău</div>
+  <div class="progress-grid">
+    <div class="panel">
+      <div class="panel-title">Evoluție scor <small>ultimele examene</small></div>
+      <canvas id="trend-chart" height="150"></canvas>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Întrebări slabe <small>succes ↑ = mai bine</small></div>
+      <div id="weak-list"><div class="empty-hint">Susține mai multe examene.</div></div>
+    </div>
+  </div>
+
+  <!-- ── ISTORIC ─────────────────────────────────────── -->
+  <div class="sec-lbl">Istoric examene</div>
+  <div class="panel">
+    <table class="hist-table">
+      <thead><tr><th>Examen</th><th>Data</th><th>Scor</th><th>%</th></tr></thead>
+      <tbody id="hist-body"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="config.js"></script>
+<script>
+/* ── scroll effect ─────────────────────────────────── */
+const navEl = document.querySelector('nav.navbar');
+window.addEventListener('scroll', () => {
+  navEl.classList.toggle('scrolled', window.scrollY > 10);
+}, { passive: true });
+
+/* ── auth ──────────────────────────────────────────── */
+Auth.requireLogin();
+const user = Auth.getUser();
+const firstName = user.name?.split(' ')[0] || 'Student';
+
+document.getElementById('greeting-name').textContent = firstName;
+document.getElementById('nav-name').textContent = firstName;
+if (document.getElementById('mobile-name'))
+  document.getElementById('mobile-name').textContent = user.name || '';
+if (document.getElementById('mobile-email'))
+  document.getElementById('mobile-email').textContent = user.email || '';
+
+const fillAv = (el) => {
+  if (!el) return;
+  if (user.avatar_url) el.innerHTML = `<img src="${user.avatar_url}" alt="">`;
+  else el.textContent = (user.name || '?')[0].toUpperCase();
+};
+fillAv(document.getElementById('nav-avatar'));
+fillAv(document.getElementById('mobile-avatar'));
+
+/* ── stats ─────────────────────────────────────────── */
+async function loadStats() {
+  try {
+    const data = await apiGet(`${CPANEL_API}/submissions.php?stats=1`);
+    if (data.error) return;
+    const s = data.summary;
+    document.getElementById('s-total').textContent   = s.total_exams   || '0';
+    document.getElementById('s-avg').textContent     = (s.avg_pct  || 0) + '%';
+    document.getElementById('s-best').textContent    = (s.best_pct || 0) + '%';
+    document.getElementById('s-correct').textContent = s.total_correct || '0';
+    if (s.total_graded)
+      document.getElementById('s-correct-sub').textContent = `din ${s.total_graded}`;
+
+    const trend = data.trend || [];
+    if (trend.length) {
+      new Chart(document.getElementById('trend-chart'), {
+        type: 'line',
+        data: {
+          labels: trend.map(t => t.exam_name.substring(0, 13)),
+          datasets: [{
+            data: trend.map(t => parseFloat(t.percentage)),
+            borderColor: '#1a1a18', backgroundColor: 'rgba(26,26,24,.06)',
+            borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#1a1a18',
+            tension: 0.35, fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { min: 0, max: 100, grid: { color: '#f0efe9' },
+                 ticks: { font: { family: "'JetBrains Mono'" }, callback: v => v + '%' }},
+            x: { grid: { display: false },
+                 ticks: { font: { family: "'JetBrains Mono'", size: 11 }, maxRotation: 30 }}
+          }
+        }
+      });
+    } else {
+      document.getElementById('trend-chart').insertAdjacentHTML('afterend',
+        '<p class="empty-hint">Niciun examen susținut încă.</p>');
+    }
+
+    const weak = data.weak_questions || [];
+    const wl = document.getElementById('weak-list');
+    if (weak.length) {
+      wl.innerHTML = '';
+      weak.forEach(q => {
+        const pct   = parseFloat(q.success_rate);
+        const color = pct < 40 ? '#dc2626' : pct < 70 ? '#ea580c' : '#16a34a';
+        wl.innerHTML += `<div class="wq-row">
+          <div class="wq-num">Q${q.question_no}</div>
+          <div class="wq-bar-wrap"><div class="wq-bar" style="width:${pct}%;background:${color}"></div></div>
+          <div class="wq-pct" style="color:${color}">${pct}%</div>
+        </div>`;
+      });
+    }
+  } catch(e) {}
+}
+
+/* ── history ───────────────────────────────────────── */
+async function loadHistory() {
+  try {
+    const rows  = await apiGet(`${CPANEL_API}/submissions.php?mine=1`);
+    const tbody = document.getElementById('hist-body');
+    if (!Array.isArray(rows) || !rows.length) {
+      tbody.innerHTML = '<tr><td colspan="4" class="empty-hint">Niciun examen susținut încă.</td></tr>';
+      return;
+    }
+    rows.forEach(r => {
+      const pct  = parseFloat(r.percentage);
+      const cls  = pct >= 70 ? 'pg' : pct >= 50 ? 'pm' : 'pb';
+      const date = r.submitted_at ? r.submitted_at.substring(0, 10) : '—';
+      tbody.innerHTML += `<tr>
+        <td style="font-weight:600">${r.exam_name}</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--muted)">${date}</td>
+        <td style="font-family:'JetBrains Mono',monospace">${r.score}/${r.total}</td>
+        <td><span class="pct-pill ${cls}">${pct}%</span></td>
+      </tr>`;
+    });
+  } catch(e) {}
+}
+
+function logout() {
+  apiPost(`${CPANEL_API}/auth.php?action=logout`, {});
+  Auth.clear();
+  window.location = 'login.html';
+}
+
+loadStats();
+loadHistory();
+</script>
+</body>
+</html>

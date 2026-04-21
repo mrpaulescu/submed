@@ -1,378 +1,234 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1"/>
     <meta name="robots" content="index, follow">
-    <meta name="description" content="Accesează grile de medicină pentru admitere la UMF Cluj, București, Iași și alte universități. Exersează cu SubMed pentru a reuși la examen!" />
-    <meta name="description" content="Pregătește-te pentru examenul de admitere la medicină în România cu teste grilă, materiale de studiu și sfaturi utile. Lucrează până ajungi cel mai bun!">
-    <meta name="keywords" content="admitere medicină, UMF, teste grilă medicină, admitere UMF, pregătire medicină, examen medicină, admitere stomatologie, admitere farmacie, gratis, 100% gratis,">
-    <meta name="author" content="Submed">
-    <title>Submed | Subiecte Medicină</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0"/>
-    <link rel="stylesheet" href="assets/styles/main.css">
-    <link rel="stylesheet" href="assets/styles/styles.css">
+    <meta name="description" content="Accesează subiectele de admitere UMF Cluj 2023-2025. Preview și Download pentru variantele oficiale de Biologie și Chimie.">
+    <meta name="keywords" content="subiecte admitere medicina cluj, umf cluj grile, simulare umf cluj 2025, barem admitere medicina">
+    <meta name="author" content="SubMed">
+    <title>SubMed · Subiecte UMF Cluj</title>
 
-    
-    <!--<link rel="stylesheet" href="assets/styles/styles.css"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
+        :root {
+            --primary: #407BFF;
+            --bg: #f5f4f0;
+            --card: #ffffff;
+            --border: #e2e0d8;
+            --text: #1a1a18;
+            --muted: #7a7870;
+            --radius: 16px;
+            --shadow: 0 2px 14px rgba(0,0,0,.07);
+        }
+
         body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Figtree', sans-serif;
             margin: 0;
-            padding: 0;
-            background-color: #f8f9fa; /* Optional: Light background for the page */
+            padding-bottom: 80px;
         }
 
-        .content {
-            margin-top: 100px; /* Adjust this value if needed */
+        /* ── NAVBAR (Matching Dashboard) ── */
+        nav.navbar {
+            background: rgba(245, 244, 240, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            min-height: 80px;
+        }
+        .navbar-brand h1 {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 2rem;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+        .nav-link { font-weight: 600; color: var(--text); }
+
+        /* ── SHELL (78% Width) ── */
+        .page-shell {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 0 50px;
+        }
+        @media (min-width: 992px) { .page-shell { width: 78%; } }
+
+        /* ── HEADER SECTION ── */
+        .uni-header { margin-bottom: 40px; }
+        .uni-header h2 { font-weight: 800; letter-spacing: -1px; font-size: 2.2rem; }
+        .uni-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* ── YEAR SECTION ── */
+        .year-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 30px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .year-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        /* ── RESOURCE CARD ── */
+        .res-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+        .res-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+
+        .res-info h4 { font-size: 1.1rem; font-weight: 700; margin: 0; }
+        .res-info p { font-size: 0.85rem; color: var(--muted); margin: 4px 0 0; }
+
+        .res-actions { display: flex; gap: 10px; }
+        
+        /* ── BUTTONS ── */
+        .btn-submed {
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-view { background: #f0efe9; color: var(--text); border: 1px solid var(--border); }
+        .btn-view:hover { background: var(--border); }
+        .btn-down { background: var(--text); color: white; border: none; }
+        .btn-down:hover { background: #000; }
+
+        @media (max-width: 768px) {
+            .res-card { grid-template-columns: 1fr; gap: 15px; }
+            .btn-submed { flex: 1; justify-content: center; }
+        }
+
+        footer {
             text-align: center;
-        }
-
-        .document-table {
-            margin-top: 30px;
-            width: 80%; /* Adjust as needed */
-            position: relative; /* Position relative for the overlay */
-        }
-
-        /* Set background image with transparency */
-        .document-table::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url(''); /* Replace with the correct image path */
-            background-size: cover;
-            background-position: center;
-            opacity: 0.5; /* Adjust the transparency level of the image */
-            z-index: 1; /* Set to below the table content */
-        }
-
-        /* Style for the table */
-        .table {
-            position: relative; /* Set to relative for the content to be above the background */
-            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background for the table */
-            z-index: 2; /* Set to above the background image */
-        }
-
-        /* Optional: Make the table borders more visible */
-        .table-bordered th,
-        .table-bordered td {
-            border: 1px solid rgba(0, 0, 0, 0.2); /* Light border */
+            padding: 40px 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            margin-top: 50px;
         }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-   
-    <nav class="navbar navbar-expand-lg px-lg-5 px-md-5 px-sm-4 p-section fixed-top container-fluid">
-        <div class="container-fluid fw-medium">
-            <a class="navbar-brand" href="index.html">
-                <h1>Submed</h1>
-            </a>
-            <label class="hamburger" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <input type="checkbox">
-                <svg viewBox="0 0 32 32">
-                    <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"></path>
-                    <path class="line" d="M7 16 27 16"></path>
-                </svg>
-            </label>
-            <div class="collapse navbar-collapse justify-content-lg-end" id="navbarNavDropdown">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="index.html">Acasă</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Subiecte
-                        </a>
-                        <ul class="dropdown-menu text-lg-center">
-                            <li><a href="cluj.html" class="dropdown-item">Cluj</a></li>
-                             <li><a href="iasi.html" class="dropdown-item">Iași</a></li>
-                        </ul>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link" href="desprecontact.html">Despre Proiect și Contact</a>
-                    </li>
-                    <!--<li class="nav
-                    
-    
-    
-                -item ms-auto">
-                    <button id="nightModeToggle" class="btn btn-dark">🌙 Night Mode</button>
-                </li>
-              -->
-                </ul>
-            </div>
-        </div>
-    </nav>
-    
 
-
-    <!-- Main Content -->
-    <div class="container text-center">
-        <h1 class="mt-4">Universitatea de Medicină și Farmacie „Iuliu Hațieganu”, Cluj-Napoca</h1>
-            
-        <div class="table-responsive">
-            
-            
-
-    <div class="container text-center">
-        
-
-        <div class="table-responsive">
-            <h2>Anul 2025</h2>
-            <table class="table table-bordered mx-auto">
-                <thead>
-                    <tr>
-                        <th>Subiect medicină generală</th>
-                        <th>Subiect</th>
-                        <th>Barem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Presimulare Martie 2025</td>
-                        <td>
-                            <a href="assets\files\ClujPresimulare2025.pdf" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-eye"></i> Preview
-                            </a>
-                            <a href="assets\files\ClujPresimulare2025.pdf" class="btn btn-success btn-sm" download>
-                                <i class="fas fa-download"></i> Download
-                         </a>
-                        </td>
-                       <td>
-                            <a href="assets\files\BaremPresimulareCluj2025.pdf" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-eye"></i> Preview
-                            </a>
-                            <a href="assets\files\BaremPresimulareCluj2025.pdf" class="btn btn-success btn-sm" download>
-                                <i class="fas fa-download"></i> Download
-                            </a>
-                        </td>
-                    </tr>
-                   <tr>
-                        <td>Simulare Mai 2025</td>
-                        <td>
-                            <a href="assets\files\SimCluj2025Mai.pdf" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-eye"></i> Preview
-                            </a>
-                            <a href="assets\files\SimCluj2025Mai.pdf" class="btn btn-success btn-sm" download>
-                                <i class="fas fa-download"></i> Download
-                            </a>
-                            
-                        </td>
-                       <td>
-                            <a href="assets\files\BaremSimClujMai2025.pdf" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-eye"></i> Preview
-                            </a>
-                            <a href="assets\files\BaremSimClujMai2025.pdf" class="btn btn-success btn-sm" download>
-                                <i class="fas fa-download"></i> Download
-                            </a>
-                        </td>
-                    </tr> 
-     <!--    <tr>
-            <td>Admitere 2024</td>
-            <td>
-                <a href="assets\files\AdmitereCluj2024mg.pdf" class="btn btn-primary btn-sm" target="_blank">
-                    <i class="fas fa-eye"></i> Preview
-                </a>
-              <a href="assets\files\AdmitereCluj2024mg.pdf" class="btn btn-success btn-sm" download>
-                    <i class="fas fa-download"></i> Download
-                </a>
-            </td>
-            <td>
-               <a href="assets\files\BaremAdmitere2024var1.pdf" class="btn btn-primary btn-sm" target="_blank">
-                    <i class="fas fa-eye"></i> Preview
-                </a>
-                  <a href="assets\files\BaremAdmitere2024var1.pdf" class="btn btn-success btn-sm" download>
-                    <i class="fas fa-download"></i> Download
-                </a>
-            </td>
-        </tr>
-    -->
-        
-    </tbody>
-            </table>
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid px-lg-5">
+        <a class="navbar-brand" href="dashboard.html"><h1>SubMed</h1></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navContent">
+            <ul class="navbar-nav gap-lg-2">
+                <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link active" href="cluj.html">Subiecte Cluj</a></li>
+                <li class="nav-item"><a class="nav-link" href="iasi.html">Subiecte Iași</a></li>
+                <li class="nav-item"><a class="nav-link" href="desprecontact.html">Contact</a></li>
+            </ul>
         </div>
     </div>
+</nav>
+
+<main class="page-shell">
+    <div class="uni-header">
+        <span class="uni-badge">UMF Iuliu Hațieganu</span>
+        <h2 class="mt-2">Subiecte Admitere Cluj-Napoca</h2>
+        <p class="text-muted">Resurse oficiale pentru Medicină Generală, Medicină Dentară și Farmacie.</p>
+    </div>
+
+    <div class="year-label">Anul 2025</div>
     
-    <h2>Anul 2024</h2>
-            <table class="table table-bordered mx-auto">
-                <thead>
-                    <tr>
-                        <th>Subiect medicină generală</th>
-                        <th>Subiect</th>
-                        <th>Barem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Presimulare Martie 2024</td>
-                        <td>
-                            <a href="assets\files\ClujPresimulare2024.pdf" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-eye"></i> Preview
-                            </a>
-                            <a href="assets\files\ClujPresimulare2024.pdf" class="btn btn-success btn-sm" download>
-                                <i class="fas fa-download"></i> Download
-                            </a>
-                        </td>
-                       <td>
-                            <a href="assets\files\BaremPresimulare2024Cluj.pdf" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-eye"></i> Preview
-                            </a>
-                            <a href="assets\files\BaremPresimulare2024Cluj.pdf" class="btn btn-success btn-sm" download>
-                                <i class="fas fa-download"></i> Download
-                            </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Simulare Mai 2024</td>
-                        <td>
-                            <a href="assets\files\ClujSIMULAREMai2024.pdf" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-eye"></i> Preview
-                            </a>
-                            <a href="assets\files\ClujSIMULAREMai2024.pdf" class="btn btn-success btn-sm" download>
-                                <i class="fas fa-download"></i> Download
-                            </a>
-                        </td>
-                       <td>
-                            <a href="assets\files\BaremCluj2024MaiSimularevVar2.pdf" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-eye"></i> Preview
-                            </a>
-                            <a href="assets\files\BaremCluj2024MaiSimularevVar2.pdf" class="btn btn-success btn-sm" download>
-                                <i class="fas fa-download"></i> Download
-                            </a>
-                        </td>
-                    </tr> 
-        <tr>
-            <td>Admitere 2024</td>
-            <td>
-                <a href="assets\files\AdmitereCluj2024mg.pdf" class="btn btn-primary btn-sm" target="_blank">
-                    <i class="fas fa-eye"></i> Preview
-                </a>
-              <a href="assets\files\AdmitereCluj2024mg.pdf" class="btn btn-success btn-sm" download>
-                    <i class="fas fa-download"></i> Download
-                </a>
-            </td>
-            <td>
-               <a href="assets\files\BaremAdmitere2024var1.pdf" class="btn btn-primary btn-sm" target="_blank">
-                    <i class="fas fa-eye"></i> Preview
-                </a>
-                  <a href="assets\files\BaremAdmitere2024var1.pdf" class="btn btn-success btn-sm" download>
-                    <i class="fas fa-download"></i> Download
-                </a>
-            </td>
-        </tr>
-        
-        
-        
-       
-        
-        
-    </tbody>
-            </table>
+    <div class="res-card">
+        <div class="res-info">
+            <h4>Presimulare Martie 2025</h4>
+            <p>Varianta oficială · PDF · 2.4 MB</p>
+        </div>
+        <div class="res-actions">
+            <a href="assets/files/ClujPresimulare2025.pdf" class="btn-submed btn-view" target="_blank"><i class="fa-regular fa-eye"></i> Preview</a>
+            <a href="assets/files/ClujPresimulare2025.pdf" class="btn-submed btn-down" download><i class="fa-solid fa-download"></i> Descarcă</a>
         </div>
     </div>
-   
+
+    <div class="res-card">
+        <div class="res-info">
+            <h4>Barem Presimulare 2025</h4>
+            <p>Grila corectă · PDF · 0.8 MB</p>
+        </div>
+        <div class="res-actions">
+            <a href="assets/files/BaremPresimulareCluj2025.pdf" class="btn-submed btn-view" target="_blank"><i class="fa-regular fa-eye"></i> Preview</a>
+            <a href="assets/files/BaremPresimulareCluj2025.pdf" class="btn-submed btn-down" download><i class="fa-solid fa-download"></i> Descarcă</a>
+        </div>
     </div>
 
-     <div class="container text-center">
-        
-
-        <div class="table-responsive">
-            <h2>Anul 2023</h2>
-            <table class="table table-bordered mx-auto">
-                <thead>
-                    <tr>
-                        <th>Subiect medicină generală</th>
-                        <th>Subiect</th>
-                        <th>Barem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Admitere 2023 </td>
-                        <td>
-                            <a href="assets\files\ClujAdmitere2023MG.pdf" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-eye"></i> Preview
-                            </a>
-                            <a href="assets\files\ClujAdmitere2023MG.pdf" class="btn btn-success btn-sm" download>
-                                <i class="fas fa-download"></i> Download
-                         </a>
-                        </td>
-                       <td>
-                            <a href="assets\files\MGMD-BioChOrg-var2.pdf" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-eye"></i> Preview
-                            </a>
-                            <a href="assets\files\MGMD-BioChOrg-var2.pdf" class="btn btn-success btn-sm" download>
-                                <i class="fas fa-download"></i> Download
-                            </a>
-                        </td>
-                    </tr>
-                  <!--  <tr>
-                        <td>Simulare Mai 2024</td>
-                        <td>
-                            <a href="assets\files\ClujSIMULAREMai2024.pdf" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-eye"></i> Preview
-                            </a>
-                            <a href="assets\files\ClujSIMULAREMai2024.pdf" class="btn btn-success btn-sm" download>
-                                <i class="fas fa-download"></i> Download
-                            </a>
-                            
-                        </td>
-                       <td>
-                            <a href="assets\files\BaremCluj2024MaiSimularevVar2.pdf" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-eye"></i> Preview
-                            </a>
-                            <a href="assets\files\BaremCluj2024MaiSimularevVar2.pdf" class="btn btn-success btn-sm" download>
-                                <i class="fas fa-download"></i> Download
-                            </a>
-                        </td>
-                    </tr> 
-        <tr>
-            <td>Admitere 2024</td>
-            <td>
-                <a href="assets\files\AdmitereCluj2024mg.pdf" class="btn btn-primary btn-sm" target="_blank">
-                    <i class="fas fa-eye"></i> Preview
-                </a>
-              <a href="assets\files\AdmitereCluj2024mg.pdf" class="btn btn-success btn-sm" download>
-                    <i class="fas fa-download"></i> Download
-                </a>
-            </td>
-            <td>
-               <a href="assets\files\BaremAdmitere2024var1.pdf" class="btn btn-primary btn-sm" target="_blank">
-                    <i class="fas fa-eye"></i> Preview
-                </a>
-                  <a href="assets\files\BaremAdmitere2024var1.pdf" class="btn btn-success btn-sm" download>
-                    <i class="fas fa-download"></i> Download
-                </a>
-            </td>
-        </tr>
-    -->
-    </tr>
-    </tbody>
-    </table>
- </div>
-
+    <div class="year-label">Anul 2024</div>
     
+    <div class="res-card">
+        <div class="res-info">
+            <h4>Examen Admitere Iulie 2024</h4>
+            <p>Subiect Medicină Generală · PDF</p>
+        </div>
+        <div class="res-actions">
+            <a href="assets/files/AdmitereCluj2024mg.pdf" class="btn-submed btn-view" target="_blank"><i class="fa-regular fa-eye"></i> Preview</a>
+            <a href="assets/files/AdmitereCluj2024mg.pdf" class="btn-submed btn-down" download><i class="fa-solid fa-download"></i> Descarcă</a>
+        </div>
+    </div>
+
+    <div class="res-card">
+        <div class="res-info">
+            <h4>Barem Admitere 2024</h4>
+            <p>Varianta 1 · PDF</p>
+        </div>
+        <div class="res-actions">
+            <a href="assets/files/BaremAdmitere2024var1.pdf" class="btn-submed btn-view" target="_blank"><i class="fa-regular fa-eye"></i> Preview</a>
+            <a href="assets/files/BaremAdmitere2024var1.pdf" class="btn-submed btn-down" download><i class="fa-solid fa-download"></i> Descarcă</a>
+        </div>
+    </div>
+
+    <div class="year-label">Anul 2023</div>
+
+    <div class="res-card">
+        <div class="res-info">
+            <h4>Admitere Iulie 2023</h4>
+            <p>Subiect MG/MD · PDF</p>
+        </div>
+        <div class="res-actions">
+            <a href="assets/files/ClujAdmitere2023MG.pdf" class="btn-submed btn-view" target="_blank"><i class="fa-regular fa-eye"></i> Preview</a>
+            <a href="assets/files/ClujAdmitere2023MG.pdf" class="btn-submed btn-down" download><i class="fa-solid fa-download"></i> Descarcă</a>
+        </div>
+    </div>
+
+</main>
+
 <footer>
-       <ul class="footer2">
-        <li><a href="index.html">Acasă</a></li>
-        <li><a href="facultati.html">Subiecte</a></li>
-        <li><a href="desprecontact.html">Despre Proiect și Contact</a></li>
-       </ul>
-       <p>Proiect marca <span id="copyrightYear"></span> SubMed. Făcut cu pasiune pentru viitorii mediciniști.</p>
-    </footer>
+    <p>&copy; 2026 SubMed. Toate resursele aparțin universităților respective.</p>
+</footer>
 
-    <script src="assets/js/main.js" type="module"></script>
-    
-    <script src="assets/js/script.js"></script>
-    <script src="assets/js/navbar.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
