@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grilă Admitere – Medicină</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+  /* Base from your global stylesheet */
+  --bg: #f5f4f0;
+  --surface: #ffffff;
+  --surface2: #f0efe9;
+
+  --border: #e2e0d8;
+  --border-light: #d6d3c8;
+
+  --text: #1a1a18;
+  --text-muted: #7a7870;
+  --text-dim: #a3a093;
+
+  /* KEEP your main accent (important for identity) */
+  --accent: #407bff;
+  --accent-soft: rgba(64, 123, 255, 0.12);
+
+  /* Feedback colors adapted to light theme */
+  --green: #2fbf71;
+  --green-soft: rgba(47, 191, 113, 0.12);
+
+  --red: #e54848;
+  --red-soft: rgba(229, 72, 72, 0.12);
+
+  --yellow: #e6b93c;
+  --yellow-soft: rgba(230, 185, 60, 0.12);
+
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ---------- HEADER ---------- */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(245, 244, 240, 0.9);
+    backdrop-filter: blur(12px);
+  }
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.35rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: inline-block; }
+  .quiz-status {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex; align-items: center; gap: 16px;
+  }
+  .progress-pill {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  /* ---------- MAIN LAYOUT ---------- */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ---------- SCREENS ---------- */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ---------- SELECTOR SCREEN ---------- */
+  .selector-hero {
+    text-align: center;
+    padding: 32px 0 48px;
+  }
+  .selector-hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .selector-hero p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .selector-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .step-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 9px 18px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--text); }
+  .chip.selected { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+  .chip:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .start-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    margin-top: 8px;
+  }
+  .start-btn:hover { opacity: 0.9; }
+  .start-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* ---------- QUIZ SCREEN ---------- */
+  .quiz-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .quiz-meta h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 2px;
+  }
+  .quiz-meta p { color: var(--text-muted); font-size: 0.83rem; }
+  .quiz-score-badge {
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .quiz-score-badge span { display: block; font-size: 1.4rem; font-weight: 600; color: var(--text); font-family: 'DM Serif Display', serif; }
+
+  /* Progress bar */
+  .progress-bar-wrap {
+    height: 3px;
+    background: var(--surface2);
+    border-radius: 2px;
+    margin-bottom: 36px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+     background: linear-gradient(90deg, #407bff, #6fa3ff);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  /* Question card */
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 16px;
+    animation: slideIn 0.2s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .question-num {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .question-text {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    transition: all 0.12s ease;
+    width: 100%;
+    line-height: 1.5;
+  }
+  .option-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: rgba(64, 123, 255, 0.08);
+}
+  .option-btn.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--text);
+  }
+  .option-btn.correct {
+    border-color: var(--green);
+    background: var(--green-soft);
+    color: var(--text);
+  }
+  .option-btn.wrong {
+    border-color: var(--red);
+    background: var(--red-soft);
+    color: var(--text);
+  }
+  .option-btn.missed {
+    border-color: var(--yellow);
+    background: var(--yellow-soft);
+    color: var(--text);
+  }
+  .option-btn:disabled { cursor: default; }
+  .option-letter {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--text-muted);
+    transition: all 0.12s;
+  }
+  .option-btn.selected .option-letter { background: var(--accent); color: #fff; }
+  .option-btn.correct .option-letter { background: var(--green); color: #fff; }
+  .option-btn.wrong .option-letter { background: var(--red); color: #fff; }
+  .option-btn.missed .option-letter { background: var(--yellow); color: #000; }
+
+  /* Action row below question */
+  .q-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .hint-text {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+  .btn-verify {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px 22px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-verify:hover { opacity: 0.88; }
+  .btn-verify:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn-next {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 22px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: none;
+  }
+  .btn-next:hover { border-color: var(--text-muted); color: var(--text); }
+  .btn-next.visible { display: block; }
+
+  /* Feedback banner */
+  .feedback-banner {
+    border-radius: var(--radius-sm);
+    padding: 11px 16px;
+    font-size: 0.85rem;
+    margin-top: 12px;
+    display: none;
+    line-height: 1.4;
+  }
+  .feedback-banner.visible { display: block; }
+  .feedback-banner.success { background: var(--green-soft); border: 1px solid var(--green); color: var(--green); }
+  .feedback-banner.partial { background: var(--yellow-soft); border: 1px solid var(--yellow); color: var(--yellow); }
+  .feedback-banner.fail { background: var(--red-soft); border: 1px solid var(--red); color: var(--red); }
+
+  /* ---------- RESULTS SCREEN ---------- */
+  .results-hero {
+    text-align: center;
+    padding: 40px 0 36px;
+  }
+  .results-hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .big-score {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3.5rem, 10vw, 6rem);
+    line-height: 1;
+    color: var(--accent);
+    margin: 16px 0;
+  }
+  .big-score sub { font-size: 0.4em; color: var(--text-muted); }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 32px 0;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .stat-card .val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-card .lbl { font-size: 0.78rem; color: var(--text-muted); }
+  .stat-card.green .val { color: var(--green); }
+  .stat-card.red .val { color: var(--red); }
+  .stat-card.yellow .val { color: var(--yellow); }
+
+  .results-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-outline:hover { border-color: var(--text-muted); color: var(--text); }
+
+  /* ---------- QUESTION NAV DOT GRID ---------- */
+  .q-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 28px 0 0;
+  }
+  .q-dot {
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .q-dot:hover { border-color: var(--accent); color: var(--accent); }
+  .q-dot.current { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .q-dot.perfect { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+  .q-dot.partial-dot { background: var(--yellow-soft); border-color: var(--yellow); color: var(--yellow); }
+  .q-dot.wrong-dot { background: var(--red-soft); border-color: var(--red); color: var(--red); }
+
+  /* Scrollable questions container */
+  #questionsContainer { display: flex; flex-direction: column; gap: 0; }
+
+  /* Coming soon */
+  .coming-soon {
+    text-align: center;
+    padding: 60px 0;
+    color: var(--text-muted);
+  }
+  .coming-soon h2 { font-family: 'DM Serif Display', serif; font-size: 1.8rem; margin-bottom: 8px; color: var(--text); }
+
+  @media (max-width: 600px) {
+    .container { padding: 28px 16px 60px; }
+    header { padding: 14px 16px; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .quiz-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-dot"></span>
+    Grilă Admitere
+  </div>
+  <div id="headerStatus" class="quiz-status" style="display:none">
+    <span id="headerProgress" class="progress-pill">0 / 50</span>
+    <span id="headerScore" style="color:var(--text-muted)">Scor: 0</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ===== SELECTOR SCREEN ===== -->
+  <div id="screenSelector" class="screen active">
+    <div class="selector-hero">
+      <h1>Pregătire<br><em style="color:var(--accent)">Admitere Medicină</em></h1>
+      <p>Rezolvă grile de admitere din simulările oficiale, cu corecție imediată și scor final.</p>
+    </div>
+
+    <div class="selector-steps">
+      <div>
+        <div class="step-label">01 — Universitate</div>
+        <div class="chip-group" id="uniChips">
+          <button class="chip" data-type="uni" data-val="cluj" onclick="selectChip(this)">UMF Cluj-Napoca</button>
+          <button class="chip" data-type="uni" data-val="iasi" onclick="selectChip(this)">UMF Iași</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="step-label">02 — An</div>
+        <div class="chip-group" id="yearChips"></div>
+      </div>
+
+      <div>
+        <div class="step-label">03 — Tip grilă</div>
+        <div class="chip-group" id="typeChips"></div>
+      </div>
+
+      <button class="start-btn" id="startBtn" disabled onclick="startQuiz()">Începe Grila →</button>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ SCREEN ===== -->
+  <div id="screenQuiz" class="screen">
+    <div class="quiz-header">
+      <div class="quiz-meta">
+        <h2 id="quizTitle">Biologie + Chimie Organică</h2>
+        <p id="quizSubtitle">UMF Cluj-Napoca · 2025 · Presimulare</p>
+      </div>
+      <div class="quiz-score-badge">
+        <span id="liveScore">0</span>
+        puncte
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+    </div>
+
+    <div id="questionsContainer"></div>
+
+    <div class="q-nav" id="qNav"></div>
+  </div>
+
+  <!-- ===== RESULTS SCREEN ===== -->
+  <div id="screenResults" class="screen">
+    <div class="results-hero">
+      <h1>Rezultatele Tale</h1>
+      <div class="big-score" id="bigScore">0<sub>/50</sub></div>
+      <p id="resultsSub" style="color:var(--text-muted)">Felicitări pentru efort!</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card green">
+        <div class="val" id="statCorrect">0</div>
+        <div class="lbl">Răspunsuri complete</div>
+      </div>
+      <div class="stat-card yellow">
+        <div class="val" id="statPartial">0</div>
+        <div class="lbl">Parțiale</div>
+      </div>
+      <div class="stat-card red">
+        <div class="val" id="statWrong">0</div>
+        <div class="lbl">Greșite / fără răspuns</div>
+      </div>
+    </div>
+
+    <div class="results-actions">
+      <button class="btn-outline" onclick="reviewQuiz()">🔍 Revizuire grilă</button>
+      <button class="start-btn" style="width:auto; padding:10px 28px;" onclick="resetToSelector()">↩ Alege altă grilă</button>
+    </div>
+  </div>
+
+  <!-- ===== REVIEW SCREEN ===== -->
+  <div id="screenReview" class="screen">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:32px;">
+      <h2 style="font-family:'DM Serif Display',serif; font-size:1.6rem;">Revizuire completă</h2>
+      <button class="btn-outline" onclick="showScreen('screenResults')">← Înapoi la rezultate</button>
+    </div>
+    <div id="reviewContainer"></div>
+  </div>
+
+</div>
+
+<script>
+// =================== DATA ===================
+const QUIZZES = {
+  "cluj": {
+    name: "UMF Cluj-Napoca",
+    years: {
+      "2025": {
+        types: {
+          "presimulare-martie": {
+            label: "Presimulare – 22 Martie 2025",
+            subject: "Biologie + Chimie organică · Varianta 2",
+            questions: [
+              { id:1, text:"Se supune fermentației alcoolice o soluție apoasă de glucoză de concentrație 1M. Știind că se obțin 92 g de etanol, iar randamentul reacției este de 50%, precizați volumul soluției de glucoză introduse.", options:{A:"1000 cm³",B:"1 L",C:"1000 mL",D:"2 L",E:"2000 cm³"}, correct:["D","E"] },
+              { id:2, text:"Prin condensarea a trei molecule de alanină rezultă:", options:{A:"O oligopeptidă care se neutralizează cu acidul clorhidric în raport molar de 1:1.",B:"O tripeptidă cu un conținut de 18,18% azot, exprimat în procente de masă.",C:"Un compus cu funcțiuni mixte.",D:"O proteină simplă.",E:"Un compus care conține 12 atomi de carbon în moleculă."}, correct:["A","B","C","E"] },
+              { id:3, text:"Precizați afirmațiile adevărate referitoare la grupa funcțională carbonil.", options:{A:"Reacționează cu acidul azotos și cu acidul clorhidric și formează un colorant azoic.",B:"Participă la reacții de adiție și de condensare.",C:"Prezența ei în molecula unui compus se desemnează prin sufixele -al, -carbaldehidă, -onă.",D:"Formează legături de hidrogen cu apa și legături dipol-dipol cu alte grupe carbonil.",E:"Reactivitatea ei chimică este mai mare în cetone decât în aldehide."}, correct:["B","C","D"] },
+              { id:4, text:"Precizați afirmațiile adevărate referitoare la dimetilamină.", options:{A:"Reacționează cu acidul azotos și cu acidul clorhidric și formează un colorant azoic.",B:"Formează un compus ionic în reacție cu acidul clorhidric.",C:"Are caracter bazic mai pronunțat decât metilamina.",D:"Reacționează cu acidul sulfuric.",E:"Se formează prin reducerea cu Fe și HCl a CH₃NO₂."}, correct:["B","C","D"] },
+              { id:5, text:"Precizați afirmațiile corecte.", options:{A:"Acidul acetilsalicilic se neutralizează cu NaOH în raport molar de 1:1.",B:"Extractul de mac conține codeină.",C:"Acidul dezoxiribonucleic este monocatenar.",D:"Vitamina E este o vitamină liposolubilă.",E:"Prin hidroliza pentapeptidei Asp-Val-Lis-Gli-Ala, se formează dipeptidele Asp-Val și Ala-Asp."}, correct:["B","D"] },
+              { id:6, text:"Precizați afirmațiile corecte referitoare la izobutanol.", options:{A:"Are doi stereoizomeri optici.",B:"Este izomer de constituție cu butan-1-olul.",C:"Este izomer de catenă cu 2-metil-propan-1-olul.",D:"Prezintă izomerie geometrică.",E:"Este izomer de constituție cu terțbutanolul."}, correct:["B","E"] },
+              { id:7, text:"Precizați în care dintre următoarele situații se formează alcooli primari, în condiții adecvate de reacție.", options:{A:"CH₃-COO-CH₂CH₃ + H₂O →",B:"C₆H₅-CH₂-Cl + H₂O →",C:"(H₃C)₂C=O + H₂ →",D:"CH₃-COOH + O₂ →",E:"(H₃C)₂CH-CH=O + H₂ →"}, correct:["A","B","E"] },
+              { id:8, text:"Precizați reacțiile corecte, ținând cont de condițiile adecvate fiecărei reacții.", options:{A:"H-COO-CH₂-CH₃ + H₂O ⇄ H-COOH + CH₃-CH₂OH (catalizator H⁺)",B:"HCOOH + H₂O ⇄ HCOO⁻ + H₃O⁺",C:"(o)HO-C₆H₄-COOH + 2KOH → (o)KO-C₆H₄-COOK + 2H₂O",D:"2CH₃COOH + Cu → (CH₃COO)₂Cu + H₂",E:"CH₂=CH-CH₂-CH=O + 6[O] → HOOC-CH₂-COOH + CO₂ + H₂O (KMnO₄/H₂SO₄)"}, correct:["A","B","C"] },
+              { id:9, text:"Precizați care dintre reacțiile de mai jos sunt corecte.", options:{A:"(p)HO-C₆H₄-NH₂ + HCl → (p)HO-C₆H₄-NH₃⁺Cl⁻",B:"C₆H₅-NH₃⁺Cl⁻ + NaOH → C₆H₆ + NaCl + NH₃",C:"C₆H₅-N(CH₃)₂ + H₂SO₄ → [C₆H₅-NH(CH₃)₂]⁺ HSO₄⁻",D:"(CH₃)₂NH + H₂O → (CH₃)₂NH₂⁺ + HO⁻",E:"C₆H₅-NH₃⁺Cl⁻ + NH₃ → C₆H₅-NH₂ + NH₄Cl"}, correct:["A","C","D","E"] },
+              { id:10, text:"Precizați care dintre compușii de mai jos sunt derivați funcționali ai acidului benzoic.", options:{A:"Etanoatul de benzil",B:"C₆H₅-C≡N",C:"Benzoatul de fenil",D:"C₆H₅-CO-NH₂",E:"Anhidrida ftalică"}, correct:["C","D"] },
+              { id:11, text:"Precizați afirmațiile adevărate referitoare la compusul cu formula de structură CH₃-CH(OH)-CH₂-CH₂-CH=O.", options:{A:"Se denumește științific 2-hidroxi-pentanal.",B:"Se formează prin condensarea aldolică a propanalului cu etanalul.",C:"Se oxidează la acid 4-cetopentanoic cu K₂Cr₂O₇/H₂SO₄.",D:"Este componentă metilenică în reacția de condensare bimoleculară cu metanalul.",E:"Se reduce cu borohidrură de sodiu."}, correct:["A","E"] },
+              { id:12, text:"Precizați afirmațiile corecte referitoare la orto-crezol.", options:{A:"Este un alcool aromatic.",B:"Reacționează cu hidroxidul de sodiu în raport molar de 1:1.",C:"Formează un ester în reacția cu acidul acetic, la încălzire și în prezența catalizatorului H₂SO₄.",D:"Este un acid mai slab decât acidul carbonic.",E:"Se obține prin condensarea formaldehidei cu fenolul, în cataliză acidă."}, correct:["B","C","D"] },
+              { id:13, text:"Un mol de compus organic cu formula brută CH₂O formează, prin arderea completă cu oxigen, 186 g de amestec gazos format din dioxid de carbon și apă. Precizați formula moleculară a compusului analizat.", options:{A:"CH₂O",B:"C₂H₄O₂",C:"C₃H₆O₃",D:"C₆H₁₂O₆",E:"C₃H₆O"}, correct:["C"] },
+              { id:14, text:"Un săpun de calciu conține 6,644% Ca. Precizați structura sau denumirea săpunului.", options:{A:"Stearat de calciu",B:"Oleat de calciu",C:"[CH₃-(CH₂)-COO]₂Ca",D:"[CH₃-(CH₂)₇CH=CH-(CH₂)₇-COO]₂Ca",E:"Palmitat de calciu"}, correct:["B","D"] },
+              { id:15, text:"Precizați afirmațiile corecte referitoare la soluția obținută prin dizolvarea acidului etandioic în apă.", options:{A:"Soluția are pH < 7.",B:"Soluția conține ioni CH₃COO⁻.",C:"Soluția conduce curentul electric.",D:"În această soluție se formează o specie ionică amfoteră.",E:"Solutul este un acid diprotic."}, correct:["A","C","D","E"] },
+              { id:16, text:"Despre elementele figurate ale sângelui sunt corecte variantele:", options:{A:"Eozinofilele sunt agranulocite ce intervin în reacțiile alergice.",B:"Plachetele intervin în hemostază și eliberează factori ce inițiază coagularea.",C:"Monocitele se diferențiază în țesuturi și formează macrofage.",D:"Numărul eritrocitelor scade în anemie.",E:"Creșterea numărului de limfocite produce tulburări de coagulare."}, correct:["B","C","D"] },
+              { id:17, text:"Ciclul menstrual este caracterizat de:", options:{A:"Faza menstruală, care începe în prima zi a ciclului.",B:"Faza proliferativă, zilele 14-28, când crește secreția hormonală.",C:"Ovulație în ziua 14, sub acțiunea FSH-ului.",D:"Formarea corpului galben post-ovulator.",E:"Transformarea corpului alb în corp galben, sub acțiunea LH-ului."}, correct:["A","D"] },
+              { id:18, text:"Despre meninge și spațiile delimitate de acestea se pot afirma următoarele:", options:{A:"Arahnoida este o structură groasă, cu aspect de rețea.",B:"Pia mater este foarte bine vascularizată.",C:"Dura mater este formată din țesut fibros rezistent, cu multe vase și nervi.",D:"Spațiul subarahnoidian conține lichid cefalorahidian.",E:"Pia mater prezintă structuri de absorbție ale lichidului cefalorahidian."}, correct:["B","C","D"] },
+              { id:19, text:"Despre duoden se pot afirma următoarele:", options:{A:"Măsoară aproximativ 55 cm.",B:"Este porțiunea din intestinul subțire în care este evacuat chimul gastric prin sfincterul piloric.",C:"Primește, prin ampula hepatopancreatică, secreșiile aduse de ductul pancreatic și ductul biliar.",D:"Conține, în submucoasă, aglomerări de țesut limfoid.",E:"Prin secreția glandelor Brunner contribuie la neutralizarea acidității chimului gastric."}, correct:["B","C","E"] },
+              { id:20, text:"Organele sistemului digestiv prezintă următoarele funcții:", options:{A:"Ficatul secretă acid clorhidric necesar digestiei proteinelor.",B:"Intestinul subțire absoarbe nutrienți.",C:"Glandele salivare secretă amilază, ce inițiază degradarea lipidelor.",D:"Vezica biliară depozitează și eliberează bila în intestinul subțire.",E:"Esofagul transportă alimentele spre stomac."}, correct:["B","D","E"] },
+              { id:21, text:"Următoarele variante sunt corecte:", options:{A:"Cavitatea posterioară a corpului conține mediastinul.",B:"Pleura este o structură seroasă ce acoperă plămânul prin foița parietală.",C:"Falangele sunt situate distal față de carpiene.",D:"Sternul este situat anterior față de inimă.",E:"Ulna se află în partea laterală a antebrațului."}, correct:["C","D"] },
+              { id:22, text:"Despre splină se pot afirma următoarele:", options:{A:"Este un organ limfoid.",B:"Are localizare supradiafragmatică.",C:"Distruge eritrocite îmbătrânite.",D:"Este vascularizată de artera splenică.",E:"Reprezintă un rezervor de trombocite pentru organism."}, correct:["A","C","D","E"] },
+              { id:23, text:"La nivelul bulbului rahidian există:", options:{A:"Fibre descendente, dintre care unele formează decusația piramidală.",B:"Centrii de control ai frecvenței cardiace și vasoconstricției.",C:"Formațiunea reticulată, ce se extinde pe toată lungimea măduvei spinării.",D:"Arii senzoriale care analizează stimulii periferici.",E:"Originea aparentă a nervilor cranieni IX, X, XI, XII."}, correct:["A","B","E"] },
+              { id:24, text:"Starea de absorbție (postprandială) este caracterizată prin:", options:{A:"Nivel scăzut de glucoză.",B:"Creșterea secreției de glucagon.",C:"Creșterea fracției insulină/glucagon.",D:"Formarea de glicogen, lipide și proteine.",E:"Intensificarea proceselor de gluconeogeneză."}, correct:["C","D"] },
+              { id:25, text:"Selectați afirmațiile corecte referitoare la metabolism:", options:{A:"Reacțiile anabolice converg spre căile metabolice principale.",B:"Energia este eliberată din ATP când se îndepărtează grupul fosfat terminal.",C:"Degradarea moleculelor mari este însoțită de eliberarea de energie.",D:"Sintezele de glicogen, trigliceride și proteine sunt mediate enzimatic.",E:"Compusul care cedează doi electroni devine redus."}, correct:["B","C","D"] },
+              { id:26, text:"Hormonul de creștere:", options:{A:"Este un hormon glandulotrop secretat de adenohipofiză.",B:"Este format din 191 de aminoacizi.",C:"Stimulează introducerea acizilor grași și a lipidelor în celule.",D:"Promovează sinteza proteică.",E:"Secretat în exces, în perioada adultă, determină gigantism."}, correct:["B","D"] },
+              { id:27, text:"Osul lung:", options:{A:"Prezintă un ax, numit diafiză, și două epifize.",B:"Are flexibilitate conferită de hidroxiapatită.",C:"Conține măduvă roșie la nivelul diafizei.",D:"Poate fi localizat la nivelul membrelor.",E:"Prezintă cartilaj articular la nivelul epifizelor."}, correct:["A","D","E"] },
+              { id:28, text:"Despre cavitățile nazale sunt corecte afirmațiile:", options:{A:"Sunt căptușite de o mucoasă.",B:"Se deschid spre mediul extern prin coane.",C:"Sunt separate de un sept median.",D:"Prezintă deschiderile sinusurilor.",E:"Comunică cu orofaringele."}, correct:["A","C","D","E"] },
+              { id:29, text:"Despre rinichi se pot afirma următoarele:", options:{A:"Sunt localizați retroperitoneal.",B:"Cântăresc împreună 175 de grame.",C:"Prezintă hilul pe suprafața medială.",D:"Eliberează urina prin pelvisul renal în vezica urinară.",E:"Conțin piramide renale în corticală."}, correct:["A","B","C"] },
+              { id:30, text:"Plămânii sunt organe care:", options:{A:"Conțin 900 de milioane de alveole.",B:"Delimitează mediastinul, în care se găsește inima.",C:"În timpul respirației normale permit intrarea/ieșirea a 500 mililitri de aer.",D:"Sunt împărțiți în trei lobi - în stânga, și doi lobi - în dreapta.",E:"Prezintă lobuli deserviți de câte o bronhiolă."}, correct:["B","C","E"] },
+              { id:31, text:"Diartrozele sunt articulații care:", options:{A:"Prezintă o cavitate sinovială.",B:"În anumite cazuri, prezintă cavitatea articulară divizată de discuri cartilaginoase.",C:"Permit mișcări reduse, înainte și înapoi.",D:"Sunt prezente la nivelul corpilor vertebrali.",E:"Au capsulă fibroasă, care învelește capetele osoase."}, correct:["A","B","E"] },
+              { id:32, text:"Despre neuron sunt corecte afirmațiile:", options:{A:"Formează rădăcina posterioară, motorie, a nervului spinal.",B:"Este bipolar atunci când are două prelungiri - o dendrită și un axon.",C:"Conține vezicule cu neurotransmițători la nivelul corpului neuronal.",D:"Potențialul său de repaus este menținut și prin acțiunea pompei de sodiu-potasiu.",E:"Poate forma o sinapsă cu efectorii în sistemul nervos central."}, correct:["B","D"] },
+              { id:33, text:"Celula prezintă:", options:{A:"Nucleu în care ADN-ul este organizat sub formă de cromozomi.",B:"Lizozomi care împachetează proteine și glucide.",C:"Reticul endoplasmatic alcătuit din membrane ce se extind intracitoplasmatic.",D:"Mitocondrii, care asigură energie prin respirație celulară.",E:"Citoschelet, rețea interconectată de fibre fosfolipidice."}, correct:["A","C","D"] },
+              { id:34, text:"Circulația sângelui este asigurată de:", options:{A:"Arteriole ce leagă capilarele de artere.",B:"Venule ce conțin țesut muscular neted mai puțin decât arteriolele.",C:"Artere ce pleacă din ventriculele inimii.",D:"Vene a căror presiune este măsurată cu sfigmomanometrul.",E:"Capilare care au un strat de epiteliu pavimentos."}, correct:["B","C","E"] },
+              { id:35, text:"La nivelul nefronului se asigură:", options:{A:"Secreția medicamentelor în tubii proximali.",B:"Filtrarea plasmei sanguine la nivelul glomerulului și a capsulei glomerulare.",C:"Reabsorbția pasivă a ionilor de sodiu la nivelul tubilor proximali.",D:"Secreția amoniacului în ansa Henle.",E:"Reabsorbția activă a glucozei și aminoacizilor la nivelul tubilor proximali."}, correct:["A","B","E"] },
+              { id:36, text:"Din punct de vedere structural, neuronii se clasifică în:", options:{A:"Neuroni bipolari, prezenți în ganglionul spinal.",B:"Neuroni pseudounipolari, cu o singură prelungire, care se divide în axon și dendrită.",C:"Neuroni multipolari, care reprezintă majoritatea neuronilor senzoriali.",D:"Interneuroni, care se găsesc doar în sistemul nervos central.",E:"Neuroni multipolari, cu mai multe dendrite și un axon, prezenți în sistemul nervos central."}, correct:["B","E"] },
+              { id:37, text:"Globul ocular prezintă următoarele tunici:", options:{A:"Tunica internă, care conține fotoreceptorii.",B:"Tunica ciliară, ce conține corpul ciliar.",C:"Tunica fibroasă, ce prezintă anterior o lentilă concavă.",D:"Tunica bogat vascularizată, care conține coroida.",E:"Tunica fibroasă, ce prezintă corneea de care se atașează mușchii responsabili de mișcările globilor oculari."}, correct:["A","D"] },
+              { id:38, text:"Undele sonore se caracterizează prin:", options:{A:"Frecvență - ce reprezintă numărul de vibrații ale aerului într-o unitate de timp.",B:"Timbru - care variază în funcție de obiectul care a produs sunetul.",C:"Frecvență - ce reprezintă amplitudinea undei sonore.",D:"Intensitate - care se măsoară în decibeli.",E:"Timbru - care reprezintă calitatea sunetului, ce depinde de armonicele tonale."}, correct:["A","B","D","E"] },
+              { id:39, text:"Moleculele de glucoză:", options:{A:"Sunt stocate sub formă de glicogen când nivelul glicemiei este crescut.",B:"Se descompun prin chemiosmoză, prima etapă a respirației celulare.",C:"Sunt rezultatul procesului de glicogenoliză, cu eliberarea lor în fluxul sanguin.",D:"Pot fi sintetizate în ficat din surse non-glucidice prin procesul de gluconeogeneză.",E:"Sunt rezultatul acțiunii dizaharidelor asupra dizaharidazelor."}, correct:["A","C","D"] },
+              { id:40, text:"Despre celule se pot afirma următoarele:", options:{A:"Se multiplică prin meioză, pentru a asigura creșterea și repararea țesuturilor.",B:"Prezintă o membrană fosfolipidică dispusă în patru straturi.",C:"Conțin citoplasmă și structuri subcelulare.",D:"Conțin ADN la nivelul nucleului.",E:"Se grupează pentru a forma țesuturi, atunci când au formă identică și funcții diferite."}, correct:["C","D"] },
+              { id:41, text:"Inima prezintă:", options:{A:"Ventricule cu rol de a pompa sângele în circulație.",B:"Orificii de deschidere ale venelor cave la nivelul atriului drept.",C:"Ventriculul drept, în care se deschid venele pulmonare.",D:"Atriul drept care trimite sânge prin valva mitrală.",E:"Un sept interventricular ce conține fasciculul lui His."}, correct:["A","B","E"] },
+              { id:42, text:"Circulația limfatică este caracterizată de:", options:{A:"Drenajul jumătății stângi supradiafragmatice prin ductul limfatic stâng.",B:"Circulația limfei prin vase cu numeroase valve.",C:"Drenajul celei mai mari părți a organismului prin ductul toracic.",D:"Prezența unor noduli ce asigură filtrarea sângelui.",E:"Prezența unor structuri care drenează spațiile intercelulare."}, correct:["A","B","C","E"] },
+              { id:43, text:"Grupele sanguine se caracterizează prin:", options:{A:"Antigen A în plasma persoanelor de grupă A.",B:"Anticorpi anti-A și anti-B pe membrana hematiei persoanelor de grupă AB.",C:"Anticorpi naturali anti-Rh în sângele persoanelor de grupă O, Rh+.",D:"Anticorpi anti-B în sângele persoanelor de grupă B.",E:"Lipsa antigenului pe membrana hematiei pentru persoanele de grupă O."}, correct:["E"] },
+              { id:44, text:"Despre uter se poate afirma că:", options:{A:"Este susținut de ligamentele largi.",B:"Este localizat în porțiunea posterioară a cavității pelviene.",C:"Asigură protecția și aportul nutritiv pentru dezvoltarea embrionului și fătului.",D:"La nivelul fundului se unește cu trompele uterine.",E:"Se deschide în porțiunea posterioară a vestibulului vaginal."}, correct:["A","C","D"] },
+              { id:45, text:"Mușchiul:", options:{A:"Striat scheletic se contractă voluntar.",B:"Neted prezintă striații.",C:"Cardiac conține, la nivelul fibrelor, mai mulți nuclei.",D:"Striat scheletic se contractă cel mai rapid.",E:"Neted formează peretele inimii."}, correct:["A","D"] },
+              { id:46, text:"Testiculele:", options:{A:"Sunt localizate în scrot, structură sacciformă.",B:"Asigură secreția testosteronului prin celulele interstițiale.",C:"Prezintă, pe marginea posterioară, ductul deferent.",D:"Asigură spermatogeneza, prin care se formează gameții masculini, celule haploide.",E:"Sunt vascularizate fiecare de câte o ramură din aorta abdominală."}, correct:["A","B","D","E"] },
+              { id:47, text:"Secreția endocrină a pancreasului conține:", options:{A:"Glucagon, ce facilitează introducerea glucozei în celule.",B:"Insulină, ce duce la scăderea cantității de glucoză în sânge.",C:"Hormoni a căror secreție este stimulată de adenohipofiză.",D:"Un hormon proteic format din 51 de aminoacizi.",E:"Hormoni secretați de celulele alfa și beta din insulele Langerhans."}, correct:["B","D","E"] },
+              { id:48, text:"La formarea lichidului seminal contribuie secreşiile produse de:", options:{A:"Ductul deferent - lichid acid.",B:"Glandele bulbo-uretrale - lichid alcalin.",C:"Prostată - lichid acid.",D:"Veziculele seminale - 60% din volumul total al lichidului seminal.",E:"Epididim - lichid acid."}, correct:["B","D"] },
+              { id:49, text:"Sângele din venele pulmonare conține:", options:{A:"Dioxid de carbon transportat sub formă de carbaminohemoglobină în proporție de 5-10%.",B:"Oxigen transportat în proporție de 98% sub formă de oxihemoglobină.",C:"Oxigen fixat la nivelul Fe din hemoglobină.",D:"Bicarbonat de sodiu, formă de transport a monoxidului de carbon.",E:"Oxigen dizolvat în plasmă și citoplasma hematiilor în proporție de 2%."}, correct:["B","C","E"] },
+              { id:50, text:"Selectați variantele corecte:", options:{A:"Fibrele musculare sunt organizate în fascicule.",B:"Endomisiumul învelește fiecare pachet de fibre musculare.",C:"Tendonul este format din continuarea structurilor conjunctive ale mușchiului.",D:"Sarcomerul reprezintă unitatea funcțională a mușchiului striat scheletic.",E:"Mușchiul se contractă utilizând energia furnizată de mitocondriile prezente în sarcoplasmă."}, correct:["A","C","D","E"] }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "iasi": {
+    name: "UMF Iași",
+    years: {
+      "2025": {
+        types: {
+          "coming-soon": { label: "În curând...", subject: "", questions: [] }
+        }
+      }
+    }
+  }
+};
+
+// =================== STATE ===================
+let sel = { uni: null, year: null, type: null };
+let quiz = null;
+let answers = {}; // qId -> Set of letters
+let verified = {}; // qId -> bool
+let scores = {};   // qId -> "correct"|"partial"|"wrong"
+
+// =================== SELECTOR ===================
+function selectChip(btn) {
+  const type = btn.dataset.type;
+  const val = btn.dataset.val;
+  document.querySelectorAll(`.chip[data-type="${type}"]`).forEach(c => c.classList.remove('selected'));
+  btn.classList.add('selected');
+  sel[type] = val;
+  if (type === 'uni') populateYears();
+  if (type === 'year') populateTypes();
+  if (type === 'type') checkStartReady();
+}
+
+function populateYears() {
+  sel.year = null; sel.type = null;
+  document.getElementById('typeChips').innerHTML = '';
+  const uni = QUIZZES[sel.uni];
+  const yc = document.getElementById('yearChips');
+  yc.innerHTML = '';
+  Object.keys(uni.years).sort().reverse().forEach(y => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.dataset.type = 'year'; b.dataset.val = y;
+    b.textContent = y; b.onclick = () => selectChip(b);
+    yc.appendChild(b);
+  });
+  checkStartReady();
+}
+
+function populateTypes() {
+  sel.type = null;
+  const types = QUIZZES[sel.uni].years[sel.year].types;
+  const tc = document.getElementById('typeChips');
+  tc.innerHTML = '';
+  Object.entries(types).forEach(([k, v]) => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.dataset.type = 'type'; b.dataset.val = k;
+    b.textContent = v.label; b.onclick = () => selectChip(b);
+    tc.appendChild(b);
+  });
+  checkStartReady();
+}
+
+function checkStartReady() {
+  document.getElementById('startBtn').disabled = !(sel.uni && sel.year && sel.type);
+}
+
+function startQuiz() {
+  quiz = QUIZZES[sel.uni].years[sel.year].types[sel.type];
+  if (!quiz.questions.length) {
+    alert('Această grilă nu este disponibilă încă.');
+    return;
+  }
+  answers = {}; verified = {}; scores = {};
+  quiz.questions.forEach(q => { answers[q.id] = new Set(); });
+  document.getElementById('quizTitle').textContent = quiz.subject || quiz.label;
+  document.getElementById('quizSubtitle').textContent = `${QUIZZES[sel.uni].name} · ${sel.year} · ${quiz.label}`;
+  renderQuestions();
+  updateProgress();
+  showScreen('screenQuiz');
+}
+
+// =================== QUIZ RENDER ===================
+function renderQuestions() {
+  const container = document.getElementById('questionsContainer');
+  container.innerHTML = '';
+  const nav = document.getElementById('qNav');
+  nav.innerHTML = '';
+
+  quiz.questions.forEach(q => {
+    // Question card
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `qcard-${q.id}`;
+    card.innerHTML = `
+      <div class="question-num">Întrebarea ${q.id} din ${quiz.questions.length}</div>
+      <div class="question-text">${q.text}</div>
+      <div class="options-list" id="opts-${q.id}">
+        ${Object.entries(q.options).map(([letter, text]) => `
+          <button class="option-btn" id="opt-${q.id}-${letter}" onclick="toggleOption(${q.id},'${letter}')">
+            <span class="option-letter">${letter}</span>
+            <span>${text}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="q-actions">
+        <span class="hint-text">Selectează una sau mai multe variante</span>
+        <div style="display:flex;gap:8px">
+          <button class="btn-next" id="btn-next-${q.id}" onclick="scrollToNext(${q.id})">Următoarea →</button>
+          <button class="btn-verify" id="btn-verify-${q.id}" onclick="verifyQuestion(${q.id})" disabled>Verifică</button>
+        </div>
+      </div>
+      <div class="feedback-banner" id="feedback-${q.id}"></div>
+    `;
+    container.appendChild(card);
+
+    // Nav dot
+    const dot = document.createElement('div');
+    dot.className = 'q-dot';
+    dot.id = `dot-${q.id}`;
+    dot.textContent = q.id;
+    dot.onclick = () => scrollToQ(q.id);
+    nav.appendChild(dot);
+  });
+}
+
+function toggleOption(qId, letter) {
+  if (verified[qId]) return;
+  const sel2 = answers[qId];
+  if (sel2.has(letter)) sel2.delete(letter);
+  else sel2.add(letter);
+  // Update UI
+  const btn = document.getElementById(`opt-${qId}-${letter}`);
+  btn.classList.toggle('selected', sel2.has(letter));
+  document.getElementById(`btn-verify-${qId}`).disabled = sel2.size === 0;
+}
+
+function verifyQuestion(qId) {
+  if (verified[qId]) return;
+  verified[qId] = true;
+  const q = quiz.questions.find(x => x.id === qId);
+  const correct = new Set(q.correct);
+  const selected = answers[qId];
+
+  // Score
+  let result;
+  if (setsEqual(correct, selected)) result = 'correct';
+  else if ([...selected].some(l => correct.has(l)) && [...selected].every(l => correct.has(l))) result = 'partial';
+  else if ([...selected].some(l => correct.has(l))) result = 'partial';
+  else result = 'wrong';
+  scores[qId] = result;
+
+  // Style options
+  Object.keys(q.options).forEach(letter => {
+    const btn = document.getElementById(`opt-${qId}-${letter}`);
+    btn.disabled = true;
+    btn.classList.remove('selected');
+    if (correct.has(letter) && selected.has(letter)) btn.classList.add('correct');
+    else if (selected.has(letter) && !correct.has(letter)) btn.classList.add('wrong');
+    else if (correct.has(letter) && !selected.has(letter)) btn.classList.add('missed');
+  });
+
+  // Feedback
+  const fb = document.getElementById(`feedback-${qId}`);
+  fb.classList.add('visible');
+  if (result === 'correct') {
+    fb.className = 'feedback-banner visible success';
+    fb.textContent = '✓ Corect! Toate variantele sunt bifate corect.';
+  } else if (result === 'partial') {
+    const missed = [...correct].filter(l => !selected.has(l));
+    const extra = [...selected].filter(l => !correct.has(l));
+    let msg = '⚠ Parțial corect. ';
+    if (missed.length) msg += `Variante lipsă: ${missed.join(', ')}. `;
+    if (extra.length) msg += `Variante greșite: ${extra.join(', ')}.`;
+    fb.className = 'feedback-banner visible partial';
+    fb.textContent = msg;
+  } else {
+    fb.className = 'feedback-banner visible fail';
+    fb.textContent = `✗ Greșit. Răspunsurile corecte: ${[...correct].join(', ')}.`;
+  }
+
+  // Verify button hide, show next
+  document.getElementById(`btn-verify-${qId}`).style.display = 'none';
+  const nextBtn = document.getElementById(`btn-next-${qId}`);
+  nextBtn.classList.add('visible');
+
+  // Update nav dot
+  const dot = document.getElementById(`dot-${qId}`);
+  dot.className = 'q-dot' + (result === 'correct' ? ' perfect' : result === 'partial' ? ' partial-dot' : ' wrong-dot');
+
+  updateLiveScore();
+  updateProgress();
+
+  // Auto-finish check
+  if (Object.keys(verified).length === quiz.questions.length) {
+    setTimeout(showResults, 600);
+  }
+}
+
+function setsEqual(a, b) {
+  return a.size === b.size && [...a].every(x => b.has(x));
+}
+
+function scrollToNext(qId) {
+  const next = quiz.questions.find(q => q.id > qId && !verified[q.id]);
+  if (next) scrollToQ(next.id);
+  else {
+    // Show unverified if any
+    const unverified = quiz.questions.find(q => !verified[q.id]);
+    if (unverified) scrollToQ(unverified.id);
+    else showResults();
+  }
+}
+
+function scrollToQ(qId) {
+  const el = document.getElementById(`qcard-${qId}`);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateLiveScore() {
+  let pts = 0;
+  Object.values(scores).forEach(s => { if (s === 'correct') pts++; });
+  document.getElementById('liveScore').textContent = pts;
+  document.getElementById('headerScore').textContent = `Scor: ${pts}`;
+}
+
+function updateProgress() {
+  const total = quiz.questions.length;
+  const done = Object.keys(verified).length;
+  document.getElementById('progressBar').style.width = `${(done / total) * 100}%`;
+  document.getElementById('headerProgress').textContent = `${done} / ${total}`;
+}
+
+// =================== RESULTS ===================
+function showResults() {
+  let correct = 0, partial = 0, wrong = 0;
+  Object.values(scores).forEach(s => {
+    if (s === 'correct') correct++;
+    else if (s === 'partial') partial++;
+    else wrong++;
+  });
+  wrong += quiz.questions.length - Object.keys(scores).length; // unanswered
+
+  document.getElementById('bigScore').innerHTML = `${correct}<sub>/${quiz.questions.length}</sub>`;
+  document.getElementById('statCorrect').textContent = correct;
+  document.getElementById('statPartial').textContent = partial;
+  document.getElementById('statWrong').textContent = wrong;
+
+  const pct = Math.round((correct / quiz.questions.length) * 100);
+  const msgs = pct >= 80 ? 'Excelent! Ești bine pregătit.' : pct >= 60 ? 'Bun! Mai exersează puțin.' : 'Continuă să înveți — practica face progres!';
+  document.getElementById('resultsSub').textContent = msgs;
+
+  showScreen('screenResults');
+  document.getElementById('headerStatus').style.display = 'none';
+}
+
+function reviewQuiz() {
+  const container = document.getElementById('reviewContainer');
+  container.innerHTML = '';
+  quiz.questions.forEach(q => {
+    const score = scores[q.id] || 'wrong';
+    const userAns = answers[q.id] || new Set();
+    const correct = new Set(q.correct);
+    const badge = score === 'correct' ? '✓' : score === 'partial' ? '~' : '✗';
+    const badgeColor = score === 'correct' ? 'var(--green)' : score === 'partial' ? 'var(--yellow)' : 'var(--red)';
+    let optHtml = Object.entries(q.options).map(([l, t]) => {
+      let cls = '';
+      if (correct.has(l) && userAns.has(l)) cls = 'correct';
+      else if (userAns.has(l) && !correct.has(l)) cls = 'wrong';
+      else if (correct.has(l)) cls = 'missed';
+      return `<div class="option-btn ${cls}" style="cursor:default;margin-bottom:6px">
+        <span class="option-letter ${cls}">${l}</span><span>${t}</span>
+      </div>`;
+    }).join('');
+    const div = document.createElement('div');
+    div.className = 'question-card';
+    div.style.marginBottom = '16px';
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="question-num">Întrebarea ${q.id}</div>
+        <span style="font-weight:700;color:${badgeColor};font-size:1.1rem">${badge}</span>
+      </div>
+      <div class="question-text" style="margin-bottom:16px">${q.text}</div>
+      ${optHtml}
+    `;
+    container.appendChild(div);
+  });
+  showScreen('screenReview');
+}
+
+function resetToSelector() {
+  sel = { uni: null, year: null, type: null };
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('yearChips').innerHTML = '';
+  document.getElementById('typeChips').innerHTML = '';
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('headerStatus').style.display = 'none';
+  showScreen('screenSelector');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'screenQuiz') document.getElementById('headerStatus').style.display = 'flex';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
