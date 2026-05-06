@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<<<<<<< Updated upstream
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1"/>
     <meta name="robots" content="index, follow">
@@ -189,5 +190,1362 @@
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
  <script src="assets/js/script.js"></script>
 
+=======
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submed · Flashcards</title>
+<meta name="description" content="Exersează cu flashcards pentru admiterea la medicină — biologie și chimie organică, toate capitolele.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+:root {
+  --primary:    #407BFF;
+  --primary-bg: rgba(64,123,255,.1);
+  --bg:         #f5f4f0;
+  --card:       #ffffff;
+  --border:     #e2e0d8;
+  --text:       #1a1a18;
+  --muted:      #7a7870;
+  --green:      #16a34a;
+  --green-bg:   #dcfce7;
+  --green-bd:   #86efac;
+  --red:        #dc2626;
+  --red-bg:     #fee2e2;
+  --orange:     #ea580c;
+  --orange-bg:  #ffedd5;
+  --radius:     16px;
+  --shadow:     0 2px 14px rgba(0,0,0,.07);
+  --shadow-md:  0 4px 24px rgba(0,0,0,.11);
+  --ribbon-h:   72px;
+  --navbar-h:   80px;
+}
+
+html { font-size: 15px; }
+@media (min-width: 768px)  { html { font-size: 16px; } }
+@media (min-width: 992px)  { html { font-size: 17px; } }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Figtree', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── NAVBAR ──────────────────────────────────────── */
+nav.navbar {
+  position: fixed; top: 7px; left: 0; width: 100%;
+  min-height: var(--navbar-h); height: var(--navbar-h);
+  border: none; z-index: 200;
+  transition: all 200ms ease-out, background 100ms ease;
+  font-family: 'Figtree', sans-serif;
+}
+nav.navbar.scrolled {
+  top: 0; background: var(--bg);
+  border-bottom: 1px solid rgba(128,128,128,.4);
+  box-shadow: 0 2px 16px rgba(0,0,0,.06);
+}
+.navbar-brand-2 h1 {
+  color: #407BFF !important;
+  font-size: 2.2rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -.03em;
+  line-height: 1; margin: 0;
+}
+.navbar-nav .nav-link {
+  font-size: 1rem; font-weight: 600;
+  padding: 6px 14px !important;
+  border-radius: 10px;
+  transition: background .15s, color .15s; color: var(--text);
+}
+.navbar-nav .nav-link:hover { background: rgba(0,0,0,.05); }
+.navbar-nav .nav-link.active { color: var(--primary) !important; }
+.dropdown-menu { padding: 4px; border-radius: 10px; border: 1px solid var(--border); box-shadow: var(--shadow-md); }
+.dropdown-item { padding: 8px 16px; border-radius: 7px; font-weight: 500; }
+.dropdown-item:active { background: var(--primary); }
+.navbar-toggler { border: none; padding: 6px 8px; border-radius: 10px; }
+.navbar-toggler:focus { box-shadow: none; }
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%231a1a18' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  width: 26px; height: 22px;
+}
+.navbar-collapse {
+  background: var(--card); border-radius: var(--radius);
+  padding: 12px 16px 16px; margin-top: 8px;
+  border: 1px solid var(--border); box-shadow: var(--shadow-md);
+}
+@media (min-width: 992px) {
+  .navbar-collapse { background: transparent; border: none; border-radius: 0; padding: 0; margin: 0; box-shadow: none; }
+}
+
+/* ── SUBJECT TOGGLE ──────────────────────────────── */
+.subject-bar {
+  position: fixed;
+  top: calc(var(--navbar-h) + 7px);
+  left: 0; width: 100%; z-index: 190;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 24px;
+  height: 48px;
+  gap: 4px;
+}
+.subject-btn {
+  padding: 5px 18px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  font-family: 'Figtree', sans-serif;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+}
+.subject-btn:hover { border-color: var(--primary); color: var(--text); }
+.subject-btn.active { background: var(--text); border-color: var(--text); color: #fff; }
+.subject-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  margin-right: 8px;
+}
+
+/* ── CHAPTER RIBBON ──────────────────────────────── */
+.chapter-ribbon {
+  position: fixed;
+  top: calc(var(--navbar-h) + 7px + 48px);
+  left: 0; width: 100%; z-index: 180;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  height: var(--ribbon-h);
+  overflow: hidden;
+}
+.ribbon-scroll {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 20px;
+  height: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.ribbon-scroll::-webkit-scrollbar { display: none; }
+
+.ch-btn {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 10px 6px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all .15s;
+  min-width: 52px;
+  font-family: 'Figtree', sans-serif;
+}
+.ch-btn:hover { border-color: var(--primary); background: var(--primary-bg); }
+.ch-btn.selected { border-color: var(--primary); background: var(--primary-bg); }
+.ch-btn.completed { border-color: var(--green-bd); background: var(--green-bg); }
+.ch-btn.completed.selected { border-color: var(--primary); background: var(--primary-bg); }
+
+.ch-num {
+  font-size: .95rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+}
+.ch-btn.selected .ch-num { color: var(--primary); }
+.ch-btn.completed .ch-num { color: var(--green); }
+.ch-btn.completed.selected .ch-num { color: var(--primary); }
+
+.ch-prog {
+  width: 32px; height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.ch-prog-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width .4s; }
+.ch-btn.selected .ch-prog { background: rgba(64,123,255,.2); }
+.ch-btn.selected .ch-prog-fill { background: var(--primary); }
+
+.ribbon-select-all {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px dashed var(--border);
+  background: transparent;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.ribbon-select-all:hover { border-color: var(--primary); color: var(--primary); }
+.ribbon-divider { width: 1px; height: 32px; background: var(--border); flex-shrink: 0; margin: 0 2px; }
+
+/* ── MAIN CONTENT ────────────────────────────────── */
+.main-area {
+  margin-top: calc(var(--navbar-h) + 7px + 48px + var(--ribbon-h));
+  flex: 1;
+  display: flex;
+  gap: 0;
+}
+
+/* ── PROGRESS SIDEBAR ────────────────────────────── */
+.progress-sidebar {
+  position: fixed;
+  right: 0;
+  top: calc(var(--navbar-h) + 7px + 48px + var(--ribbon-h));
+  bottom: 0;
+  width: 220px;
+  background: var(--card);
+  border-left: 1px solid var(--border);
+  padding: 20px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.sidebar-title {
+  font-size: .72rem;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+.overall-ring {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.ring-wrap {
+  position: relative;
+  width: 88px; height: 88px;
+  margin-bottom: 10px;
+}
+.ring-wrap svg { width: 88px; height: 88px; transform: rotate(-90deg); }
+.ring-bg { fill: none; stroke: var(--border); stroke-width: 7; }
+.ring-fill { fill: none; stroke: var(--primary); stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset .5s ease; }
+.ring-pct {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.15rem; font-weight: 800; letter-spacing: -.03em;
+  color: var(--text);
+}
+.overall-label { font-size: .78rem; color: var(--muted); font-weight: 600; }
+
+.ch-progress-list { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.ch-prog-row { display: flex; flex-direction: column; gap: 4px; }
+.ch-prog-header { display: flex; justify-content: space-between; align-items: baseline; }
+.ch-prog-name { font-size: .78rem; font-weight: 700; color: var(--text); }
+.ch-prog-pct-lbl { font-size: .68rem; font-family: 'JetBrains Mono', monospace; color: var(--muted); }
+.ch-prog-bar { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.ch-prog-bar-fill { height: 100%; border-radius: 3px; background: var(--primary); transition: width .4s; }
+
+/* ── CARD AREA ───────────────────────────────────── */
+.card-area {
+  flex: 1;
+  margin-right: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 24px 60px;
+  min-height: calc(100vh - var(--navbar-h) - 7px - 48px - var(--ribbon-h));
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--muted);
+}
+.empty-state .empty-icon {
+  width: 64px; height: 64px; border-radius: 16px;
+  background: #f0efe9; border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+}
+.empty-state .empty-icon svg { width: 28px; height: 28px; stroke: var(--muted); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.empty-state h3 { font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.empty-state p { font-size: .88rem; max-width: 280px; }
+
+/* Session info bar */
+.session-bar {
+  width: 100%; max-width: 560px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap; gap: 8px;
+}
+.session-info { font-size: .8rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+.session-info strong { color: var(--text); font-weight: 700; }
+.session-actions { display: flex; gap: 6px; }
+.btn-sm-action {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  font-family: 'Figtree', sans-serif;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-sm-action:hover { border-color: var(--primary); color: var(--primary); }
+.btn-sm-action.danger:hover { border-color: var(--red); color: var(--red); }
+
+/* Flip card */
+.flashcard-wrap {
+  width: 100%; max-width: 560px;
+  perspective: 1200px;
+  cursor: pointer;
+  margin-bottom: 24px;
+}
+.flashcard {
+  width: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform .45s cubic-bezier(.4,0,.2,1);
+  border-radius: var(--radius);
+}
+.flashcard.flipped { transform: rotateY(180deg); }
+
+.fc-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--card);
+  box-shadow: var(--shadow-md);
+  padding: 40px 36px;
+  min-height: 280px;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+}
+.fc-back {
+  position: absolute; inset: 0;
+  transform: rotateY(180deg);
+  background: var(--text);
+  color: #fff;
+  border-color: var(--text);
+}
+.fc-face-label {
+  font-size: .68rem;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.fc-back .fc-face-label { color: rgba(255,255,255,.45); }
+.fc-content {
+  flex: 1; display: flex;
+  align-items: center; justify-content: center;
+  text-align: center;
+  font-size: clamp(1.05rem, 2.5vw, 1.3rem);
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -.01em;
+  color: var(--text);
+}
+.fc-back .fc-content { color: #fff; font-weight: 500; font-size: clamp(.95rem, 2vw, 1.1rem); }
+.fc-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 20px;
+}
+.fc-chapter-tag {
+  font-size: .7rem;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: var(--muted);
+}
+.fc-back .fc-chapter-tag { color: rgba(255,255,255,.4); }
+.fc-hint {
+  font-size: .72rem;
+  color: var(--muted);
+  display: flex; align-items: center; gap: 5px;
+}
+.fc-back .fc-hint { color: rgba(255,255,255,.4); }
+.fc-hint svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Progress indicator below card */
+.card-progress {
+  width: 100%; max-width: 560px;
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px;
+}
+.card-progress-track {
+  flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden;
+}
+.card-progress-fill {
+  height: 100%; background: var(--primary); border-radius: 3px; transition: width .3s;
+}
+.card-progress-label {
+  font-size: .75rem; font-family: 'JetBrains Mono', monospace; color: var(--muted); white-space: nowrap;
+}
+
+/* Navigation buttons */
+.card-nav {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; max-width: 560px;
+  margin-bottom: 20px;
+}
+.btn-nav {
+  flex: 1; height: 46px;
+  border-radius: 12px; border: 1px solid var(--border);
+  background: var(--card);
+  font-family: 'Figtree', sans-serif;
+  font-size: .88rem; font-weight: 600; color: var(--muted);
+  cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.btn-nav:hover:not(:disabled) { border-color: #c0bdb4; color: var(--text); }
+.btn-nav:disabled { opacity: .35; cursor: not-allowed; }
+.btn-nav svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.btn-flip {
+  flex: 2; background: var(--text); color: #fff; border-color: var(--text);
+}
+.btn-flip:hover:not(:disabled) { background: #2c2c2a; border-color: #2c2c2a; color: #fff; }
+
+/* Know / Don't know buttons */
+.know-btns {
+  display: flex; gap: 10px;
+  width: 100%; max-width: 560px;
+}
+.btn-know {
+  flex: 1; height: 44px;
+  border-radius: 12px; border: 1.5px solid;
+  font-family: 'Figtree', sans-serif;
+  font-size: .88rem; font-weight: 700;
+  cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.btn-know.yes { border-color: var(--green-bd); background: var(--green-bg); color: var(--green); }
+.btn-know.yes:hover { background: #bbf7d0; }
+.btn-know.no  { border-color: #fca5a5; background: var(--red-bg); color: var(--red); }
+.btn-know.no:hover  { background: #fecaca; }
+.btn-know svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Done state */
+.done-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%; max-width: 560px;
+  padding: 40px 24px;
+}
+.done-icon {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--green-bg); border: 2px solid var(--green-bd);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+}
+.done-icon svg { width: 32px; height: 32px; stroke: var(--green); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.done-state h2 { font-size: 1.6rem; font-weight: 800; letter-spacing: -.04em; margin-bottom: 8px; }
+.done-state p { color: var(--muted); font-size: .92rem; margin-bottom: 28px; }
+.done-stats {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+  width: 100%; margin-bottom: 28px;
+}
+.done-stat {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 12px; text-align: center;
+}
+.done-stat .val { font-size: 1.6rem; font-weight: 800; letter-spacing: -.04em; }
+.done-stat .lbl { font-size: .72rem; color: var(--muted); }
+.done-stat.green .val { color: var(--green); }
+.done-stat.red   .val { color: var(--red); }
+.done-stat.blue  .val { color: var(--primary); }
+.btn-restart {
+  width: 100%; height: 50px;
+  background: var(--text); color: #fff; border: none;
+  border-radius: 12px; font-family: 'Figtree', sans-serif;
+  font-size: .95rem; font-weight: 700; cursor: pointer;
+  transition: background .15s; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-restart:hover { background: #2c2c2a; }
+
+/* Mobile bottom nav */
+.bottom-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
+  background: var(--card); border-top: 1px solid var(--border);
+  padding: 7px 0 max(7px, env(safe-area-inset-bottom));
+  box-shadow: 0 -2px 12px rgba(0,0,0,.06);
+}
+.bn-items { display: flex; justify-content: space-around; align-items: flex-end; }
+.bn-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 4px 10px; text-decoration: none; color: var(--muted);
+  font-size: .58rem; font-weight: 600; font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase; letter-spacing: .04em; transition: color .15s; min-width: 48px;
+}
+.bn-item svg { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.bn-item.active { color: var(--text); }
+
+@media (max-width: 900px) {
+  .progress-sidebar { display: none; }
+  .card-area { margin-right: 0; padding: 24px 16px 100px; }
+  .bottom-nav { display: block; }
+  .main-area { margin-top: calc(var(--navbar-h) + 7px + 48px + var(--ribbon-h)); }
+}
+@media (max-width: 600px) {
+  .fc-face { padding: 28px 22px; min-height: 240px; }
+  .know-btns .btn-know span { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg px-lg-5 px-md-4 px-3 fixed-top">
+  <div class="container-fluid fw-medium">
+    <a class="navbar-brand-2 text-decoration-none" href="dashboard.html"><h1>Submed</h1></a>
+    <button class="navbar-toggler ms-auto me-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav align-items-lg-center gap-lg-1 ms-auto">
+        <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Subiecte</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="cluj.html">UMF Cluj</a></li>
+            <li><a class="dropdown-item" href="iasi.html">UMF Iași</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a class="nav-link active" href="flashcards.html">Flashcards</a></li>
+        <li class="nav-item"><a class="nav-link" href="desprecontact.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- SUBJECT BAR -->
+<div class="subject-bar">
+  <span class="subject-label">Materie:</span>
+  <button class="subject-btn active" onclick="switchSubject('bio', this)">🧬 Biologie</button>
+  <button class="subject-btn" onclick="switchSubject('chim', this)">⚗️ Chimie organică</button>
+</div>
+
+<!-- CHAPTER RIBBON -->
+<div class="chapter-ribbon">
+  <div class="ribbon-scroll" id="ribbonScroll">
+    <button class="ribbon-select-all" onclick="selectAll()">Toate</button>
+    <div class="ribbon-divider"></div>
+    <!-- populated by JS -->
+  </div>
+</div>
+
+<!-- MAIN AREA -->
+<div class="main-area">
+
+  <!-- CARD AREA -->
+  <div class="card-area" id="cardArea">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      </div>
+      <h3>Alege un capitol</h3>
+      <p>Selectează unul sau mai multe capitole din bara de sus pentru a începe sesiunea de flashcards.</p>
+    </div>
+
+    <div id="quizArea" style="display:none; flex-direction:column; align-items:center; width:100%;">
+      <div class="session-bar">
+        <div class="session-info">
+          Capitol <strong id="sessionChLabel">—</strong> &nbsp;·&nbsp;
+          <strong id="sessionKnown">0</strong> știute &nbsp;·&nbsp;
+          <strong id="sessionUnknown">0</strong> de revăzut
+        </div>
+        <div class="session-actions">
+          <button class="btn-sm-action" onclick="shuffleCards()">🔀 Amestecă</button>
+          <button class="btn-sm-action danger" onclick="resetSession()">↺ Resetează</button>
+        </div>
+      </div>
+
+      <!-- Flashcard -->
+      <div class="flashcard-wrap" id="flashcardWrap" onclick="flipCard()">
+        <div class="flashcard" id="flashcard">
+          <div class="fc-face fc-front">
+            <div class="fc-face-label">Întrebare</div>
+            <div class="fc-content" id="fcQuestion">—</div>
+            <div class="fc-footer">
+              <span class="fc-chapter-tag" id="fcChapterFront">Cap. —</span>
+              <span class="fc-hint">
+                <svg viewBox="0 0 24 24"><path d="M21 2H3v16h5l4 4 4-4h5V2z"/></svg>
+                clic pentru răspuns
+              </span>
+            </div>
+          </div>
+          <div class="fc-face fc-back">
+            <div class="fc-face-label">Răspuns</div>
+            <div class="fc-content" id="fcAnswer">—</div>
+            <div class="fc-footer">
+              <span class="fc-chapter-tag" id="fcChapterBack">Cap. —</span>
+              <span class="fc-hint">
+                <svg viewBox="0 0 24 24"><path d="M21 2H3v16h5l4 4 4-4h5V2z"/></svg>
+                clic pentru întrebare
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="card-progress">
+        <div class="card-progress-track"><div class="card-progress-fill" id="cardProgressFill" style="width:0%"></div></div>
+        <span class="card-progress-label" id="cardProgressLabel">0 / 0</span>
+      </div>
+
+      <!-- Nav buttons -->
+      <div class="card-nav">
+        <button class="btn-nav" id="btnPrev" onclick="prevCard()">
+          <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Înapoi
+        </button>
+        <button class="btn-nav btn-flip" onclick="flipCard()">
+          <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Întoarce
+        </button>
+        <button class="btn-nav" id="btnNext" onclick="nextCard()">
+          Următor
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- Know / Don't know -->
+      <div class="know-btns" id="knowBtns" style="display:none">
+        <button class="btn-know no" onclick="markCard(false)">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <span>Nu știu</span>
+        </button>
+        <button class="btn-know yes" onclick="markCard(true)">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Știu!</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Done state -->
+    <div class="done-state" id="doneState">
+      <div class="done-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h2>Sesiune completă! 🎉</h2>
+      <p id="doneSub">Ai parcurs toate flashcard-urile din selecția ta.</p>
+      <div class="done-stats">
+        <div class="done-stat green"><div class="val" id="doneKnown">0</div><div class="lbl">Știute</div></div>
+        <div class="done-stat red"><div class="val" id="doneUnknown">0</div><div class="lbl">De revăzut</div></div>
+        <div class="done-stat blue"><div class="val" id="donePct">0%</div><div class="lbl">Scor</div></div>
+      </div>
+      <button class="btn-restart" onclick="restartSession()">
+        <svg style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Reia sesiunea cu cardurile neinvățate
+      </button>
+    </div>
+  </div>
+
+  <!-- PROGRESS SIDEBAR -->
+  <div class="progress-sidebar">
+    <div class="sidebar-title">Progres sesiune</div>
+    <div class="overall-ring">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 88 88">
+          <circle class="ring-bg" cx="44" cy="44" r="37"/>
+          <circle class="ring-fill" id="ringFill" cx="44" cy="44" r="37" stroke-dasharray="232.5" stroke-dashoffset="232.5"/>
+        </svg>
+        <div class="ring-pct" id="ringPct">0%</div>
+      </div>
+      <div class="overall-label">Știute din selecție</div>
+    </div>
+    <div class="ch-progress-list" id="sidebarChList"></div>
+  </div>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bn-items">
+    <a class="bn-item" href="dashboard.html">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>acasă
+    </a>
+    <a class="bn-item" href="lewis-structure.html">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><line x1="12" y1="3" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="21"/><line x1="3" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="21" y2="12"/></svg>chimie
+    </a>
+    <a class="bn-item active" href="flashcards.html">
+      <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>flashcards
+    </a>
+    <a class="bn-item" href="facultati.html">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>univ.
+    </a>
+    <a class="bn-item" href="student_card.html">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>profil
+    </a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════
+   FLASHCARD DATA — Biologie + Chimie Organică
+   UMF Admitere Curriculum
+═══════════════════════════════════════════════════ */
+const DATA = {
+  bio: {
+    label: "Biologie",
+    chapters: [
+      { title: "Celula", cards: [
+        { q: "Care sunt componentele principale ale membranei celulare?", a: "Stratul dublu fosfolipidic, proteine integrale și periferice, colesterol și glicoproteine. Structura este descrisă de modelul mozaicului fluid." },
+        { q: "Ce este reticulul endoplasmatic rugos (RER)?", a: "Organit celular format din membrane cu ribozomi atașați. Rol în sinteza și transportul proteinelor destinate secreției sau membranelor." },
+        { q: "Care este rolul mitocondriei?", a: "Produce energie (ATP) prin respirație celulară (ciclul Krebs + fosforilare oxidativă). Conține ADN propriu și ribozomi." },
+        { q: "Ce sunt lizozomii?", a: "Vezicule cu enzime hidrolitice (pH acid). Rol în digestia intracelulară a organitelor uzate (autofagie) și a particulelor fagocitate." },
+        { q: "Care este diferența între cromatina eucromatică și heterocromatică?", a: "Eucromatina = formă relaxată, ADN activ transcripțional. Heterocromatina = formă condensată, genele sunt în general inactive." },
+        { q: "Ce este aparatul Golgi?", a: "Stivă de cisterne membranare. Rol în modificarea, sortarea și ambalarea proteinelor și lipidelor pentru secreție sau destinații intracelulare." },
+        { q: "Care este rolul citoscheletului?", a: "Menține forma celulei, asigură mobilitatea și transportul intracelular. Format din microfilamente (actină), filamente intermediare și microtubuli (tubulină)." },
+        { q: "Ce este nucleolul?", a: "Structură din interiorul nucleului, lipsit de membrană proprie. Rol în sinteza ARNr și asamblarea ribozomilor." },
+      ]},
+      { title: "Țesuturi", cards: [
+        { q: "Cum se clasifică țesuturile epiteliale?", a: "După numărul de straturi: simple (un strat) sau stratificate (mai multe straturi). După forma celulelor: pavimentos, cubic, cilindric." },
+        { q: "Ce este țesutul conjunctiv propriu-zis?", a: "Țesut cu matrice extracelulară bogată. Include: conjunctiv lax (în jurul organelor), conjunctiv dens ordonat (tendoane) și dens dezordonat (derm)." },
+        { q: "Care sunt tipurile de fibre musculare?", a: "Scheletice (striate, voluntare, multinucleate), cardiace (striate, involuntare, uninucleate, cu discuri intercalare), netede (involuntare, uninucleate)." },
+        { q: "Ce este țesutul nervos format din?", a: "Neuroni (celule excitabile, cu corp celular, dendrite și axon) și celule gliale (astrocite, oligodendrocite, microglie, celule Schwann)." },
+        { q: "Care este rolul cartilajului hialin?", a: "Acoperă suprafețele articulare, formează scheletul nasal, traheal și costal. Matrice bogată în colagen tip II și proteoglicani." },
+        { q: "Ce este osul compact (cortical)?", a: "Format din osteoane (sisteme Havers): canale centrale cu vase + lamele concentrice de matrice calcificată cu osteocite în lacune." },
+      ]},
+      { title: "Sistemul osos și articulații", cards: [
+        { q: "Cum se clasifică oasele după formă?", a: "Lungi (femur, humerus), scurte (carpiene, tarsiene), plate (stern, scapulă), neregulate (vertebre), sesamoide (rotulă)." },
+        { q: "Ce este diartroza?", a: "Articulație mobilă cu cavitate sinovială, capsulă fibroasă, lichid sinovial și cartilaj articular. Exemple: genunchi, șold, umăr." },
+        { q: "Care sunt celulele osoase?", a: "Osteoblaste (sintetizează matricea), osteocite (mențin matricea), osteoclaste (resorbție osoasă, derivate din monocite)." },
+        { q: "Ce este sindesmoza?", a: "Amfiartroza în care oasele sunt unite prin ligamente sau membrane fibroase. Permite mișcări limitate. Ex: articulația tibioperoneală distală." },
+        { q: "Care este structura unei oase lungi?", a: "Diafiză (tub cortical + cavitate medulară), epifize (spongioasă + cartilaj articular), periost, endost, linie de creștere (la tineri)." },
+        { q: "Ce rol joacă vitamina D în metabolismul osos?", a: "Stimulează absorbția intestinală a calciului și fosforului, necesare mineralizării osoase. Deficitul duce la rahitism (copii) sau osteomalacie (adulți)." },
+      ]},
+      { title: "Sistemul muscular", cards: [
+        { q: "Care este unitatea funcțională a mușchiului striat?", a: "Sarcomerul — delimitat de două linii Z, conține filamente de actină (subțiri) și miozină (groase). Contracția prin glisarea filamentelor." },
+        { q: "Ce este potențialul de acțiune muscular?", a: "Depolarizare rapidă a membranei fibrei musculare declanșată de acetilcolină la placa motorie. Se propagă de-a lungul fibrei și prin tubii T." },
+        { q: "Ce rol joacă calciul în contracția musculară?", a: "Ca²⁺ eliberat din reticulul sarcoplasmatic se leagă de troponina C, deplasând tropomiozina, expunând situsurile active ale actinei pentru miozină." },
+        { q: "Ce este ATP-ul utilizat în mușchi pentru?", a: "Alimentează ciclul punților transversale miozină-actină, pompa de Ca²⁺ (reluarea relaxării) și pompa Na⁺/K⁺ (repolarizare)." },
+        { q: "Care este diferența dintre fibrele roșii și albe?", a: "Roșii (tip I): lente, rezistente la oboseală, aerobe, bogate în mioglobină. Albe (tip II): rapide, obosesc repede, metabolism glicolitic anaerob." },
+        { q: "Ce este endomisiumul?", a: "Strat fin de țesut conjunctiv care învelește fiecare fibră musculară individuală. Perimisiumul învelește fasciculele, epimisiumul învelește mușchiul întreg." },
+      ]},
+      { title: "Sistemul nervos", cards: [
+        { q: "Care este potențialul de repaus al neuronului?", a: "Aproximativ −70 mV, menținut de pompa Na⁺/K⁺-ATPază (3 Na⁺ afară / 2 K⁺ înăuntru) și permeabilitatea selectivă a membranei." },
+        { q: "Ce este sinapsa chimică?", a: "Joncțiune între doi neuroni: neurotransmițătorul eliberat din veziculele presinaptice traversează fanta sinaptică și se leagă de receptorii postsinaptici." },
+        { q: "Care sunt diviziunile sistemului nervos autonom?", a: "Simpatic (luptă sau fugă): noradrenalină. Parasimpatic (odihnă și digestie): acetilcolină. Acționează antagonist asupra majorității organelor." },
+        { q: "Ce este arcul reflex?", a: "Receptor → neuron aferent → centru integrator (măduvă/trunchi) → neuron eferent → efector. Reflexul rotulian este monosinaptic." },
+        { q: "Ce conține substanța albă vs. cenușie a măduvei?", a: "Cenușie: corpii neuronilor, dendrite. Albă: axoni mielinizați (tractusuri ascendente și descendente). Cenușia formează H-ul central." },
+        { q: "Care este rolul cerebelului?", a: "Coordonarea mișcărilor, menținerea echilibrului și tonusului muscular. Nu inițiază mișcările, ci le rafinează." },
+        { q: "Ce este meningita și care sunt meningele?", a: "Cele 3 meninge: dura mater (extern), arahnoida, pia mater (intern). Spațiul subarahnoidian conține LCR. Meningita = inflamația meningelor." },
+        { q: "Ce sunt gangliozii spinali?", a: "Ganglioni situați pe rădăcina posterioară a nervului spinal. Conțin corpii neuronilor senzoriali pseudounipolari (aferenți)." },
+      ]},
+      { title: "Sistemul endocrin", cards: [
+        { q: "Care sunt hormonii adenohipofizei?", a: "GH, TSH, FSH, LH, ACTH, prolactina, MSH. Sunt controlați de hormonii hipotalamici de eliberare/inhibiție." },
+        { q: "Ce este insulina și unde se produce?", a: "Hormon proteic (51 AA) produs de celulele β din insulele Langerhans ale pancreasului. Scade glicemia prin facilitarea intrării glucozei în celule." },
+        { q: "Care sunt hormonii tiroidieni și rolul lor?", a: "T3 (triiodotironina) și T4 (tiroxina). Stimulează metabolismul bazal, creșterea și dezvoltarea SNC. Necesită iod pentru sinteză." },
+        { q: "Ce produce cortexul suprarenal?", a: "Zona glomerulară: aldosteron (mineralocorticoid). Zona fasciculată: cortizol (glucocorticoid). Zona reticulată: androgeni suprarenali." },
+        { q: "Care este rolul PTH (parathormonului)?", a: "Crește calcemia: stimulează osteoclastele, reabsorbția renală de Ca²⁺ și activarea vitaminei D. Secretat de glandele paratiroide." },
+        { q: "Ce este hormonul de creștere (GH)?", a: "191 aminoacizi, produs de adenohipofiză. Stimulează sinteza proteică și creșterea osoasă prin IGF-1. Excesul în copilărie = gigantism." },
+      ]},
+      { title: "Sângele", cards: [
+        { q: "Care este compoziția sângelui?", a: "Plasmă (55%): apă, proteine, ioni, glucoză. Elemente figurate (45%): eritrocite, leucocite (granulocite + agranulocite), trombocite." },
+        { q: "Cum sunt clasificate leucocitele?", a: "Granulocite: neutrofile, eozinofile, bazofile. Agranulocite: limfocite (T și B) și monocite. Granulocitele au nuclei lobați." },
+        { q: "Care este mecanismul coagulării sângelui?", a: "Leziune → activarea trombocitelor → cascada coagulării → protrombina → trombina → fibrinogenul → fibrină → cheag. Rolul vitaminei K." },
+        { q: "Ce sunt grupele sanguine ABO?", a: "Determinate de antigenele de pe hematii. Grup O: fără antigene (donator universal). Grup AB: ambele antigene (primitor universal)." },
+        { q: "Ce este hemoglobina?", a: "Proteină tetramerică (2α + 2β), fiecare cu un hem cu Fe²⁺. Transportă O₂ (oxihemoglobina) și CO₂ (carbaminohemoglobina). 280 milioane/eritrocit." },
+        { q: "Ce este anemia?", a: "Reducerea numărului de eritrocite sau a concentrației hemoglobinei sub normal. Cauze: carență Fe, deficit B12/folat, hemoliză, hemoragii." },
+        { q: "Care este rolul trombocitelor?", a: "Participă la hemostaza primară (formarea dopului plachetar) și secretă factori care inițiază coagularea. Sunt fragmente de megacariocite." },
+      ]},
+      { title: "Sistemul cardiovascular", cards: [
+        { q: "Care este succesiunea ciclului cardiac?", a: "Diastola (relaxare + umplere) → sistola atrială → sistola ventriculară (ejecție) → diastola. Ciclul durează ~0,8 s la 75 bpm." },
+        { q: "Ce este fasciculul His?", a: "Parte din sistemul de conducere cardiac: traversează septul interventricular și se ramifică (ramuri stângă și dreaptă + fibre Purkinje) spre ventricule." },
+        { q: "Care este diferența dintre artere și vene?", a: "Artere: pereți groși, tunica medie musculară dezvoltată, presiune înaltă, fără valve. Vene: pereți subțiri, valve, presiune scăzută." },
+        { q: "Ce sunt capilarele și rolul lor?", a: "Vase cu un singur strat de endoteliu (epiteliu pavimentos). Realizează schimburile de gaze, nutrienți și deșeuri între sânge și țesuturi." },
+        { q: "Ce valvă separă atriul stâng de ventriculul stâng?", a: "Valva mitrală (bicuspidă) — 2 cuspe. Valva tricuspidă separă atriul drept de ventriculul drept (3 cuspe)." },
+        { q: "Care sunt circulațiile sanguine?", a: "Circulația mică (pulmonară): ventricul drept → plămâni → atriu stâng. Circulația mare (sistemică): ventricul stâng → corp → atriu drept." },
+      ]},
+      { title: "Sistemul respirator", cards: [
+        { q: "Care sunt etapele respirației?", a: "Ventilația pulmonară → difuzia gazelor (alveolă-sânge) → transportul gazelor → difuzia tisulară (sânge-celule) → respirația celulară." },
+        { q: "Cum este transportat O₂ în sânge?", a: "98% legat de hemoglobina din eritrocite (oxihemoglobina), 2% dizolvat fizic în plasmă." },
+        { q: "Cum este transportat CO₂ în sânge?", a: "70% ca bicarbonat (HCO₃⁻) în plasmă, 20-25% legat de hemoglobina (carbaminohemoglobina), 5-10% dizolvat în plasmă." },
+        { q: "Ce sunt alveolele pulmonare?", a: "Saci mici cu perete extrem de subțire (pneumocite tip I), bogat vascularizați. Suprafată totală ~70 m². Surfactantul (tip II) previne colapsul." },
+        { q: "Care este volumul tidal (TV)?", a: "Volumul de aer inspirat/expirat în respirație normală: ~500 mL. Capacitatea vitală = ~4800 mL. Volumul rezidual = ~1200 mL." },
+        { q: "Cum se reglează respirația?", a: "Centrii respiratori în bulbul rahidian și punte. Stimulul principal: ↑ CO₂ (↑ H⁺ în LCR detectat de chemoreceptori centrali)." },
+      ]},
+      { title: "Sistemul digestiv", cards: [
+        { q: "Care sunt funcțiile stomacului?", a: "Depozitarea alimentelor, amestecarea cu sucul gastric (HCl + pepsina), digestia proteică inițială și evacuarea chimului în duoden." },
+        { q: "Ce conține sucul pancreatic?", a: "Enzime: tripsina, chimotripsina (proteine), lipaza pancreatică, amilaza pancreatică, nucleaze. Bicarbonat pentru neutralizarea chimului acid." },
+        { q: "Unde are loc absorbția majorității nutrienților?", a: "Intestinul subțire (jejun în special). Vilozitățile și microvilozitățile (bordura în perie) măresc suprafața de absorbție la ~200 m²." },
+        { q: "Care este rolul bilei?", a: "Emulsionarea lipidelor (favorizează digestia de lipaza pancreatică), excreția bilirubinei și colesterolului. Produsă de ficat, stocată în vezica biliară." },
+        { q: "Ce produce ficatul?", a: "Bilă, proteine plasmatice (albumina, fibrinogenul), glucoză (gluconeogeneză, glicogenoliză), uree, factori de coagulare, depozitare glicogen/vitamine." },
+        { q: "Cum funcționează glandele Brunner?", a: "Glande în submucoasa duodenală. Secretă mucus alcalin bogat în bicarbonat, protejând mucoasa duodenală de aciditatea chimului gastric." },
+      ]},
+      { title: "Sistemul renal", cards: [
+        { q: "Care sunt funcțiile rinichilor?", a: "Filtrarea sângelui, excreția deșeurilor (uree, creatinină), reglarea volemiei, pH-ului sanguin, electrolițiilor. Produce eritropoietina și renina." },
+        { q: "Ce este nefronul?", a: "Unitatea funcțională a rinichiului. Format din: glomerul (capsulă Bowman + capilar), tub proximal, ansa Henle, tub distal, tub colector." },
+        { q: "Ce se filtrează la nivelul glomerulului?", a: "Plasma (fără proteine mari și celule): apă, glucoză, aminoacizi, uree, ioni. Rata filtrării glomerulare (RFG) normală: ~125 mL/min." },
+        { q: "Unde se reabsoarbe glucoza?", a: "Integral în tubul proximal, prin transport activ secundar (cotransport Na⁺-glucoză, SGLT2). Apare în urină doar dacă glicemia > 180 mg/dL." },
+        { q: "Ce este ADH (vasopresina) și rolul ei?", a: "Hormon secretat de neurohipofiză. Crește permeabilitatea tubilor colectori la apă → reabsorbție crescută → urină concentrată." },
+        { q: "Care este rolul aldosteronului la nivel renal?", a: "Stimulează reabsorbția Na⁺ (și apei) și secreția K⁺ în tubii distali și colectori. Secretat de corticosuprarenală la stimulul reninei." },
+      ]},
+      { title: "Sistemul reproducător", cards: [
+        { q: "Care sunt fazele ciclului menstrual?", a: "Faza menstruală (1-5): descuamare endometru. Faza foliculară/proliferativă (1-14): FSH → folicul matur. Ovulație (14): LH. Faza luteală (14-28): corpus luteum → progesteron." },
+        { q: "Ce este spermatogeneza?", a: "Producerea spermatozoizilor în tubii seminiferi. Spermatogonie → spermatocit I → spermatocit II (meioză I) → spermatide → spermatozoizi (meioză II + spermiogeeneză)." },
+        { q: "Care este rolul testosteronului?", a: "Produs de celulele Leydig. Stimulează spermatogeneza, caracterele sexuale secundare masculine, masa musculară, comportamentul. Controlat de LH." },
+        { q: "Ce este placenta?", a: "Organ temporar (din trofoblast + endometru). Realizează schimburile mamă-făt (O₂, nutrienți, deșeuri), secretă hCG, progesteron și estrogeni." },
+        { q: "Ce este ovulația?", a: "Eliberarea ovocitului secundar (blocat în MII) din foliculul matur (de Graaf), declanșată de vârful de LH, în ziua 14 a unui ciclu de 28 zile." },
+      ]},
+      { title: "Genetică", cards: [
+        { q: "Ce este ADN-ul și care este structura lui?", a: "Acidul dezoxiribonucleic — dublu helix antiparalel. Baze azotate: A-T (2 legături H), G-C (3 legături H). Directionat 5'→3'." },
+        { q: "Ce este codul genetic?", a: "Triplet de baze (codon) codifică un aminoacid. Este degenerat (mai mulți codoni/AA), universal, neambiguu. Codonii stop: UAA, UAG, UGA." },
+        { q: "Care sunt etapele transcripției?", a: "Inițiere (ARN polimeraza se leagă de promotor), elongare (sinteza ARNm 5'→3'), terminare. La eucariote: cap 5', coadă poli-A, excizarea intronilor (splicing)." },
+        { q: "Care este diferența dintre dominanță și recesivitate?", a: "Alelă dominantă: se exprimă și în heterozigot (Aa). Alelă recesivă: se exprimă doar în homozigot (aa). Fenotipul heterozigotului = fenotip dominant." },
+        { q: "Ce este mutația punctiformă?", a: "Schimbarea unui singur nucleotid în secvența ADN. Tipuri: mutație sinonimă (același AA), missense (alt AA), nonsense (codon stop prematur)." },
+        { q: "Ce este sindromul Down?", a: "Trisomie 21 (3 cromozomi 21, total 47). Cauza: nedisjuncție meiotică. Frecvență crește cu vârsta maternă. Caracterizat de retard mental, facies caracteristic." },
+      ]},
+      { title: "Metabolism", cards: [
+        { q: "Ce este glicoliza?", a: "Desfacerea glucozei (6C) în 2 piruvat (3C) în citoplasmă. Net: 2 ATP + 2 NADH. Nu necesită oxigen — este anaerob." },
+        { q: "Ce se întâmplă cu piruvatul în condiții aerobe?", a: "Piruvatul → acetil-CoA (piruvat dehidrogenaza, mitocondrie) + CO₂ + NADH. Acetil-CoA intră în ciclul Krebs." },
+        { q: "Câte ATP produce oxidarea completă a glucozei?", a: "~30-32 ATP per moleculă de glucoză (glicoliză + ciclul Krebs + lanț respirator + fosforilare oxidativă)." },
+        { q: "Ce este gluconeogeneza?", a: "Sinteza glucozei din precursori non-glucidici: lactat, glicerol, aminoacizi glucogeni. Are loc în ficat (și cortexul renal). Inversul glicolizei (cu bypass-uri)." },
+        { q: "Ce este beta-oxidarea?", a: "Degradarea acizilor grași în mitocondrie, tăind câte 2 carboni sub formă de acetil-CoA. Produce NADH și FADH₂. Randament energetic foarte mare." },
+        { q: "Ce este ciclul Krebs?", a: "Ciclul acidului citric în matricea mitocondrială. Fiecare acetil-CoA (2C) produce: 3 NADH, 1 FADH₂, 1 GTP, 2 CO₂. Completează oxidarea glucozei." },
+      ]},
+      { title: "Imunologie", cards: [
+        { q: "Care este diferența dintre imunitatea înnăscută și adaptativă?", a: "Înnăscută: nespecifică, rapidă (ore). Celule: neutrofile, macrofage, NK. Adaptativă: specifică, memorie. Celule: limfocite T și B." },
+        { q: "Ce sunt limfocitele T și B?", a: "T: diferențiate în timus. T helper (CD4), T citotoxic (CD8), T reglator. B: produc anticorpi (imunoglobuline). Diferențiate în măduva osoasă." },
+        { q: "Ce sunt anticorpii (imunoglobulinele)?", a: "Glicoproteine în formă de Y: 2 lanțuri grele + 2 ușoare, legate prin punți S-S. Clase: IgM, IgG, IgA, IgE, IgD. Fab leagă antigenul, Fc = efector." },
+        { q: "Ce este MHC (Complexul Major de Histocompatibilitate)?", a: "MHC I: pe toate celulele nucleate → prezintă peptide endogene → recunoscute de T citotoxic (CD8). MHC II: pe CPA → prezintă peptide exogene → T helper (CD4)." },
+        { q: "Cum funcționează vaccinarea?", a: "Introduce antigen sau fragment antigenic → stimulează răspunsul imun adaptativ → generarea de celule de memorie. La reexpunere: răspuns rapid și puternic." },
+        { q: "Ce este inflamația?", a: "Răspuns protector la leziuni sau infecții. Semne cardinale: rubor (roșeață), calor (căldură), tumor (edem), dolor (durere), functio laesa. Mediatori: histamina, prostaglandine, citokine." },
+      ]},
+      { title: "Embriologie", cards: [
+        { q: "Ce este fecundarea și unde are loc?", a: "Uniunea spermatozoidului cu ovocitul secundar → zigot (2n). Are loc în treimea externă a trompei uterine (ampulă). Declanșează finalizarea meiozei II." },
+        { q: "Ce este blastocistul?", a: "Stadiu de ~5-6 zile post-fecundare: blastocel (cavitate) + embrioblast (masa celulară internă → embrion) + trofoblast (→ placentă, membrane)." },
+        { q: "Ce sunt foițele embrionare?", a: "Ectoderm: piele, SN. Mezoderm: mușchi, oase, rinichi, cord, vase. Endoderm: căptușeala tractului digestiv și respirator, ficat, pancreas." },
+        { q: "Ce este neurulația?", a: "Formarea tubului neural din ectodermal dorsal, în săptămâna 3-4. Defecte de neurulație → spina bifida, anencefalie. Prevenit de acid folic." },
+        { q: "Când se formează organele principale?", a: "Perioada embrionară (săptămâna 3-8): organogeneză activă, vulnerabilitate maximă la teratogeni. Perioada fetală (s.9 – naștere): creștere și maturare." },
+      ]},
+      { title: "Fiziologie – Sens și percepție", cards: [
+        { q: "Cum funcționează retina?", a: "Conuri (vedere color, lumină intensă, fovee) și bastonașe (vedere în alb-negru, lumină slabă, periferice). Rodopsina (bastonașe) = retinal + opsina." },
+        { q: "Care este calea auditivă?", a: "Undele sonore → timpan → osciorele (ciocan, nicovală, scăriță) → fereastra ovală → cohlee (organul Corti) → nervul VIII (cohlear) → cortexul auditiv." },
+        { q: "Ce sunt corpusculii Meissner, Pacini, Merkel?", a: "Meissner: atingere fină, piele glabrā. Pacini: vibrații, presiune adâncă. Merkel: presiune statică, contur. Ruffini: întindere. Corpusculi Krause: frig." },
+        { q: "Ce este pragul sensorial?", a: "Stimulul minim detectabil. Legea Weber-Fechner: percepția este proporțională cu logaritmul intensității stimulului. Adaptarea = reducerea răspunsului la stimul constant." },
+      ]},
+      { title: "Anatomie – Membre", cards: [
+        { q: "Care sunt oasele coapsei și gambei?", a: "Coapsă: femur (cel mai lung os). Gambă: tibie (medial, portant) + fibulă (lateral). Rotula = os sesamoid în tendonul cvadricepsului." },
+        { q: "Care este plexul brahial?", a: "Rețea de nervi formată din rădăcinile C5-T1. Inervează membrul superior. Principalii nervi: musculocutanat, median, ulnar, radial, axilar." },
+        { q: "Care sunt oasele antebrațului?", a: "Radius (lateral, se articulează cu carpienele) și ulna (medial). Membrana interosioasă le unește." },
+        { q: "Ce articulații formează șoldul?", a: "Articulație sferoidă (enartroză) între capul femurului și cavitatea cotiloidă (acetabul) a osului coxal. Stabilizată de capsula fibroasă și ligamente puternice." },
+        { q: "Care sunt mișcările posibile la genunchi?", a: "Flexie și extensie (principale), rotație internă și externă (genunchi flectat). Stabilizate de LIA, LIP, ligamente colaterale, menisc." },
+      ]},
+      { title: "Anatomie – Trunchi", cards: [
+        { q: "Ce conține mediastinul?", a: "Inima și pericardul, aorta toracică, esofagul, traheea și bronhiile principale, timusul, nervii vagi și frenici, ductul toracic, vena cavă." },
+        { q: "Care sunt cele 4 cavități ale inimii?", a: "Atriul drept (primește VCS + VCI), ventriculul drept (→ artera pulmonară), atriul stâng (→ vene pulmonare), ventriculul stâng (→ aorta)." },
+        { q: "Cum se numesc vertebrele pe regiuni?", a: "Cervicale (C1-C7): atlasul, axisul. Toracale (T1-T12). Lombare (L1-L5). Sacrale (S1-S5, fuzionate). Coccigiene (3-5)." },
+        { q: "Ce este diafragma?", a: "Mușchiul principal al respirației. Separă toracele de abdomen. La contracție coboară → crește volumul toracic → inspirație. Inervat de nervul frenic (C3-C5)." },
+        { q: "Care sunt straturile peretelui abdominal?", a: "De la extern: piele, fascie, mușchii oblici (extern, intern), transvers abdominal, fascia transversalis, peritoneu parietal." },
+      ]},
+      { title: "Anatomie – Organe interne", cards: [
+        { q: "Unde este localizat pancreasul?", a: "Retroperitoneal, în curba duodenului. Cap (adiacent duodenului), corp și coadă (până la splină). Exocrin (acinii) + endocrin (insulele Langerhans)." },
+        { q: "Care sunt lobii ficatului?", a: "Anatomic: lob drept (mare) și stâng (mic), separate de ligamentul falciform. Funcțional (Couinaud): 8 segmente bazate pe vascularizație." },
+        { q: "Unde sunt localizați rinichii?", a: "Retroperitoneal, la nivelul T12-L3. Rinichiul drept este mai jos (deplasat de ficat). Hilul (pelvis renal, arteră, venă) pe fața medială." },
+        { q: "Ce este splina și ce rol are?", a: "Organ limfoid secundar. Pulpa roșie: distruge eritrocite îmbătrânite, rezervor de trombocite. Pulpa albă: răspuns imun. Vascularizat de artera splenică." },
+        { q: "Care este structura glandei suprarenale?", a: "Corticosuprarenala (mezoderm, externă): zona glomerulară, fasciculată, reticulată. Medulosuprarenala (creastă neurală, internă): catecolamine (adrenalina, noradrenalina)." },
+      ]},
+      { title: "Homeostazie și reglare", cards: [
+        { q: "Ce este homeostazia?", a: "Menținerea condițiilor interne constante (temperatură, pH, presiune osmotică, glicemie) prin mecanisme de feedback negativ." },
+        { q: "Cum funcționează feedback-ul negativ?", a: "Abaterea de la setpoint → detectare de senzori → răspuns corector → readucere la setpoint. Ex: termoreglare, reglarea glicemiei, presiunii arteriale." },
+        { q: "Cum este reglată glicemia?", a: "Hiperglicemie → insulina (celulele β) → captare glucoză, glicogenogeneză. Hipoglicemie → glucagon (celulele α) → glicogenoliză, gluconeogeneză." },
+        { q: "Ce este tamponul bicarbonat?", a: "CO₂ + H₂O ↔ H₂CO₃ ↔ H⁺ + HCO₃⁻. Principalul sistem tampon al sângelui (pH 7,35-7,45). Regulat de plămâni (CO₂) și rinichi (HCO₃⁻)." },
+        { q: "Ce este osmolaritatea?", a: "Concentrația de particule osmotic active per litru de soluție (mOsm/L). Plasma: ~285-295 mOsm/L. Reglată de ADH, sete și rinichi." },
+      ]},
+      { title: "Patologie generală", cards: [
+        { q: "Ce este apoptoza?", a: "Moarte celulară programată: condensarea cromatinei, fragmentarea ADN (ladder), blebbing membranar, formare corpi apoptotici. Fără inflamație." },
+        { q: "Care este diferența dintre necroză și apoptoză?", a: "Necroză: moarte pasivă prin leziune, edem celular, liză, inflamație locală. Apoptoza: moarte activă (necesită energie), fără inflamație, fiziologică sau patologică." },
+        { q: "Ce este inflamația cronică?", a: "Răspuns inflamator prelungit (săptămâni-luni). Predomină limfocitele și macrofagele. Poate duce la fibroză (cicatrizare exagerată). Ex: TBC, boală Crohn." },
+        { q: "Ce este un granulom?", a: "Agregat de macrofage activate (celule epitelioide) ± celule gigante multinucleate, limfocite, fibroblaste. Caracteristic TBC, sarcoidoză, sifilis." },
+        { q: "Ce este ischemia?", a: "Reducerea fluxului sanguin → hipoxie tisulară → moarte celulară. Cauze: tromboză, embolie, vasospasm. Ex: infarct miocardic, AVC ischemic." },
+      ]},
+      { title: "Biofizică și Fiziologie celulară", cards: [
+        { q: "Ce este osmoza?", a: "Difuzia apei printr-o membrană semipermeabilă, de la soluția hipotonă (↓ solut) spre cea hipertonă (↑ solut), până la echilibrarea presiunii osmotice." },
+        { q: "Ce este transportul activ?", a: "Deplasarea substanțelor contra gradientului de concentrație, cu consum de ATP. Ex: pompa Na⁺/K⁺-ATPaza, Ca²⁺-ATPaza, H⁺/K⁺-ATPaza gastrică." },
+        { q: "Ce este difuzia facilitată?", a: "Transport pasiv (după gradient) prin canale sau transportori proteici specifici. Fără consum de ATP. Ex: intrarea glucozei în eritrocite (GLUT1)." },
+        { q: "Ce sunt canalele ionice cu poartă?", a: "Canale care se deschid/închid la: stimul de voltaj (canale voltage-gated: Na⁺, K⁺, Ca²⁺), ligand (neurotransmițători) sau presiune mecanică." },
+      ]},
+    ]
+  },
+
+  chim: {
+    label: "Chimie Organică",
+    chapters: [
+      { title: "Introducere în chimia organică", cards: [
+        { q: "Ce este hibridizarea sp³ a carbonului?", a: "4 orbitali hibrizi sp³ dispuși tetraedric (109,5°). Formează 4 legături sigma (σ). Specific alcanilor, alcoolilor, aminelor alifatice." },
+        { q: "Ce este hibridizarea sp² a carbonului?", a: "3 orbitali sp² (triunghi plan, 120°) + 1 orbital p perpendicular. Formează 3 legturi σ și 1 legătură π. Specific alkenelor, aldehidelor, cetonelor, arenelor." },
+        { q: "Ce este hibridizarea sp a carbonului?", a: "2 orbitali sp (liniare, 180°) + 2 orbitali p. Formează 2 σ și 2 π. Specific alchinelor și nitrilililor. Carbonul triplei legături." },
+        { q: "Ce sunt izomerii de constituție?", a: "Compuși cu aceeași formulă moleculară dar conectivitate diferită. Tipuri: de catenă (izobutan vs. n-butan), de poziție (1-butanol vs. 2-butanol), de grupă funcțională (eter vs. alcool)." },
+        { q: "Ce sunt enantiomerii?", a: "Stereoisomeri care sunt imagini în oglindă nesuperimposabile. Condiție: carbon asimetric (4 substituenți diferiți). Rotesc planul luminii polarizate în direcții opuse (+/-)." },
+      ]},
+      { title: "Alcani și cicloalcani", cards: [
+        { q: "Care este formula generală a alcanilor?", a: "CₙH₂ₙ₊₂. Lanț liniar sau ramificat, numai legături C-C și C-H simple (sigma). Nomenclatură IUPAC: terminația -an." },
+        { q: "Ce reacție caracteristică au alcanul?", a: "Substituția radicalică (halogenarea la lumină/căldură): R-H + X₂ → R-X + HX. Mecanism în 3 etape: inițiere, propagare, terminare." },
+        { q: "Ce este conformația cap-scaun a ciclohexanului?", a: "Conformație stabilă (minim tensiune) în care toți unghiurile C-C-C sunt ~111°. Substituenții pot fi axiali sau ecuatoriali. Substituenții ecuatoriali: mai stabili." },
+        { q: "Ce este izomeria cis-trans la cicloalcani?", a: "Cis: substituenții pe aceeași față a ciclului. Trans: substituenții pe fețe opuse. Nu pot interconverti fără ruperea legăturilor (spre deosebire de conformații)." },
+        { q: "Ce sunt reacțiile de ardere a alcanilor?", a: "Combustie completă: CₙH₂ₙ₊₂ + O₂ → CO₂ + H₂O (ΔH negativ, reacție exotermă). Cea mai importantă aplicație: combustibili." },
+      ]},
+      { title: "Alchene și alchine", cards: [
+        { q: "Care este mecanismul adițiunii electrofile la alchene?", a: "Electrofil (H⁺, Br⁺) atacă dubla legătură → carbocation intermediar → nucleofil atacă carbocationul. Regula Markovnikov: H se adaugă la C cu mai mulți H." },
+        { q: "Ce este regula Markovnikov?", a: "La adăugarea HX la o alchenă asimetrică, H se leagă la carbonul cu mai mulți atomi de H (formând carbocationul mai stabil). Ex: propena + HCl → 2-cloropropan." },
+        { q: "Cum se distinge o alchenă de o alchină?", a: "Alchenă (CₙH₂ₙ): o dublă legătură C=C, decolorează Br₂/CCl₄. Alchina (CₙH₂ₙ₋₂): tripla legătură C≡C. Alchine terminale: reacție cu AgNO₃/NH₃ → precipitat galben." },
+        { q: "Ce este polimerizarea aditivă?", a: "Moleculele de monom (alchene) se leagă prin deschiderea dublei legaturi, fără eliminare de subproduse. Ex: etena → polietilenă (-CH₂-CH₂-)ₙ." },
+        { q: "Ce este izomeria geometrică (cis-trans) la alchene?", a: "Condiție: fiecare carbon al dublei legături are 2 substituenți diferiți. Cis: substituenții similari pe aceeași parte. Trans: pe părți opuse. Nu pot interconverti (legatura π)." },
+        { q: "Ce este hidrogenarea catalitică?", a: "Alchena + H₂ → alcan. Catalizator: Pt, Pd sau Ni. Reacție de adiție, stereospecifică (syn). Aplicație: margarina din uleiuri vegetale." },
+      ]},
+      { title: "Arene (Hidrocarburi aromatice)", cards: [
+        { q: "Ce este aromaticitatea (regula Hückel)?", a: "Moleculă plana, ciclică, conjugată cu 4n+2 electroni π (n = 0, 1, 2...). Benzenul: 6 electroni π (n=1). Conferă stabilitate deosebită față de alchene." },
+        { q: "Ce este substituția electrofilă aromatică (SEA)?", a: "Electrofil atacă nucleul aromatic → aduct Wheland (carbocation σ) → pierdere H⁺ → restabilire aromaticitate. Ex: nitrare, sulfonare, halogenare (catalizator Lewis acid), alchilare Friedel-Crafts." },
+        { q: "Ce efecte au substituenții la SEA?", a: "Activanți ortho/para: -OH, -NH₂, -OR, -alkil. Dezactivanți meta: -NO₂, -CHO, -COOH, -SO₃H, -CN. Halogenii: dezactivanți dar ortho/para dirigori." },
+        { q: "Ce este toluenul și proprietățile lui?", a: "Metilbenzen (C₆H₅-CH₃). Gruparea metil activează inelul (o/p). Lanțul lateral se oxidează cu KMnO₄/H⁺ → acid benzoic, indiferent de lungimea lanțului." },
+        { q: "Ce este naftalenul?", a: "Hidrocarbura aromatică policiclică (C₁₀H₈), doi inele benzenice fuzionate. Are 10 electroni π. Mai reactiv la SEA decât benzenul." },
+      ]},
+      { title: "Alcooli și fenoli", cards: [
+        { q: "Cum se clasifică alcoolii?", a: "Primar (R-CH₂OH), secundar (R₂CHOH), terțiar (R₃COH) — după numărul de grupuri alkil legate la C purtător de OH. Influențează reactivitatea la oxidare." },
+        { q: "Ce reacție de oxidare au alcoolii?", a: "Primar → aldehidă → acid carboxilic (K₂Cr₂O₇/H₂SO₄ sau KMnO₄). Secundar → cetonă (nu se oxidează mai departe în condiții ușoare). Terțiar: nu se oxidează." },
+        { q: "Ce este reacția de esterificare a alcoolilor?", a: "R-OH + R'-COOH ⇌ R'-COO-R + H₂O. Catalizat de H₂SO₄, reacție reversibilă (echilibru). Principiul Le Chatelier: eliminarea apei deplasează spre ester." },
+        { q: "Ce este fenolul și proprietățile lui acide?", a: "C₆H₅-OH. Acid mai slab decât H₂CO₃ dar mai puternic decât alcoolii. Reacționează cu NaOH → fenolat de sodiu (C₆H₅-ONa) + H₂O. Nu reacționează cu NaHCO₃." },
+        { q: "Ce reacție dă alcoolul cu sodiu metalic?", a: "2R-OH + 2Na → 2R-ONa + H₂↑. Reacție mai puțin violentă decât apa cu Na. Toți alcoolii reacționează; alcoolii terțiari mai lent." },
+        { q: "Ce este reacția Lucas (ZnCl₂/HCl concentrat)?", a: "Distinge alcoolii: terțiar → reacție imediată (tulburare); secundar → tulburare în 5 min; primar → fără reacție la rece. Bazat pe reactivitatea S_N1 vs S_N2." },
+      ]},
+      { title: "Aldehide și cetone", cards: [
+        { q: "Cum se distinge aldehida de cetonă?", a: "Aldehida: funcțiunea -CHO (C terminal sau la capătul catenei). Cetonă: funcțiunea C=O flancată de doi R. Aldehidele se oxidează ușor, cetonele nu (în condiții ușoare)." },
+        { q: "Ce este reacția Tollens (proba oglinzii)?", a: "Reactiv Tollens = [Ag(NH₃)₂]⁺. Aldehida (agent reducător) → reduce Ag⁺ la Ag⁰ (oglindă de argint) + acid carboxilic. Cetonele nu reacționează." },
+        { q: "Ce este reacția Fehling?", a: "Soluție albastră de Cu²⁺ complexat cu tartrat. Aldehide (excepție: aldehide aromatice) reduc → precipitat roșu-caramiziu de Cu₂O. Cetone: nu reacționează." },
+        { q: "Ce este condensarea aldolică?", a: "O aldehidă/cetonă cu H α + compus carbonil → aldol (β-hidroxicarbonilat). Cataliză bazică. Urmată de deshidratare → α,β-compus carbonil conjugat (crotonaldehida din etanal)." },
+        { q: "Ce este reacția de adiție a HCN la carbonil?", a: "Carbonilul (>C=O) + HCN → cianohidrină (>C(OH)(CN)). Mecanism: CN⁻ (nucleofil) atacă carbonul carbonilului, apoi protonare. Aldehidele reacționează mai repede." },
+        { q: "Ce este formaldehida și utilizările ei?", a: "Metanal (HCHO). Cel mai simplu aldehid. Gazos. Soluție 40% = formalina (conservant). Dă reacții Tollens și Fehling, dar și de polimerizare (bakelit)." },
+      ]},
+      { title: "Acizi carboxilici și derivați", cards: [
+        { q: "Ce factori influențează aciditatea acizilor carboxilici?", a: "Substituenții electroatractori (NO₂, Cl, F) cresc aciditatea (stabilizează ion carboxilat). Substituenții electrondonori (alkil) scad aciditatea. Fluoroacizii > cloracizii > bromazizii > acidul acetic." },
+        { q: "Care este ordinea reactivității derivaților acizilor?", a: "Cloruri acil > anhidride > esteri > amide (crescând stabilitate, scăzând reactivitate la substituție nucleofilă acilic). Toate sunt mai reactive decât acizii propriu-ziși." },
+        { q: "Ce este saponificarea?", a: "Hidroliza esterilor în mediu bazic → alcool + carboxilat (sare). R-COO-R' + NaOH → R-COO⁻Na⁺ + R'-OH. Ireversibilă (spre deosebire de hidroliza acidă)." },
+        { q: "Ce este acidul acetilsalicilic (aspirina)?", a: "Ester al acidului salicilic cu acidul acetic. Formula: C₉H₈O₄. Conține grupă ester (-COO-) și grupă carboxil (-COOH). Se neutralizează cu 2 mol NaOH." },
+        { q: "Ce sunt aminoacizii?", a: "Compuși bifuncționali cu grupă amino (-NH₂) și carboxil (-COOH). Cei 20 proteinogenici sunt α-aminoacizi (stereoizomeri L). Zwitterion la pH izolectric." },
+        { q: "Ce este reacția de esterificare Fischer?", a: "Acid carboxilic + alcool ⇌ ester + H₂O. Catalizat de H₂SO₄ concentrat sau HCl. Reacție reversibilă; randament crescut prin îndepărtarea apei sau excesul unuia dintre reactanți." },
+      ]},
+      { title: "Amine", cards: [
+        { q: "Cum se clasifică aminele?", a: "Primare (RNH₂), secundare (R₂NH), terțiare (R₃N) — după nr. de grupuri alkil/aril pe N. Cuaternare (R₄N⁺) = cationi, nu baze." },
+        { q: "Cum se explică bazicitatea aminelor?", a: "Perechea de electroni neligați de pe N donează la un acceptor de protoni (H⁺). Alchilaminele > NH₃ > arilamine. Electronii N la aniline delocalizați în inel → bazicitate mai mică." },
+        { q: "Ce reacție dau aminele primare aromatice cu HNO₂ la 0-5°C?", a: "Diazotare: Ar-NH₂ + HNO₂ → Ar-N≡N⁺X⁻ (sare de diazoniu). La temperaturi mai înalte se descompune. Sărurile de diazoniu sunt precursori pentru coloranți azoici." },
+        { q: "Ce este reacția de cupulare a sărurilor de diazoniu?", a: "Ar-N≡N⁺ + Ar'-H → Ar-N=N-Ar' (colorant azoic). Cuplarea are loc în poziție para față de activantul din Ar'-H. Condiții: pH slab acid sau neutru." },
+        { q: "Ce este acetilarea aminelor?", a: "Amina primară + clorură de acetil (sau anhidridă acetică) → amidă (R-NH-CO-CH₃) + HCl. Reduce bazicitatea și reactivitatea SEA. Protejare în sinteză." },
+        { q: "Ce este anilina și proprietățile ei?", a: "C₆H₅-NH₂, amina primară aromatică. Baza mai slabă decât aminele alifatice (perechea de e⁻ parțial delocalizată în inel). Reacție cu HCl → clorhidrat de anilina. Puternic activator ortho/para." },
+      ]},
+      { title: "Compuși cu azot (nitro, nitrili)", cards: [
+        { q: "Cum se reduc compușii nitro aromatici?", a: "Ar-NO₂ + Fe/HCl sau H₂/Pt → Ar-NH₂ (amina primara aromatica). Reducere în 6 electroni. Etape intermediare: nitroso → hidroxilamina → amina." },
+        { q: "Ce este cianura (nitrilul) și cum reacționează?", a: "R-C≡N (nitrili). Hidroliza acidă sau bazică → amidă → acid carboxilic. Reducere (H₂/cat sau LiAlH₄) → amina primară. Adiție la aldehide → cianohidrine." },
+        { q: "Ce este reacția Sandmeyer?", a: "Sare de diazoniu + CuCl → Ar-Cl; + CuBr → Ar-Br; + CuCN → Ar-CN; + NaNO₂/Cu → Ar-NO₂. Înlocuiește gruparea diazoniu cu diverse grupuri funcționale." },
+        { q: "Ce sunt poliamidele?", a: "Polimeri cu legături amidice (-CO-NH-). Nylon-6,6: hexametilendiamina + acid adipic → polimer (-CO-(CH₂)₄-CO-NH-(CH₂)₆-NH-)ₙ. Nylon-6: caprolactama." },
+      ]},
+      { title: "Compuși carbonilici – Reactii avansate", cards: [
+        { q: "Ce este reacția Wittig?", a: "Fosforilid (R₂C=PPh₃) + aldehidă sau cetonă → alchena + Ph₃P=O. Transformă C=O în C=C. Stereospecifică (ylide nestabilizate → cis)." },
+        { q: "Ce este reducerea cu NaBH₄ vs. LiAlH₄?", a: "NaBH₄: reduce aldehide și cetone → alcooli. Mai selectiv, nu reduce esterii sau acizii. LiAlH₄: mai puternic, reduce toate grupele carbonilice inclusiv esteri, acizi, amide, nitrili." },
+        { q: "Ce este reacția Cannizzaro?", a: "Aldehide fără H α (HCHO, benzaldehidă) + NaOH conc. → autooxidare-reducere: o moleculă se oxidează la acid, alta se reduce la alcool." },
+        { q: "Ce este enolizarea?", a: "Compusul carbonilat (cu H α) ⇌ enol (=C-OH). Catalizată acid sau bazic. Forma enol este nucleofilă la carbonul α → reacții de alchilare sau aldol." },
+      ]},
+      { title: "Glucide (Carbohidrați)", cards: [
+        { q: "Ce sunt monozaharidele și cum se clasifică?", a: "Zaharuri simple, formula (CH₂O)ₙ. Aldoze (grupă aldehidică): glucoza, galactoza. Cetoze (grupă cetonică): fructoza. Triose, tetrose, pentose, hexose (n=3,4,5,6)." },
+        { q: "Ce este mutarotația glucozei?", a: "Interconversia între α-D-glucopiranoza (36%) și β-D-glucopiranoza (64%) prin forma deschisă, în soluție apoasă. Rotație optică se echilibrează la +52,7°." },
+        { q: "Ce este glicozida?", a: "Glucid la care -OH anomeric e substituit printr-un alt grup (O-, N-, S-). Legătura glicozidică: rezistentă la alcali, hidrolizabilă acid. Ex: zaharoza (α,1-β,2 glucozid)." },
+        { q: "Ce proprietăți reducătoare au zaharurile?", a: "Zaharuri reducătoare: cu OH anomeric liber (glucoza, maltoza, lactoza). Reacționează cu Fehling, Tollens, Benedict. Zaharoza: non-reducătoare (OH anomeric substituit)." },
+        { q: "Ce este celuloza?", a: "Polimer al glucozei cu legături β(1→4) glicozidice. Structural (perete celular vegetal). Nesolubilă în apă, nedescompusă de amilaze umane. Hidrolizabilă cu celulaza." },
+        { q: "Ce este amidonul?", a: "Amiloza (20-30%): helix, legături α(1→4). Amilopectina (70-80%): ramificată, legături α(1→4) + ramificări α(1→6) la fiecare ~25-30 resturi. Hidrolizat de amilaze." },
+      ]},
+      { title: "Lipide", cards: [
+        { q: "Ce sunt trigliceridele (triacilglicerolii)?", a: "Esteri ai glicerolului cu 3 acizi grași. Grăsimi neutre. Hidroliza alcalină (saponificare) → glicerol + 3 săpunuri (carboxilați de sodiu/potasiu)." },
+        { q: "Ce este indicele de iod?", a: "Grame de I₂ absorbite de 100 g grăsime. Măsoară gradul de nesaturare. Uleiuri vegetale (nesaturate, lichide): indice mare. Grăsimi animale (saturate, solide): indice mic." },
+        { q: "Ce sunt fosfolipidele?", a: "Glicerofosfolipide: glicerol + 2 acizi grași + fosfat + alcool (colina, etanolamina, serina). Amfipatice (cap polar, coadă apolară). Componentă majoră a membranelor celulare." },
+        { q: "Ce sunt acizii grași esențiali?", a: "Nu pot fi sintetizați de organism. Acizii linoleic (ω-6, C18:2) și linolenic (ω-3, C18:3). Precursori pentru eicosanoide (prostaglandine, leucotriene, tromboxani)." },
+        { q: "Ce este colesterolul?", a: "Sterol (lipidă cu nucleu steroidic — 4 inele fuzionate). Component al membranelor celulare (fluiditate), precursor pentru hormoni steroizi, vitamina D, acizii biliari." },
+      ]},
+      { title: "Proteine și aminoacizi", cards: [
+        { q: "Care sunt cele 4 niveluri de structură proteică?", a: "Primar: secvența de aminoacizi. Secundar: α-helix, β-foaie plisată (legături H). Terțiar: structura 3D globală (legături H, ionice, hidrofobe, S-S). Cuaternar: mai multe lanțuri polipeptidice." },
+        { q: "Ce este legătura peptidică?", a: "Legătură amidică (-CO-NH-) formată prin condensarea grupei -COOH a unui AA cu gruparea -NH₂ a următorului, cu eliminare de apă. Are caracter parțial dublu (rezonanță), planară." },
+        { q: "Ce este punctul izoelectric (pI)?", a: "pH la care aminoacidul (sau proteina) are sarcina netă zero (forma zwitterion). Proteinele precipită la pI (solubilitate minimă). Utilizat în electroforeză." },
+        { q: "Ce este denaturarea proteică?", a: "Perturbarea structurii secundare/terțiare/cuaternare fără ruperea legăturilor peptidice (structura primară intactă). Cauze: căldură, pH extremă, solvenți organici, detergenți." },
+        { q: "Ce este reacția biuretului?", a: "Proteine + NaOH + CuSO₄ diluat → complex violet (Cu²⁺ complexat cu 2+ legturi peptidice). Detectează proteine (nu dipeptide sau aminoacizi liberi)." },
+        { q: "Care sunt aminoacizii cu catenă laterală aromatică?", a: "Fenilalanina (Phe), tirozina (Tyr), triptofanul (Trp). Absorb UV la 280 nm → utilizat la cuantificarea proteinelor (spectrofotometrie)." },
+      ]},
+      { title: "Acizi nucleici", cards: [
+        { q: "Care sunt componentele unui nucleotid?", a: "Pentoza (dezoxiriboze în ADN, riboze în ARN) + baza azotată + fosfat. Legătura N-glicozidică unește baza de pento, legătura fosfodiesterică unește nucleotidele." },
+        { q: "Care sunt bazele azotate din ADN și ARN?", a: "ADN: adenina (A), guanina (G), citozina (C), timina (T). ARN: A, G, C, uracil (U) în loc de T. Purine: A, G (2 inele). Pirimidine: C, T, U (1 inel)." },
+        { q: "Ce este regula Chargaff?", a: "În ADN dublu catenar: A=T (2 punți H) și G=C (3 punți H). Deci %A=%T, %G=%C. Procentul G+C variază între specii, A+T completează la 100%." },
+        { q: "Ce este ARN mesager (ARNm)?", a: "Transcrierea informației genetice din ADN pentru sinteza proteinelor (traducere la ribozomi). La eucariote: procesat (cap 5', poli-A, splicing). Template pentru traducere: 5'→3'." },
+        { q: "Ce este replicarea ADN?", a: "Semiconservativă: fiecare catenă nouă e complementară cu cea veche (matriță). Enzime cheie: ADN polimeraza (5'→3'), helicase (desfacere helix), primoze (primer ARN)." },
+      ]},
+      { title: "Reacții de oxidoreducere în chimia organică", cards: [
+        { q: "Ce înseamnă oxidarea unui compus organic?", a: "Creșterea gradului de oxidare a carbonului: pierdere H sau câștig O. Oxidare treptată: alcan → alcool → aldehidă → acid carboxilic → CO₂." },
+        { q: "Ce este reacția de ozonoliza?", a: "Alchena + O₃ → ozonid → cu Zn/H₂O (reducator) → aldehide/cetone. Permite identificarea pozitiei duble legaturi. Substituent R₂C= → cetonă, RHC= → aldehidă." },
+        { q: "Cum oxidează KMnO₄ compușii organici?", a: "Rece, diluat → diol (cis-diol) din alchene (reacție de hidroxilare). Acid, cald → clivaj: R₂C= → cetonă, RHC= → acid, HC= → CO₂. Toluenul → acid benzoic." },
+        { q: "Ce este oxidarea cu K₂Cr₂O₇/H₂SO₄?", a: "Oxidant puternic (portocaliu → verde Cr³⁺). Oxidează: alcooli primari → aldehide → acizi; alcooli secundari → cetone; aldehide → acizi. Nu oxidează cetone sau alcooli terțiari." },
+      ]},
+      { title: "Polimeri", cards: [
+        { q: "Ce este polimerizarea aditivă vs. de condensare?", a: "Aditivă: monomerii se unesc fără subprodus (polietilena, polistirenul). Condensare: monomeri bifuncționali se unesc cu eliminare apă sau alt subprodus mic (nylon, poliester, fenoplaste)." },
+        { q: "Ce este cauciucul natural?", a: "Polimer cis-1,4-izopren (C₅H₈)ₙ. Natural: latex din Hevea brasiliensis. Vulcanizarea (cu S): creează punți disulfurice între lanțuri → elasticitate și rezistență crescute." },
+        { q: "Ce sunt termoplasteul și termodurul?", a: "Termoplastic: se topește la încălzire (lanțuri liniare/ramificate, fără rețea 3D). Ex: PE, PP, PVC. Termodur: nu se topește, carbonizare (rețea 3D). Ex: bachelit, rășini epoxidice." },
+        { q: "Ce este PET (polietilen tereftalat)?", a: "Poliester de condensare: etilenglicol + acid tereftalic → (-O-CH₂-CH₂-O-CO-C₆H₄-CO-)ₙ. Utilizat la sticle, fibre textile (terilen, dacron). Reciclabil (triunghiul 1)." },
+      ]},
+      { title: "Chimie analitica – Identificare compusi", cards: [
+        { q: "Cum se identifică un alcol primar vs. secundar vs. terțiar?", a: "Test Lucas (ZnCl₂/HCl): terțiar → imediat tulbure; secundar → tulbure în 5 min; primar → fără reacție la rece. Oxidare: primar → aldehidă; secundar → cetonă; terțiar → nu." },
+        { q: "Cum se identifică o aldeihidă?", a: "Proba Tollens (oglinda de argint): aldehidă → Ag⁰. Reacția Fehling: aldehidă → precipitat roșu Cu₂O (excepție aldehide aromatice). Cetone: nu reacționează cu nici una." },
+        { q: "Cum se identifică o dublă legătură C=C?", a: "Decolorarea bromului (Br₂/CCl₄ sau Br₂/H₂O): alchena/alchina → decolorare imediată. KMnO₄ diluat (rece): decolorare cu formare de diol. Alcanul nu reacționează." },
+        { q: "Ce este testul cu clorura ferică (FeCl₃) pentru fenoli?", a: "Fenolul + FeCl₃ → complex violet/albastru-violet intens. Alcooli: nu dau această reacție. Utilizat ca test rapid de identificare a fenolilor." },
+        { q: "Cum se identifică un acid carboxilic?", a: "pH < 7 în soluție apoasă. Reacție cu NaHCO₃ → CO₂↑ (efervescență). Reacție cu Na, NaOH → sare + H₂O. Formarea esterului (cu alcool + H₂SO₄)." },
+        { q: "Cum se identifică o amina?", a: "pH bazic în soluție apoasă. Miros caracteristic de pește (amine volatile). Amina primară aromatică + HNO₂ (0-5°C) → sare de diazoniu (colorant azoic cu β-naftol)." },
+      ]},
+      { title: "Stereoizomerie avansată", cards: [
+        { q: "Ce este configurația R vs. S?", a: "Regulile CIP: prioritatea substituenților scade (1>2>3>4). Dacă rotația 1→2→3 e în sens orar cu substituentul 4 depărtat = R. Invers = S." },
+        { q: "Ce sunt diastereomerii?", a: "Stereoizomeri care NU sunt imagini în oglindă. Proprietăți fizice diferite (nu numai rotația optică). Ex: eritroza vs. treooza (aldotetroze); meso-compuși." },
+        { q: "Ce este compusul meso?", a: "Moleculă cu centri chirali dar cu plan de simetrie intern → achirală (optică inactivă). Exemplu: acid meso-tartric (configurație 2R,3S)." },
+        { q: "Ce este proiecția Fischer?", a: "Reprezentare 2D a centrilor stereogeni: carbon în centru, substituenții orizontali ies spre privitor, cei verticali merg depărtaţi. Convenție pentru zaharuri și aminoacizi." },
+      ]},
+      { title: "Mecanisme de reacție", cards: [
+        { q: "Ce este mecanismul S_N1 vs. S_N2?", a: "S_N1: unimolecular, 2 etape, carbocation, racemizare, favorizat de R terțiar + solvent polar protic. S_N2: bimolecular, 1 etapă, inversie Walden, favorizat de R primar + solvent polar aprotic." },
+        { q: "Ce este mecanismul E1 vs. E2?", a: "E1: eliminare unimoleculară prin carbocation. E2: bimoleculară, sincronă (anti-periplanar), necesită baza puternică, stereospecifică. Ambele → alchena cea mai stabilă (regula Zaitev)." },
+        { q: "Ce este reactivul Grignard?", a: "R-Mg-X (organomagneziu) format din R-X + Mg în eter uscat. Puternic nucleofil și baza. Reacționează cu aldehide/cetone → alcool. Cu CO₂ → acid carboxilic." },
+        { q: "Ce este carbocationul și stabilitatea lui?", a: "Specia cu carbon cu 6 electroni (sarcina +). Stabilitate: terțiar > secundar > primar > metil. Stabilizat de hiperconjugare și efecte inductiv electrodonante ale grupărilor alkil." },
+        { q: "Ce este efectul mezomeric (de rezonanță)?", a: "Delocalizarea electronilor π sau a perechilor neligante prin sistemul conjugat. Stabilizează molecule și ioni (fenolat, carboxilat). + M: donori (OH, NH₂); -M: acceptori (NO₂, CHO)." },
+      ]},
+    ]
+  }
+};
+
+/* ═══════════════════════════════════════════════════
+   APP STATE
+═══════════════════════════════════════════════════ */
+let currentSubject = 'bio';
+let selectedChapters = new Set();
+let sessionCards = [];
+let currentIdx = 0;
+let isFlipped = false;
+let chapterProgress = {}; // chapterIdx -> { known: Set(cardIdx), seen: Set(cardIdx) }
+let sessionKnown = 0;
+let sessionUnknown = 0;
+
+/* ═══════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════ */
+function init() {
+  buildRibbon();
+}
+
+function switchSubject(sub, btn) {
+  currentSubject = sub;
+  document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedChapters.clear();
+  chapterProgress = {};
+  sessionCards = [];
+  buildRibbon();
+  showEmpty();
+}
+
+function buildRibbon() {
+  const scroll = document.getElementById('ribbonScroll');
+  // keep select-all and divider
+  while (scroll.children.length > 2) scroll.removeChild(scroll.lastChild);
+
+  const chapters = DATA[currentSubject].chapters;
+  chapters.forEach((ch, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'ch-btn';
+    btn.id = `chBtn-${i}`;
+    btn.onclick = () => toggleChapter(i);
+    btn.innerHTML = `
+      <span class="ch-num">${i + 1}</span>
+      <div class="ch-prog"><div class="ch-prog-fill" id="chFill-${i}" style="width:0%"></div></div>
+    `;
+    btn.title = ch.title;
+    scroll.appendChild(btn);
+    if (!chapterProgress[i]) chapterProgress[i] = { known: new Set(), seen: new Set() };
+  });
+}
+
+function toggleChapter(idx) {
+  if (selectedChapters.has(idx)) selectedChapters.delete(idx);
+  else selectedChapters.add(idx);
+  document.getElementById(`chBtn-${idx}`)?.classList.toggle('selected', selectedChapters.has(idx));
+  rebuildSession();
+}
+
+function selectAll() {
+  const chapters = DATA[currentSubject].chapters;
+  const all = chapters.map((_, i) => i);
+  const allSelected = all.every(i => selectedChapters.has(i));
+  if (allSelected) {
+    selectedChapters.clear();
+    all.forEach(i => document.getElementById(`chBtn-${i}`)?.classList.remove('selected'));
+  } else {
+    all.forEach(i => { selectedChapters.add(i); document.getElementById(`chBtn-${i}`)?.classList.add('selected'); });
+  }
+  rebuildSession();
+}
+
+function rebuildSession() {
+  sessionCards = [];
+  const chapters = DATA[currentSubject].chapters;
+  [...selectedChapters].sort((a,b) => a-b).forEach(ci => {
+    chapters[ci].cards.forEach((card, fi) => {
+      sessionCards.push({ chIdx: ci, cardIdx: fi, ...card });
+    });
+  });
+  currentIdx = 0;
+  sessionKnown = 0;
+  sessionUnknown = 0;
+  isFlipped = false;
+
+  if (sessionCards.length === 0) { showEmpty(); return; }
+  showCard(currentIdx);
+  updateUI();
+  updateSidebar();
+  document.getElementById('quizArea').style.display = 'flex';
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('doneState').style.display = 'none';
+}
+
+/* ═══════════════════════════════════════════════════
+   CARD DISPLAY
+═══════════════════════════════════════════════════ */
+function showCard(idx) {
+  if (!sessionCards.length) return;
+  const card = sessionCards[idx];
+  document.getElementById('fcQuestion').textContent = card.q;
+  document.getElementById('fcAnswer').textContent = card.a;
+  const chLabel = `Cap. ${card.chIdx + 1} — ${DATA[currentSubject].chapters[card.chIdx].title}`;
+  document.getElementById('fcChapterFront').textContent = chLabel;
+  document.getElementById('fcChapterBack').textContent = chLabel;
+
+  // Reset flip
+  isFlipped = false;
+  document.getElementById('flashcard').classList.remove('flipped');
+  document.getElementById('knowBtns').style.display = 'none';
+
+  // Prev / next disabled states
+  document.getElementById('btnPrev').disabled = idx === 0;
+  document.getElementById('btnNext').disabled = idx === sessionCards.length - 1;
+
+  // Mark as seen
+  chapterProgress[card.chIdx].seen.add(card.cardIdx);
+  updateProgress();
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+  document.getElementById('knowBtns').style.display = isFlipped ? 'flex' : 'none';
+}
+
+function nextCard() {
+  if (currentIdx < sessionCards.length - 1) {
+    currentIdx++;
+    showCard(currentIdx);
+  }
+}
+
+function prevCard() {
+  if (currentIdx > 0) {
+    currentIdx--;
+    showCard(currentIdx);
+  }
+}
+
+function markCard(known) {
+  const card = sessionCards[currentIdx];
+  if (known) {
+    chapterProgress[card.chIdx].known.add(card.cardIdx);
+    sessionKnown++;
+  } else {
+    chapterProgress[card.chIdx].known.delete(card.cardIdx);
+    sessionUnknown++;
+  }
+  updateUI();
+  updateSidebar();
+  updateChDot(card.chIdx);
+
+  // Auto-advance
+  if (currentIdx < sessionCards.length - 1) {
+    currentIdx++;
+    showCard(currentIdx);
+  } else {
+    showDone();
+  }
+}
+
+function updateProgress() {
+  const pct = sessionCards.length ? Math.round(((currentIdx + 1) / sessionCards.length) * 100) : 0;
+  document.getElementById('cardProgressFill').style.width = pct + '%';
+  document.getElementById('cardProgressLabel').textContent = `${currentIdx + 1} / ${sessionCards.length}`;
+}
+
+function updateUI() {
+  // Session label
+  const chNums = [...selectedChapters].sort((a,b)=>a-b).map(i => i+1);
+  document.getElementById('sessionChLabel').textContent = chNums.length > 3 ? `${chNums[0]}…${chNums[chNums.length-1]}` : chNums.join(', ');
+  document.getElementById('sessionKnown').textContent = sessionKnown;
+  document.getElementById('sessionUnknown').textContent = sessionUnknown;
+}
+
+function showEmpty() {
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('quizArea').style.display = 'none';
+  document.getElementById('doneState').style.display = 'none';
+}
+
+function showDone() {
+  const total = sessionKnown + sessionUnknown;
+  const pct = total ? Math.round((sessionKnown / total) * 100) : 0;
+  document.getElementById('doneKnown').textContent = sessionKnown;
+  document.getElementById('doneUnknown').textContent = sessionUnknown;
+  document.getElementById('donePct').textContent = pct + '%';
+  document.getElementById('doneSub').textContent = `Ai parcurs toate cele ${sessionCards.length} flashcard-uri. Scor: ${pct}%.`;
+  document.getElementById('quizArea').style.display = 'none';
+  document.getElementById('doneState').style.display = 'flex';
+}
+
+function restartSession() {
+  // Only cards not known
+  const unknownCards = sessionCards.filter(c => !chapterProgress[c.chIdx].known.has(c.cardIdx));
+  if (!unknownCards.length) {
+    rebuildSession(); return;
+  }
+  sessionCards = unknownCards;
+  currentIdx = 0;
+  sessionKnown = 0;
+  sessionUnknown = 0;
+  isFlipped = false;
+  document.getElementById('doneState').style.display = 'none';
+  document.getElementById('quizArea').style.display = 'flex';
+  showCard(0);
+  updateUI();
+}
+
+function shuffleCards() {
+  for (let i = sessionCards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [sessionCards[i], sessionCards[j]] = [sessionCards[j], sessionCards[i]];
+  }
+  currentIdx = 0;
+  showCard(0);
+}
+
+function resetSession() {
+  selectedChapters.forEach(ci => {
+    chapterProgress[ci] = { known: new Set(), seen: new Set() };
+    updateChDot(ci);
+  });
+  sessionKnown = 0;
+  sessionUnknown = 0;
+  currentIdx = 0;
+  if (sessionCards.length) {
+    document.getElementById('doneState').style.display = 'none';
+    document.getElementById('quizArea').style.display = 'flex';
+    showCard(0);
+    updateUI();
+    updateSidebar();
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   SIDEBAR + RIBBON PROGRESS
+═══════════════════════════════════════════════════ */
+function updateChDot(chIdx) {
+  const ch = DATA[currentSubject].chapters[chIdx];
+  const prog = chapterProgress[chIdx];
+  const total = ch.cards.length;
+  const known = prog.known.size;
+  const pct = total ? Math.round((known / total) * 100) : 0;
+  const fill = document.getElementById(`chFill-${chIdx}`);
+  if (fill) fill.style.width = pct + '%';
+  const btn = document.getElementById(`chBtn-${chIdx}`);
+  if (btn) {
+    btn.classList.toggle('completed', pct === 100);
+  }
+  updateSidebar();
+}
+
+function updateSidebar() {
+  // Overall ring
+  let totalCards = 0, totalKnown = 0;
+  selectedChapters.forEach(ci => {
+    const ch = DATA[currentSubject].chapters[ci];
+    totalCards += ch.cards.length;
+    totalKnown += chapterProgress[ci].known.size;
+  });
+  const overallPct = totalCards ? Math.round((totalKnown / totalCards) * 100) : 0;
+  const circumference = 232.5;
+  const offset = circumference - (overallPct / 100) * circumference;
+  document.getElementById('ringFill').style.strokeDashoffset = offset;
+  document.getElementById('ringPct').textContent = overallPct + '%';
+
+  // Chapter list
+  const list = document.getElementById('sidebarChList');
+  list.innerHTML = '';
+  [...selectedChapters].sort((a,b)=>a-b).forEach(ci => {
+    const ch = DATA[currentSubject].chapters[ci];
+    const prog = chapterProgress[ci];
+    const pct = ch.cards.length ? Math.round((prog.known.size / ch.cards.length) * 100) : 0;
+    const color = pct >= 80 ? '#16a34a' : pct >= 40 ? '#407BFF' : '#e2e0d8';
+    list.innerHTML += `
+      <div class="ch-prog-row">
+        <div class="ch-prog-header">
+          <span class="ch-prog-name">Cap. ${ci+1} ${ch.title.length > 14 ? ch.title.slice(0,14)+'…' : ch.title}</span>
+          <span class="ch-prog-pct-lbl">${prog.known.size}/${ch.cards.length}</span>
+        </div>
+        <div class="ch-prog-bar"><div class="ch-prog-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      </div>
+    `;
+  });
+  if (!selectedChapters.size) {
+    list.innerHTML = '<div style="font-size:.78rem;color:var(--muted);text-align:center;padding:16px 0;">Niciun capitol selectat.</div>';
+  }
+}
+
+/* ── Navbar scroll ── */
+const nav = document.querySelector('nav.navbar');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 10), { passive: true });
+
+/* ── Keyboard shortcuts ── */
+document.addEventListener('keydown', e => {
+  if (!sessionCards.length || document.getElementById('quizArea').style.display === 'none') return;
+  if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); flipCard(); }
+  else if (e.key === 'ArrowRight') nextCard();
+  else if (e.key === 'ArrowLeft') prevCard();
+  else if (e.key === 'y' || e.key === 'Y') { if (isFlipped) markCard(true); }
+  else if (e.key === 'n' || e.key === 'N') { if (isFlipped) markCard(false); }
+});
+
+init();
+</script>
+>>>>>>> Stashed changes
 </body>
 </html>
