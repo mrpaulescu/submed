@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submed · Autentificare</title>
+<meta name="description" content="Conectează-te la Submed pentru a accesa grile, simulări și instrumente de pregătire pentru admiterea la medicină.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+:root {
+  --primary:    #407BFF;
+  --bg:         #f5f4f0;
+  --card:       #ffffff;
+  --border:     #e2e0d8;
+  --text:       #1a1a18;
+  --muted:      #7a7870;
+  --green:      #16a34a;
+  --green-bg:   #dcfce7;
+  --green-bd:   #86efac;
+  --red:        #dc2626;
+  --red-bg:     #fee2e2;
+  --orange:     #ea580c;
+  --radius:     16px;
+  --shadow:     0 2px 14px rgba(0,0,0,.07);
+  --shadow-md:  0 4px 24px rgba(0,0,0,.11);
+}
+
+html { font-size: 15px; }
+@media (min-width: 768px)  { html { font-size: 16px; } }
+@media (min-width: 992px)  { html { font-size: 17px; } }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Figtree', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── NAVBAR ──────────────────────────────────────── */
+nav.navbar {
+  position: fixed; top: 7px; left: 0; width: 100%;
+  min-height: 80px; height: 80px;
+  border: none;
+  transition: all 200ms ease-out, top 50ms linear, background 100ms ease;
+  font-family: 'Figtree', sans-serif;
+  z-index: 1000;
+}
+nav.navbar.scrolled {
+  top: 0;
+  background: var(--bg);
+  border-bottom: 1px solid rgba(128,128,128,.4);
+  box-shadow: 0 2px 16px rgba(0,0,0,.06);
+}
+.navbar-brand-2 h1 {
+  color: #407BFF !important;
+  font-size: 2.2rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -.03em;
+  line-height: 1;
+  margin: 0;
+}
+.navbar-nav .nav-link {
+  font-size: 1rem; font-weight: 600;
+  padding: 6px 14px !important;
+  border-radius: 10px;
+  transition: background .15s, color .15s;
+  color: var(--text);
+}
+.navbar-nav .nav-link:hover { background: rgba(0,0,0,.05); }
+
+/* ── MAIN LAYOUT ─────────────────────────────────── */
+.login-shell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 20px 60px;
+}
+
+.login-wrap {
+  width: 100%;
+  max-width: 440px;
+}
+
+/* ── HEADING ─────────────────────────────────────── */
+.login-heading {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.login-heading h2 {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -.04em;
+  margin-bottom: 6px;
+}
+.login-heading p {
+  color: var(--muted);
+  font-size: .95rem;
+}
+
+/* ── CARD ────────────────────────────────────────── */
+.login-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  box-shadow: var(--shadow);
+}
+
+/* ── FORM FIELDS ─────────────────────────────────── */
+.field-group {
+  margin-bottom: 18px;
+}
+.field-group label {
+  display: block;
+  font-size: .8rem;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+.field-group input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Figtree', sans-serif;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.field-group input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(64,123,255,.12);
+  background: var(--card);
+}
+.field-group input::placeholder { color: #b5b3ac; }
+
+.field-group input.input-error {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(220,38,38,.1);
+}
+
+/* Password wrapper */
+.pw-wrap { position: relative; }
+.pw-wrap input { padding-right: 48px; }
+.pw-toggle {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; padding: 0;
+  color: var(--muted); display: flex; align-items: center; justify-content: center;
+  transition: color .15s;
+}
+.pw-toggle:hover { color: var(--text); }
+.pw-toggle svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── FORGOT LINK ─────────────────────────────────── */
+.forgot-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -10px;
+  margin-bottom: 22px;
+}
+.forgot-row a {
+  font-size: .82rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color .15s;
+}
+.forgot-row a:hover { color: var(--primary); }
+
+/* ── SUBMIT BUTTON ───────────────────────────────── */
+.btn-login {
+  width: 100%;
+  height: 50px;
+  background: var(--text);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Figtree', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-login:hover { background: #2c2c2a; }
+.btn-login:active { transform: scale(.98); }
+.btn-login:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.btn-login svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Loading spinner */
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .65s linear infinite;
+  display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── DIVIDER ─────────────────────────────────────── */
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 22px 0;
+  font-size: .75rem;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ── GOOGLE BUTTON ───────────────────────────────── */
+.btn-google {
+  width: 100%;
+  height: 50px;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Figtree', sans-serif;
+  font-size: .95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s, transform .1s;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  text-decoration: none;
+}
+.btn-google:hover {
+  border-color: #c0bdb4;
+  box-shadow: var(--shadow);
+  color: var(--text);
+}
+.btn-google:active { transform: scale(.98); }
+.btn-google svg { width: 20px; height: 20px; }
+
+/* ── REGISTER LINK ───────────────────────────────── */
+.register-row {
+  text-align: center;
+  margin-top: 24px;
+  font-size: .9rem;
+  color: var(--muted);
+}
+.register-row a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity .15s;
+}
+.register-row a:hover { opacity: .75; }
+
+/* ── ALERT BANNER ────────────────────────────────── */
+.alert-banner {
+  display: none;
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-size: .88rem;
+  font-weight: 500;
+  margin-bottom: 18px;
+  border: 1px solid;
+}
+.alert-banner.error {
+  background: var(--red-bg);
+  border-color: #fca5a5;
+  color: var(--red);
+}
+.alert-banner.success {
+  background: var(--green-bg);
+  border-color: var(--green-bd);
+  color: var(--green);
+}
+
+/* ── FEATURES STRIP ──────────────────────────────── */
+.features-strip {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.frow {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  text-decoration: none; color: var(--text);
+  box-shadow: var(--shadow);
+  transition: border-color .16s, box-shadow .16s, transform .14s;
+  position: relative; overflow: hidden;
+  pointer-events: none;
+  opacity: .72;
+}
+.frow-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: #f0efe9; border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.frow-icon svg { width: 18px; height: 18px; stroke: var(--text); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frow-body { flex: 1; }
+.frow-name { font-size: .92rem; font-weight: 700; }
+.frow-desc { font-size: .78rem; color: var(--muted); margin-top: 1px; }
+.frow-badge {
+  font-size: .68rem; font-family: 'JetBrains Mono', monospace;
+  padding: 3px 9px; border-radius: 999px;
+  background: #f0efe9; border: 1px solid var(--border); color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ── FOOTER ──────────────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: .78rem;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--text); }
+
+@media (max-width: 480px) {
+  .login-card { padding: 24px 20px; border-radius: 14px; }
+  .login-shell { padding: 100px 16px 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar px-lg-5 px-md-4 px-3">
+  <div class="container-fluid">
+    <a class="navbar-brand-2 text-decoration-none" href="dashboard.html">
+      <h1>Submed</h1>
+    </a>
+    <ul class="navbar-nav flex-row align-items-center gap-1 ms-auto">
+      <li class="nav-item"><a class="nav-link" href="desprecontact.html">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="login-shell">
+  <div class="login-wrap">
+
+    <!-- Heading -->
+    <div class="login-heading">
+      <h2>Bun venit înapoi 👋</h2>
+      <p>Conectează-te pentru a-ți continua pregătirea.</p>
+    </div>
+
+    <!-- Card -->
+    <div class="login-card">
+
+      <!-- Error / success banner -->
+      <div class="alert-banner" id="alertBanner"></div>
+
+      <!-- Google -->
+      <a class="btn-google" href="#" onclick="handleGoogle(event)">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Continuă cu Google
+      </a>
+
+      <!-- Divider -->
+      <div class="divider">sau</div>
+
+      <!-- Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
+
+        <div class="field-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="student@exemplu.ro" autocomplete="email" required>
+        </div>
+
+        <div class="field-group">
+          <label for="password">Parolă</label>
+          <div class="pw-wrap">
+            <input type="password" id="password" name="password" placeholder="Parola ta" autocomplete="current-password" required>
+            <button type="button" class="pw-toggle" onclick="togglePw()" aria-label="Arată/ascunde parola">
+              <svg id="eyeIcon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="forgot-row">
+          <a href="reset-password.html">Ai uitat parola?</a>
+        </div>
+
+        <button type="submit" class="btn-login" id="loginBtn">
+          <span id="btnText">Intră în cont</span>
+          <div class="spinner" id="btnSpinner"></div>
+          <svg id="btnArrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Register -->
+    <div class="register-row">
+      Nu ai cont? <a href="register.html">Înregistrează-te gratuit</a>
+    </div>
+
+    <!-- Feature teaser strip -->
+    <div class="features-strip">
+      <div class="frow">
+        <div class="frow-icon">
+          <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <div class="frow-body">
+          <div class="frow-name">Scanare foaie de grilă</div>
+          <div class="frow-desc">Scor instant după fiecare examen fizic.</div>
+        </div>
+        <span class="frow-badge">disponibil</span>
+      </div>
+      <div class="frow">
+        <div class="frow-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="frow-body">
+          <div class="frow-name">Grile UMF Cluj &amp; Iași</div>
+          <div class="frow-desc">Subiecte reale din anii anteriori, cu răspunsuri.</div>
+        </div>
+        <span class="frow-badge">200+ grile</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  © 2025 Submed &nbsp;·&nbsp;
+  <a href="termeni.html">Termeni</a> &nbsp;·&nbsp;
+  <a href="desprecontact.html">Contact</a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* Navbar scroll */
+const nav = document.querySelector('nav.navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 10);
+}, { passive: true });
+
+/* Password toggle */
+let pwVisible = false;
+function togglePw() {
+  pwVisible = !pwVisible;
+  const input = document.getElementById('password');
+  const icon  = document.getElementById('eyeIcon');
+  input.type = pwVisible ? 'text' : 'password';
+  icon.innerHTML = pwVisible
+    ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
+    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+}
+
+/* Alert helper */
+function showAlert(msg, type='error') {
+  const el = document.getElementById('alertBanner');
+  el.textContent = msg;
+  el.className = `alert-banner ${type}`;
+  el.style.display = 'block';
+}
+function hideAlert() {
+  document.getElementById('alertBanner').style.display = 'none';
+}
+
+/* Loading state */
+function setLoading(on) {
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = on;
+  document.getElementById('btnText').style.display = on ? 'none' : 'inline';
+  document.getElementById('btnSpinner').style.display = on ? 'block' : 'none';
+  document.getElementById('btnArrow').style.display = on ? 'none' : 'block';
+}
+
+/* Login submit */
+async function handleLogin(e) {
+  e.preventDefault();
+  hideAlert();
+
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  if (!email || !password) {
+    showAlert('Te rugăm completează toate câmpurile.');
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    /* Replace this block with your actual auth call, e.g.:
+       const res  = await fetch(`${CPANEL_API}/auth.php?action=login`, {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ email, password })
+       });
+       const data = await res.json();
+    */
+
+    /* Demo simulation — remove in production */
+    await new Promise(r => setTimeout(r, 1200));
+    const data = email === 'demo@submed.ro' && password === 'demo123'
+      ? { success: true, user: { name: 'Demo User', email } }
+      : { success: false, message: 'Email sau parolă incorectă.' };
+
+    if (data.success) {
+      showAlert('Autentificare reușită! Redirecționăm…', 'success');
+      /* Auth.setUser(data.user); */
+      /* setTimeout(() => window.location = 'dashboard.html', 800); */
+    } else {
+      showAlert(data.message || 'A apărut o eroare. Încearcă din nou.');
+      document.getElementById('email').classList.add('input-error');
+      document.getElementById('password').classList.add('input-error');
+    }
+  } catch (err) {
+    showAlert('Eroare de rețea. Verifică conexiunea și încearcă din nou.');
+  } finally {
+    setLoading(false);
+  }
+}
+
+/* Google auth */
+function handleGoogle(e) {
+  e.preventDefault();
+  /* Replace with your actual Google OAuth flow */
+  alert('Google Sign-In: configurează OAuth în config.js');
+}
+
+/* Clear error state on input */
+['email','password'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function() {
+    this.classList.remove('input-error');
+    hideAlert();
+  });
+});
+</script>
+</body>
+</html>

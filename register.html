@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submed · Înregistrare</title>
+<meta name="description" content="Creează-ți un cont gratuit pe Submed și începe să te pregătești pentru admiterea la medicină.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+:root {
+  --primary:    #407BFF;
+  --bg:         #f5f4f0;
+  --card:       #ffffff;
+  --border:     #e2e0d8;
+  --text:       #1a1a18;
+  --muted:      #7a7870;
+  --green:      #16a34a;
+  --green-bg:   #dcfce7;
+  --green-bd:   #86efac;
+  --red:        #dc2626;
+  --red-bg:     #fee2e2;
+  --radius:     16px;
+  --shadow:     0 2px 14px rgba(0,0,0,.07);
+  --shadow-md:  0 4px 24px rgba(0,0,0,.11);
+}
+
+html { font-size: 15px; }
+@media (min-width: 768px)  { html { font-size: 16px; } }
+@media (min-width: 992px)  { html { font-size: 17px; } }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Figtree', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── NAVBAR ──────────────────────────────────────── */
+nav.navbar {
+  position: fixed; top: 7px; left: 0; width: 100%;
+  min-height: 80px; height: 80px;
+  border: none;
+  transition: all 200ms ease-out, top 50ms linear, background 100ms ease;
+  font-family: 'Figtree', sans-serif;
+  z-index: 1000;
+}
+nav.navbar.scrolled {
+  top: 0;
+  background: var(--bg);
+  border-bottom: 1px solid rgba(128,128,128,.4);
+  box-shadow: 0 2px 16px rgba(0,0,0,.06);
+}
+.navbar-brand-2 h1 {
+  color: #407BFF !important;
+  font-size: 2.2rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -.03em;
+  line-height: 1;
+  margin: 0;
+}
+.navbar-nav .nav-link {
+  font-size: 1rem; font-weight: 600;
+  padding: 6px 14px !important;
+  border-radius: 10px;
+  transition: background .15s, color .15s;
+  color: var(--text);
+}
+.navbar-nav .nav-link:hover { background: rgba(0,0,0,.05); }
+
+/* ── MAIN LAYOUT ─────────────────────────────────── */
+.register-shell {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 110px 20px 60px;
+}
+
+.register-wrap {
+  width: 100%;
+  max-width: 460px;
+}
+
+/* ── HEADING ─────────────────────────────────────── */
+.register-heading {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.register-heading h2 {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -.04em;
+  margin-bottom: 6px;
+}
+.register-heading p {
+  color: var(--muted);
+  font-size: .95rem;
+}
+
+/* ── STEP INDICATOR ──────────────────────────────── */
+.steps-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 28px;
+}
+.step-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  position: relative;
+}
+.step-circle {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--card);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .78rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all .25s;
+  position: relative; z-index: 1;
+}
+.step-circle.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+.step-circle.done {
+  border-color: var(--green);
+  background: var(--green);
+  color: #fff;
+}
+.step-circle.done::after {
+  content: '';
+  display: block;
+  width: 10px; height: 6px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+.step-circle.done span { display: none; }
+.step-label {
+  font-size: .68rem;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  transition: color .25s;
+  white-space: nowrap;
+}
+.step-node.active .step-label { color: var(--text); font-weight: 600; }
+.step-connector {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  margin-top: -22px;
+  transition: background .25s;
+  position: relative; z-index: 0;
+}
+.step-connector.done { background: var(--green); }
+
+/* ── CARD ────────────────────────────────────────── */
+.register-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  box-shadow: var(--shadow);
+}
+
+/* ── FORM FIELDS ─────────────────────────────────── */
+.field-group {
+  margin-bottom: 18px;
+}
+.field-group label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: .8rem;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+.field-hint {
+  font-size: .72rem;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+  color: var(--muted);
+}
+.field-group input,
+.field-group select {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Figtree', sans-serif;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  appearance: none;
+}
+.field-group input:focus,
+.field-group select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(64,123,255,.12);
+  background: var(--card);
+}
+.field-group input::placeholder { color: #b5b3ac; }
+.field-group input.input-error,
+.field-group select.input-error {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(220,38,38,.1);
+}
+.field-group input.input-ok {
+  border-color: var(--green);
+}
+
+/* Select arrow */
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '';
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--muted);
+  pointer-events: none;
+}
+
+/* Two-column row */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Password wrapper */
+.pw-wrap { position: relative; }
+.pw-wrap input { padding-right: 48px; }
+.pw-toggle {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; padding: 0;
+  color: var(--muted); display: flex; align-items: center; justify-content: center;
+  transition: color .15s;
+}
+.pw-toggle:hover { color: var(--text); }
+.pw-toggle svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Password strength bar */
+.pw-strength {
+  margin-top: 8px;
+  display: none;
+}
+.pw-strength-track {
+  height: 4px; border-radius: 2px;
+  background: var(--border);
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+.pw-strength-fill {
+  height: 100%; border-radius: 2px;
+  width: 0%; transition: width .3s, background .3s;
+}
+.pw-strength-label {
+  font-size: .72rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--muted);
+}
+
+/* Field error message */
+.field-error {
+  font-size: .78rem;
+  color: var(--red);
+  margin-top: 5px;
+  display: none;
+  font-weight: 500;
+}
+
+/* ── TERMS CHECKBOX ──────────────────────────────── */
+.terms-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 22px;
+  margin-top: 4px;
+}
+.terms-row input[type="checkbox"] {
+  width: 18px; height: 18px;
+  min-width: 18px;
+  margin-top: 2px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  border-radius: 4px;
+}
+.terms-row label {
+  font-size: .85rem;
+  color: var(--muted);
+  cursor: pointer;
+  line-height: 1.5;
+}
+.terms-row label a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+.terms-row label a:hover { opacity: .75; }
+
+/* ── BUTTONS ─────────────────────────────────────── */
+.btn-register {
+  width: 100%;
+  height: 50px;
+  background: var(--text);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Figtree', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-register:hover { background: #2c2c2a; }
+.btn-register:active { transform: scale(.98); }
+.btn-register:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.btn-register svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.btn-back {
+  width: 100%;
+  height: 50px;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Figtree', sans-serif;
+  font-size: .95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .15s, color .15s, transform .1s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-bottom: 10px;
+}
+.btn-back:hover { border-color: #c0bdb4; color: var(--text); }
+.btn-back:active { transform: scale(.98); }
+.btn-back svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Loading spinner */
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .65s linear infinite;
+  display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── DIVIDER ─────────────────────────────────────── */
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 22px 0;
+  font-size: .75rem;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ── GOOGLE BUTTON ───────────────────────────────── */
+.btn-google {
+  width: 100%;
+  height: 50px;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Figtree', sans-serif;
+  font-size: .95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s, transform .1s;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  text-decoration: none;
+  margin-bottom: 0;
+}
+.btn-google:hover { border-color: #c0bdb4; box-shadow: var(--shadow); color: var(--text); }
+.btn-google:active { transform: scale(.98); }
+.btn-google svg { width: 20px; height: 20px; }
+
+/* ── ALERT ───────────────────────────────────────── */
+.alert-banner {
+  display: none;
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-size: .88rem;
+  font-weight: 500;
+  margin-bottom: 18px;
+  border: 1px solid;
+}
+.alert-banner.error   { background: var(--red-bg);   border-color: #fca5a5;       color: var(--red);   }
+.alert-banner.success { background: var(--green-bg); border-color: var(--green-bd); color: var(--green); }
+
+/* ── SUCCESS STATE ───────────────────────────────── */
+.success-state {
+  display: none;
+  text-align: center;
+  padding: 16px 0 8px;
+}
+.success-icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--green-bg);
+  border: 2px solid var(--green-bd);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 18px;
+}
+.success-icon svg { width: 28px; height: 28px; stroke: var(--green); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.success-state h3 { font-size: 1.4rem; font-weight: 800; letter-spacing: -.03em; margin-bottom: 8px; }
+.success-state p { color: var(--muted); font-size: .9rem; line-height: 1.6; margin-bottom: 24px; }
+
+/* ── LOGIN ROW ───────────────────────────────────── */
+.login-row {
+  text-align: center;
+  margin-top: 22px;
+  font-size: .9rem;
+  color: var(--muted);
+}
+.login-row a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity .15s;
+}
+.login-row a:hover { opacity: .75; }
+
+/* ── STEP PANELS ─────────────────────────────────── */
+.step-panel { display: none; }
+.step-panel.active { display: block; }
+
+/* ── SECTION HEADING inside card ─────────────────── */
+.card-section-label {
+  font-size: .72rem;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: .13em;
+  color: var(--muted);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.card-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── UNIVERSITY CHIPS ────────────────────────────── */
+.uni-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.uni-chip {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 8px 16px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: .88rem;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 600;
+  transition: all .15s;
+  user-select: none;
+}
+.uni-chip:hover { border-color: var(--primary); color: var(--text); }
+.uni-chip.selected { background: rgba(64,123,255,.1); border-color: var(--primary); color: var(--primary); }
+
+@media (max-width: 480px) {
+  .register-card { padding: 24px 18px; border-radius: 14px; }
+  .register-shell { padding: 96px 14px 40px; }
+  .field-row { grid-template-columns: 1fr; }
+}
+
+/* ── FOOTER ──────────────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: .78rem;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar px-lg-5 px-md-4 px-3">
+  <div class="container-fluid">
+    <a class="navbar-brand-2 text-decoration-none" href="dashboard.html">
+      <h1>Submed</h1>
+    </a>
+    <ul class="navbar-nav flex-row align-items-center gap-1 ms-auto">
+      <li class="nav-item"><a class="nav-link" href="login.html">Autentificare</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="register-shell">
+  <div class="register-wrap">
+
+    <!-- Heading -->
+    <div class="register-heading">
+      <h2>Cont nou, gratuit 🎓</h2>
+      <p>Pregătire completă pentru admiterea la medicină.</p>
+    </div>
+
+    <!-- Step indicator -->
+    <div class="steps-bar" id="stepsBar">
+      <div class="step-node active" id="stepNode1">
+        <div class="step-circle active" id="stepCircle1"><span>1</span></div>
+        <div class="step-label">Cont</div>
+      </div>
+      <div class="step-connector" id="stepConn1"></div>
+      <div class="step-node" id="stepNode2">
+        <div class="step-circle" id="stepCircle2"><span>2</span></div>
+        <div class="step-label">Profil</div>
+      </div>
+      <div class="step-connector" id="stepConn2"></div>
+      <div class="step-node" id="stepNode3">
+        <div class="step-circle" id="stepCircle3"><span>3</span></div>
+        <div class="step-label">Gata</div>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="register-card">
+      <div class="alert-banner" id="alertBanner"></div>
+
+      <!-- ===== STEP 1: Account ===== -->
+      <div class="step-panel active" id="panel1">
+
+        <a class="btn-google mb-3" href="#" onclick="handleGoogle(event)">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          Înregistrare cu Google
+        </a>
+
+        <div class="divider">sau cu email</div>
+
+        <div class="field-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="student@exemplu.ro" autocomplete="email">
+          <div class="field-error" id="emailErr">Introdu o adresă de email validă.</div>
+        </div>
+
+        <div class="field-group">
+          <label for="password">
+            Parolă
+            <span class="field-hint" id="pwHint">—</span>
+          </label>
+          <div class="pw-wrap">
+            <input type="password" id="password" placeholder="Minim 8 caractere" autocomplete="new-password" oninput="checkStrength()">
+            <button type="button" class="pw-toggle" onclick="togglePw('password','eyeIcon1')" aria-label="Arată parola">
+              <svg id="eyeIcon1" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="pw-strength" id="pwStrength">
+            <div class="pw-strength-track"><div class="pw-strength-fill" id="pwFill"></div></div>
+            <div class="pw-strength-label" id="pwLabel">—</div>
+          </div>
+          <div class="field-error" id="passwordErr">Parola trebuie să aibă cel puțin 8 caractere.</div>
+        </div>
+
+        <div class="field-group">
+          <label for="confirmPassword">Confirmă parola</label>
+          <div class="pw-wrap">
+            <input type="password" id="confirmPassword" placeholder="Repetă parola" autocomplete="new-password">
+            <button type="button" class="pw-toggle" onclick="togglePw('confirmPassword','eyeIcon2')" aria-label="Arată parola">
+              <svg id="eyeIcon2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="field-error" id="confirmErr">Parolele nu coincid.</div>
+        </div>
+
+        <button type="button" class="btn-register" onclick="goToStep2()">
+          <span>Continuă</span>
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- ===== STEP 2: Profile ===== -->
+      <div class="step-panel" id="panel2">
+
+        <div class="field-row">
+          <div class="field-group">
+            <label for="firstName">Prenume</label>
+            <input type="text" id="firstName" placeholder="Ion" autocomplete="given-name">
+            <div class="field-error" id="firstNameErr">Câmp obligatoriu.</div>
+          </div>
+          <div class="field-group">
+            <label for="lastName">Nume</label>
+            <input type="text" id="lastName" placeholder="Popescu" autocomplete="family-name">
+            <div class="field-error" id="lastNameErr">Câmp obligatoriu.</div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="targetUni">Universitate țintă</label>
+          <div class="uni-chips" id="uniChips">
+            <button type="button" class="uni-chip" onclick="selectUni(this, 'cluj')">UMF Cluj-Napoca</button>
+            <button type="button" class="uni-chip" onclick="selectUni(this, 'iasi')">UMF Iași</button>
+            <button type="button" class="uni-chip" onclick="selectUni(this, 'bucuresti')">UMF București</button>
+            <button type="button" class="uni-chip" onclick="selectUni(this, 'tgmures')">UMF Târgu Mureș</button>
+            <button type="button" class="uni-chip" onclick="selectUni(this, 'alta')">Alta</button>
+          </div>
+          <div class="field-error" id="uniErr">Alege cel puțin o universitate.</div>
+        </div>
+
+        <div class="field-group" style="margin-bottom:8px">
+          <label for="examYear">
+            An de examen
+            <span class="field-hint">opțional</span>
+          </label>
+          <div class="select-wrap">
+            <select id="examYear">
+              <option value="">— Selectează —</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+              <option value="2027">2027</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="terms-row" style="margin-top:18px">
+          <input type="checkbox" id="termsCheck">
+          <label for="termsCheck">
+            Sunt de acord cu <a href="termeni.html" target="_blank">Termenii și Condițiile</a> și cu <a href="confidentialitate.html" target="_blank">Politica de confidențialitate</a>.
+          </label>
+        </div>
+        <div class="field-error" id="termsErr" style="margin-top:-8px;margin-bottom:14px">Trebuie să accepți termenii.</div>
+
+        <button type="button" class="btn-register" id="registerBtn" onclick="submitRegister()">
+          <span id="registerBtnText">Creează contul</span>
+          <div class="spinner" id="registerSpinner"></div>
+          <svg id="registerArrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <button type="button" class="btn-back" style="margin-top:10px" onclick="goToStep1()">
+          <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Înapoi
+        </button>
+      </div>
+
+      <!-- ===== STEP 3: Success ===== -->
+      <div class="step-panel" id="panel3">
+        <div class="success-state" style="display:block">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h3>Cont creat cu succes!</h3>
+          <p>Bun venit pe Submed, <strong id="welcomeName">—</strong>! Contul tău este gata. Poți începe să exersezi grile imediat.</p>
+          <a href="dashboard.html" class="btn-register" style="text-decoration:none; display:flex;">
+            Mergi la Dashboard
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-left:8px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div><!-- /register-card -->
+
+    <div class="login-row" id="loginRow">
+      Ai deja cont? <a href="login.html">Autentifică-te</a>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  © 2025 Submed &nbsp;·&nbsp;
+  <a href="termeni.html">Termeni</a> &nbsp;·&nbsp;
+  <a href="desprecontact.html">Contact</a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ── Navbar scroll ── */
+const nav = document.querySelector('nav.navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 10);
+}, { passive: true });
+
+/* ── State ── */
+let currentStep = 1;
+let selectedUni = null;
+
+/* ── Step navigation ── */
+function setStep(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById(`panel${i}`).classList.toggle('active', i === n);
+    const circle = document.getElementById(`stepCircle${i}`);
+    const node   = document.getElementById(`stepNode${i}`);
+    circle.className = 'step-circle' + (i < n ? ' done' : i === n ? ' active' : '');
+    circle.innerHTML = i < n ? '' : `<span>${i}</span>`;
+    node.classList.toggle('active', i === n);
+  });
+  if (document.getElementById('stepConn1'))
+    document.getElementById('stepConn1').classList.toggle('done', n > 1);
+  if (document.getElementById('stepConn2'))
+    document.getElementById('stepConn2').classList.toggle('done', n > 2);
+  currentStep = n;
+  if (n === 3) document.getElementById('loginRow').style.display = 'none';
+  hideAlert();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── Validation helpers ── */
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg || el.textContent;
+  el.style.display = 'block';
+}
+function hideErr(id) {
+  document.getElementById(id).style.display = 'none';
+}
+function markErr(id)  { document.getElementById(id)?.classList.add('input-error'); }
+function markOk(id)   { document.getElementById(id)?.classList.remove('input-error'); }
+function showAlert(msg, type = 'error') {
+  const el = document.getElementById('alertBanner');
+  el.textContent = msg;
+  el.className = `alert-banner ${type}`;
+  el.style.display = 'block';
+}
+function hideAlert() { document.getElementById('alertBanner').style.display = 'none'; }
+
+/* ── Password toggle ── */
+const pwStates = {};
+function togglePw(inputId, iconId) {
+  pwStates[inputId] = !pwStates[inputId];
+  const input = document.getElementById(inputId);
+  const icon  = document.getElementById(iconId);
+  input.type = pwStates[inputId] ? 'text' : 'password';
+  icon.innerHTML = pwStates[inputId]
+    ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
+    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+}
+
+/* ── Password strength ── */
+function checkStrength() {
+  const pw  = document.getElementById('password').value;
+  const bar = document.getElementById('pwStrength');
+  const fill = document.getElementById('pwFill');
+  const lbl  = document.getElementById('pwLabel');
+  const hint = document.getElementById('pwHint');
+
+  if (!pw) { bar.style.display = 'none'; hint.textContent = '—'; return; }
+  bar.style.display = 'block';
+
+  let score = 0;
+  if (pw.length >= 8)  score++;
+  if (pw.length >= 12) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+  const levels = [
+    { pct: 20,  color: '#dc2626', text: 'Foarte slabă' },
+    { pct: 40,  color: '#ea580c', text: 'Slabă'        },
+    { pct: 60,  color: '#ca8a04', text: 'Medie'        },
+    { pct: 80,  color: '#16a34a', text: 'Bună'         },
+    { pct: 100, color: '#15803d', text: 'Excelentă'    },
+  ];
+  const lvl = levels[Math.min(score, 4)];
+  fill.style.width = lvl.pct + '%';
+  fill.style.background = lvl.color;
+  lbl.textContent = lvl.text;
+  lbl.style.color = lvl.color;
+  hint.textContent = lvl.text;
+  hint.style.color = lvl.color;
+}
+
+/* ── University chips ── */
+function selectUni(btn, val) {
+  document.querySelectorAll('.uni-chip').forEach(c => c.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedUni = val;
+  hideErr('uniErr');
+}
+
+/* ── Step 1 → 2 ── */
+function goToStep2() {
+  let valid = true;
+  hideAlert();
+
+  const email = document.getElementById('email').value.trim();
+  const pw    = document.getElementById('password').value;
+  const cpw   = document.getElementById('confirmPassword').value;
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showErr('emailErr'); markErr('email'); valid = false;
+  } else { hideErr('emailErr'); markOk('email'); }
+
+  if (pw.length < 8) {
+    showErr('passwordErr'); markErr('password'); valid = false;
+  } else { hideErr('passwordErr'); markOk('password'); }
+
+  if (pw !== cpw || !cpw) {
+    showErr('confirmErr', pw !== cpw ? 'Parolele nu coincid.' : 'Câmp obligatoriu.');
+    markErr('confirmPassword'); valid = false;
+  } else { hideErr('confirmErr'); markOk('confirmPassword'); }
+
+  if (!valid) return;
+  setStep(2);
+}
+
+/* ── Step 2 → 1 ── */
+function goToStep1() { setStep(1); }
+
+/* ── Submit ── */
+async function submitRegister() {
+  let valid = true;
+  hideAlert();
+
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName  = document.getElementById('lastName').value.trim();
+  const terms     = document.getElementById('termsCheck').checked;
+
+  if (!firstName) { showErr('firstNameErr'); markErr('firstName'); valid = false; }
+  else { hideErr('firstNameErr'); markOk('firstName'); }
+
+  if (!lastName)  { showErr('lastNameErr'); markErr('lastName'); valid = false; }
+  else { hideErr('lastNameErr'); markOk('lastName'); }
+
+  if (!selectedUni) { showErr('uniErr'); valid = false; }
+
+  if (!terms) { showErr('termsErr'); valid = false; }
+  else { hideErr('termsErr'); }
+
+  if (!valid) return;
+
+  const btn = document.getElementById('registerBtn');
+  btn.disabled = true;
+  document.getElementById('registerBtnText').style.display = 'none';
+  document.getElementById('registerSpinner').style.display = 'block';
+  document.getElementById('registerArrow').style.display = 'none';
+
+  try {
+    /* Replace with your actual API call:
+    const res  = await fetch(`${CPANEL_API}/auth.php?action=register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email:      document.getElementById('email').value.trim(),
+        password:   document.getElementById('password').value,
+        first_name: firstName,
+        last_name:  lastName,
+        university: selectedUni,
+        exam_year:  document.getElementById('examYear').value
+      })
+    });
+    const data = await res.json();
+    */
+
+    /* Demo simulation — remove in production */
+    await new Promise(r => setTimeout(r, 1400));
+    const data = { success: true };
+
+    if (data.success) {
+      document.getElementById('welcomeName').textContent = firstName;
+      setStep(3);
+    } else {
+      showAlert(data.message || 'A apărut o eroare. Încearcă din nou.');
+      btn.disabled = false;
+      document.getElementById('registerBtnText').style.display = 'inline';
+      document.getElementById('registerSpinner').style.display = 'none';
+      document.getElementById('registerArrow').style.display = 'block';
+    }
+  } catch (err) {
+    showAlert('Eroare de rețea. Verifică conexiunea și încearcă din nou.');
+    btn.disabled = false;
+    document.getElementById('registerBtnText').style.display = 'inline';
+    document.getElementById('registerSpinner').style.display = 'none';
+    document.getElementById('registerArrow').style.display = 'block';
+  }
+}
+
+/* ── Google ── */
+function handleGoogle(e) {
+  e.preventDefault();
+  alert('Google Sign-In: configurează OAuth în config.js');
+}
+
+/* ── Clear errors on input ── */
+['email','password','confirmPassword','firstName','lastName'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', function() {
+    this.classList.remove('input-error');
+    const errId = id + 'Err';
+    if (document.getElementById(errId)) hideErr(errId);
+    hideAlert();
+  });
+});
+</script>
+</body>
+</html>
