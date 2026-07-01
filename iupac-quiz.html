@@ -282,12 +282,17 @@
       <div class="category-title">Alege tipul de compuși organici:</div>
       <div class="category-grid">
         <button type="button" class="cat-chip active" data-cat="toate">Toate</button>
+        <button type="button" class="cat-chip" data-cat="hidrocarburi">Hidrocarburi</button>
+        <button type="button" class="cat-chip" data-cat="derivati halogenati">Derivați halogenați</button>
         <button type="button" class="cat-chip" data-cat="alcooli">Alcooli</button>
         <button type="button" class="cat-chip" data-cat="fenoli">Fenoli</button>
-        <button type="button" class="cat-chip" data-cat="amine">Amine</button>
-        <button type="button" class="cat-chip" data-cat="nitroderivati">Nitroderivați</button>
+        <button type="button" class="cat-chip" data-cat="eteri">Eteri</button>
         <button type="button" class="cat-chip" data-cat="compusi carbonilici">Compuși carbonilici</button>
         <button type="button" class="cat-chip" data-cat="compusi carboxilici">Compuși carboxilici</button>
+        <button type="button" class="cat-chip" data-cat="amine">Amine</button>
+        <button type="button" class="cat-chip" data-cat="amide">Amide</button>
+        <button type="button" class="cat-chip" data-cat="nitroderivati">Nitroderivați</button>
+        <button type="button" class="cat-chip" data-cat="nitrili">Nitrili</button>
         <button type="button" class="cat-chip" data-cat="grasimi">Grăsimi</button>
         <button type="button" class="cat-chip" data-cat="acizi grasi">Acizi grași</button>
         <button type="button" class="cat-chip" data-cat="aminoacizi">Aminoacizi</button>
@@ -316,9 +321,9 @@
   <script src="compounds.js"></script>
   <script>
   (function() {
-    const allCompounds = typeof UNIQUE_COMPOUNDS !== 'undefined' ? UNIQUE_COMPOUNDS : ORGANIC_COMPOUNDS;
+    const allCompounds = typeof ORGANIC_COMPOUNDS !== 'undefined' ? ORGANIC_COMPOUNDS : [];
     if (!allCompounds || allCompounds.length === 0) {
-      document.getElementById('feedback').textContent = 'No compounds loaded. Check compounds.js';
+      document.getElementById('feedback').textContent = 'Niciun compus încărcat. Verifică fișierul compounds.js';
       return;
     }
 
@@ -353,18 +358,11 @@
     function isMatch(user, compound) {
       const u = normalize(user);
       if (!u) return false;
-      // Romanian main name
-      if (compound.roName && normalize(compound.roName) === u) return true;
-      // Romanian aliases
+      // Denumirea IUPAC/principală (română)
+      if (normalize(compound.iupac) === u) return true;
+      // Denumiri uzuale acceptate (română)
       if (compound.aliasesRo && Array.isArray(compound.aliasesRo)) {
         for (const a of compound.aliasesRo) {
-          if (normalize(a) === u) return true;
-        }
-      }
-      // English IUPAC / aliases as fallback
-      if (normalize(compound.iupac) === u) return true;
-      if (compound.aliases && Array.isArray(compound.aliases)) {
-        for (const a of compound.aliases) {
           if (normalize(a) === u) return true;
         }
       }
@@ -416,7 +414,7 @@
         answerInput.classList.add('correct');
         answerInput.classList.remove('wrong');
       } else {
-        const numeCorect = currentCompound.roName || currentCompound.iupac;
+        const numeCorect = currentCompound.iupac;
         feedbackEl.innerHTML = 'Greșit. <span class="correct-answer">Răspuns corect: ' + escapeHtml(numeCorect) + '</span>';
         feedbackEl.className = 'feedback wrong';
         answerInput.classList.add('wrong');
