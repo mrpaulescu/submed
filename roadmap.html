@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Planul tău strategic de pregătire SubMed: recomandări, calendar zilnic/săptămânal și obiective KPI.">
+<title>Submed · Plan Strategic & Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css">
+
+<style>
+  /* ── Header & layout ───────────────────────────────────── */
+  .coach-head { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; flex-wrap:wrap; margin-bottom:22px; }
+  .coach-head .lead { color:var(--ink-2); max-width:60ch; margin-top:6px; }
+  .coach-tags { display:flex; gap:8px; flex-wrap:wrap; }
+  .coach-tag { border:1px solid var(--line); border-radius:100px; padding:7px 12px; color:var(--ink-2); background:var(--surface); font-size:.78rem; font-weight:700; }
+  
+  .coach-grid { display:grid; grid-template-columns:1.4fr 1fr; gap:16px; align-items:start; }
+  @media(max-width:850px){.coach-grid{grid-template-columns:1fr}}
+  
+  .coach-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:22px; box-shadow:var(--shadow); min-width:0; position:relative; }
+  .coach-card h3 { font-size:1.05rem; font-weight:700; margin:0; }
+  .coach-kicker { font-family:var(--mono); font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; color:var(--blue-deep); margin-bottom:7px; }
+  .coach-title { font-family:var(--font-display); font-weight:800; font-size:clamp(1.2rem,2.3vw,1.6rem); line-height:1.25; letter-spacing:-.025em; }
+  .coach-copy { color:var(--ink-2); font-size:.9rem; line-height:1.55; margin-top:8px; }
+  
+  .coach-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+  .coach-actions a, .coach-actions button { text-decoration:none; }
+
+  /* ── Box Validare Calendar ────────────────────────────── */
+  .cal-validation-box {
+    background: linear-gradient(135deg, var(--surface-2), var(--blue-tint-2));
+    border: 1.5px solid #c9dcff;
+    border-radius: var(--r-lg);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .cal-validation-box.validated {
+    background: var(--green-bg);
+    border-color: var(--green-bd);
+  }
+  .cal-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .cal-status-badge { font-family: var(--mono); font-size: .7rem; font-weight: 700; padding: 4px 10px; border-radius: 100px; text-transform: uppercase; }
+  .cal-status-badge.pending { background: var(--orange-bg); color: var(--orange); border: 1px solid #f4dcb2; }
+  .cal-status-badge.active { background: var(--green-bg); color: #0c7a4f; border: 1px solid var(--green-bd); }
+
+  /* ── Timeline orar zilnic ──────────────────────────────── */
+  .timeline-slots { list-style: none; padding: 0; margin: 16px 0 0; }
+  .slot-item { display: flex; align-items: center; gap: 14px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); margin-bottom: 8px; }
+  .slot-time { font-family: var(--mono); font-weight: 700; font-size: .78rem; color: var(--blue-deep); width: 85px; flex-shrink: 0; }
+  .slot-desc { font-size: .88rem; font-weight: 600; flex: 1; min-width: 0; color: var(--ink); }
+  .slot-tag { font-family: var(--mono); font-size: .65rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: var(--paper); color: var(--ink-2); }
+
+  /* ── Obiective KPI ─────────────────────────────────────── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 14px; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; transition: transform .15s, border-color .15s; }
+  .kpi-card:hover { border-color: var(--blue-bright); transform: translateY(-2px); }
+  .kpi-card.accepted { border-color: var(--green); background: var(--surface-2); }
+  .kpi-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .kpi-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--blue-tint); color: var(--blue-deep); display: grid; place-items: center; font-size: .9rem; }
+  .kpi-val { font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; color: var(--ink); margin: 4px 0; }
+  .kpi-label { font-size: .8rem; font-weight: 600; color: var(--ink-2); }
+  .kpi-progress { height: 6px; background: var(--line); border-radius: 100px; overflow: hidden; margin: 10px 0 12px; }
+  .kpi-progress-bar { height: 100%; background: var(--blue); border-radius: 100px; width: 0%; transition: width .5s ease; }
+  .kpi-card.accepted .kpi-progress-bar { background: var(--green); }
+  
+  .btn-kpi { width: 100%; font-size: .78rem; padding: 7px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--blue-deep); transition: all .15s; }
+  .btn-kpi:hover { background: var(--blue-tint-2); border-color: var(--blue); }
+  .btn-kpi.accepted { background: var(--green-bg); color: #0c7a4f; border-color: var(--green-bd); cursor: default; }
+
+  /* ── Week View ─────────────────────────────────────────── */
+  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 14px; overflow-x: auto; }
+  @media(max-width:768px){ .week-grid { grid-template-columns: repeat(7, minmax(100px, 1fr)); } }
+  .day-col { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px; text-align: center; }
+  .day-col.today { border-color: var(--blue); background: var(--blue-tint-2); }
+  .day-name { font-family: var(--mono); font-size: .68rem; font-weight: 700; text-transform: uppercase; color: var(--ink-3); }
+  .day-num { font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; margin: 2px 0 6px; color: var(--ink); }
+  .day-task { font-size: .72rem; color: var(--ink-2); line-height: 1.3; font-weight: 600; background: var(--paper); padding: 5px; border-radius: 6px; }
+
+  .coach-rationale { margin-top:13px; color:var(--ink-2); font-size:.82rem; }
+  .coach-rationale summary { color:var(--blue-deep); font-weight:700; cursor:pointer; }
+  .coach-rationale p { margin:8px 0 0; line-height:1.5; }
+</style>
+</head>
+
+<body data-nav="full">
+
+<main class="dash-shell">
+
+  <!-- Header Coach -->
+  <header class="coach-head">
+    <div>
+      <div class="coach-kicker">Plan Strategic & Ghidaj Personalizat</div>
+      <h2>Coach-ul tău, <span id="coachName">student</span> 🎯</h2>
+      <p class="lead" id="coachIntro">Transformăm capitolele slabe și obiectivele tale de admitere într-un calendar zilnic validat și KPI-uri de performanță.</p>
+    </div>
+    <div class="coach-tags">
+      <span class="coach-tag" id="coachCenter">Centru neales</span>
+      <a class="coach-tag" href="user.html">Setări Obiectiv ↗</a>
+    </div>
+  </header>
+
+  <!-- Recomandare Curentă + Obiectiv -->
+  <div class="coach-grid">
+    <section class="coach-card" aria-labelledby="focusTitle">
+      <div class="coach-kicker" id="focusKicker">Analiză & Recomandare Automată</div>
+      <h3 class="coach-title" id="focusTitle">Se analizează răspunsurile tale…</h3>
+      <p class="coach-copy" id="focusReason">Recomandarea este calculată în timp real pe baza capitolelor cu cele mai multe greșeli.</p>
+      <details class="coach-rationale">
+        <summary>De ce este recomandarea potrivită pentru mine?</summary>
+        <p id="recommendationWhy">Algoritmul prioritizează capitolele unde acuratețea ta este sub 60% sau care nu au fost parcurse conform bibliografiei.</p>
+      </details>
+      <div class="coach-actions">
+        <a class="btn-primary" id="focusGrile" href="grile.html">Începe setul de grile →</a>
+        <a class="btn-secondary" id="focusCards" href="flashcards.html">Repetă cu flashcards</a>
+      </div>
+    </section>
+
+    <section class="coach-card">
+      <div class="coach-card-head">
+        <h3>Progres Obiectiv</h3>
+        <a href="user.html" style="font-size:.8rem">Editează ținta</a>
+      </div>
+      <div class="coach-stats" style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px;">
+        <div class="coach-stat" style="background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:12px; text-align:center;">
+          <b id="statChapters" style="font-size:1.3rem;">—</b>
+          <span style="font-size:.7rem; color:var(--ink-3); display:block;">capitole lucrate</span>
+        </div>
+        <div class="coach-stat" style="background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:12px; text-align:center;">
+          <b id="statFlashcards" style="font-size:1.3rem;">—</b>
+          <span style="font-size:.7rem; color:var(--ink-3); display:block;">flashcards due</span>
+        </div>
+        <div class="coach-stat" style="background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:12px; text-align:center;">
+          <b id="statExam" style="font-size:1.3rem;">—</b>
+          <span style="font-size:.7rem; color:var(--ink-3); display:block;">examene</span>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <label for="dailyGoal" style="font-size:.8rem; font-weight:700; color:var(--ink-2); display:block; margin-bottom:6px;">Timp zilnic alocat pregătirii:</label>
+        <select class="form-select form-select-sm" id="dailyGoal" style="border-radius:8px;">
+          <option value="30">30 minute / zi (Ritm ușor)</option>
+          <option value="60">60 minute / zi (Moderat)</option>
+          <option value="90" selected>90 minute / zi (Recomandat)</option>
+          <option value="120">120 minute / zi (Intensiv)</option>
+          <option value="180">180 minute / zi (Examen)</option>
+        </select>
+      </div>
+    </section>
+  </div>
+
+  <!-- CALENDAR ZILNIC & SĂPTĂMÂNAL GENERAT DE COACH (CU VALIDARE) -->
+  <div class="sec-lbl" style="margin-top:36px;">1. Calendar Personalitat & Validare</div>
+  <section class="coach-card">
+    <div class="cal-validation-box" id="calValidationBox">
+      <div class="cal-header">
+        <div>
+          <h3 style="font-size:1.15rem; font-weight:800;" id="calTitle">Propunere Calendar de Studiu</h3>
+          <p class="coach-copy" style="margin-top:2px; font-size:.85rem;" id="calSub">
+            Coach-ul a structurat timpul tău zilnic și săptămânal conform recomandării curente.
+          </p>
+        </div>
+        <span class="cal-status-badge pending" id="calBadge">Nevalidat</span>
+      </div>
+
+      <!-- Preview orar zilnic generat pe sloturi -->
+      <ul class="timeline-slots" id="dailySlotsList">
+        <!-- Generat dinamic din JS -->
+      </ul>
+
+      <!-- Preview plan săptămânal -->
+      <div class="week-grid" id="weekGrid">
+        <!-- Generat dinamic din JS -->
+      </div>
+
+      <div class="coach-actions" style="margin-top:20px;">
+        <button class="btn-primary" id="btnValidateCal" type="button">
+          ✓ Validează & Activează Calendarul
+        </button>
+        <button class="btn-secondary" id="btnRegenerateCal" type="button">
+          🔄 Regenerează orarul
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- OBIECTIVE KPI GENERATE DE COACH -->
+  <div class="sec-lbl">2. Obiective Tip KPI (Acceptă pentru activare)</div>
+  <section class="coach-card">
+    <div class="coach-card-head">
+      <div>
+        <h3>Target-uri Performanță (KPI)</h3>
+        <p class="coach-copy" style="margin:2px 0 0; font-size:.85rem;">
+          Obiective măsurabile derivate din calendarul tău validat. Acceptă-le pentru a-ți urmări evoluția în timp real.
+        </p>
+      </div>
+      <button class="btn-secondary" id="btnAcceptAllKpis" type="button" style="font-size:.8rem; padding:6px 12px;">
+        Acceptă toate KPI-urile
+      </button>
+    </div>
+
+    <div class="kpi-grid" id="kpiContainer">
+      <!-- Cardurile KPI generate dinamic din JS -->
+    </div>
+  </section>
+
+  <!-- Resurse & Instrumente recomandate -->
+  <div class="sec-lbl">Resurse Direct Conectate</div>
+  <div class="tool-grid">
+    <a class="tool" id="resourceChapter" href="grile.html">
+      <span class="tool-name">Capitolul Recomandat</span>
+      <span class="tool-desc" id="resourceChapterText">Vezi grilele dedicate capitolului stabilit de Coach.</span>
+      <span class="act-go">Deschide grilele →</span>
+    </a>
+    <a class="tool" id="resourceFlashcards" href="flashcards.html">
+      <span class="tool-name">Set Flashcards</span>
+      <span class="tool-desc" id="resourceFlashcardsText">Repetă noțiunile de bază din pachetul activ.</span>
+      <span class="act-go">Începe flashcards →</span>
+    </a>
+    <a class="tool" id="resourceExam" href="facultati.html">
+      <span class="tool-name">Subiecte Centru</span>
+      <span class="tool-desc" id="resourceExamText">Subiectele oficiale disponibile pentru centrul tău.</span>
+      <span class="act-go">Vezi subiectele →</span>
+    </a>
+  </div>
+
+  <p class="coach-status" id="pageStatus" role="status" style="margin-top:20px; font-size:.8rem; color:var(--ink-3); text-align:center;"></p>
+</main>
+
+<script type="module" src="assets/js/components.js?v=supabase-singleton-20261028"></script>
+
+<script type="module">
+import { Auth } from './assets/js/auth.js?v=supabase-singleton-20261028';
+import { Coach, Profiles } from './assets/js/api.js';
+import { getCoachRecommendations, CoachLabels } from './assets/js/coach-recommendations.js';
+import { buildDailyStudySession, buildWeeklyStudyPlan } from './assets/js/coach-workflow.js';
+
+await Auth.requireLogin();
+const $ = id => document.getElementById(id);
+
+// ── State local ───────────────────────────────────────────
+let planData = await getCoachRecommendations();
+let isCalendarValidated = localStorage.getItem('submed_cal_validated') === 'true';
+let acceptedKpis = JSON.parse(localStorage.getItem('submed_accepted_kpis') || '[]');
+
+// User Info
+try {
+  const currentUser = await Auth.getUser();
+  if (currentUser?.name) $('coachName').textContent = currentUser.name.split(' ')[0];
+} catch (e) {}
+
+// ── 1. Render Recomandări Coach ────────────────────────────
+function renderRecommendationUI() {
+  $('coachCenter').textContent = planData.centerLabel || 'Centru neales';
+  $('statChapters').textContent = String(planData.studiedChapterCount || 0);
+  $('statFlashcards').textContent = String(planData.decks?.reduce((s, d) => s + (Number(d.due_count) || 0), 0) || 0);
+  $('statExam').textContent = planData.stats ? String(planData.stats.total_exams || 0) : '0';
+
+  if (planData.chapter) {
+    const isUrgent = planData.chapter.wrong > 0;
+    $('focusKicker').textContent = isUrgent ? '⚠️ Prioritate: Capitol cu greșeli' : '🎯 Următorul Pas Recomandat';
+    $('focusTitle').textContent = `${CoachLabels.SUBJECT_NAMES[planData.chapter.subject] || planData.chapter.subject} · ${planData.chapter.name}`;
+    $('focusReason').textContent = planData.reason;
+    $('focusGrile').href = planData.chapterHref;
+    $('focusCards').href = planData.deckHref;
+
+    $('resourceChapterText').textContent = `${planData.subjectLabel} · ${planData.chapter.name}`;
+    if (planData.deck) {
+      $('resourceFlashcardsText').textContent = `${planData.deck.title || 'Set Flashcards'} · ${planData.deck.due_count || 0} de repetat`;
+    }
+  } else {
+    $('focusTitle').textContent = 'Selectează un capitol pentru a începe';
+    $('focusReason').textContent = 'Nu am găsit destule date pentru o recomandare automată. Începe cu un test din grile.';
+  }
+}
+
+// ── 2. Generare & Validare Calendar ───────────────────────
+function buildSlotsFromMinutes(minutes, chapterName) {
+  const baseChapter = chapterName || 'Capitol Recomandat';
+  if (minutes <= 30) {
+    return [
+      { time: '17:00 - 17:15', desc: `Flashcards & Recapitulare (${baseChapter})`, tag: 'Teorie' },
+      { time: '17:15 - 17:30', desc: `Set 15 grile de verificare`, tag: 'Grile' }
+    ];
+  } else if (minutes <= 60) {
+    return [
+      { time: '16:30 - 16:50', desc: `Studiu noțiuni cheie: ${baseChapter}`, tag: 'Teorie' },
+      { time: '16:50 - 17:20', desc: `Sesiune 25 grile pe capitol`, tag: 'Grile' },
+      { time: '17:20 - 17:30', desc: `Revizuire răspunsuri greșite`, tag: 'Analiză' }
+    ];
+  } else {
+    return [
+      { time: '16:00 - 16:30', desc: `Parcurgere teorie & schemă: ${baseChapter}`, tag: 'Teorie' },
+      { time: '16:30 - 17:15', desc: `Sesiune de testare 40 grile (Mod Examen)`, tag: 'Grile' },
+      { time: '17:15 - 17:30', desc: `Pauză activă`, tag: 'Pauză' },
+      { time: '17:30 - 18:00', desc: `Repetare pachet Flashcards & fixare`, tag: 'Flashcards' }
+    ];
+  }
+}
+
+function renderCalendarUI() {
+  const box = $('calValidationBox');
+  const badge = $('calBadge');
+  const btnValid = $('btnValidateCal');
+  const minutes = Number($('dailyGoal').value);
+  const chapterName = planData.chapter?.name || 'Biologie / Chimie';
+
+  if (isCalendarValidated) {
+    box.classList.add('validated');
+    badge.className = 'cal-status-badge active';
+    badge.textContent = 'Active & Validat';
+    $('calTitle').textContent = 'Calendarul Tău Activ de Studiu';
+    $('calSub').textContent = 'Orarul zilnic și săptămânal a fost aprobat de tine și este în desfășurare.';
+    btnValid.textContent = '✓ Calendar Validat (Apasă pentru reeditare)';
+    btnValid.className = 'btn-secondary';
+  } else {
+    box.classList.remove('validated');
+    badge.className = 'cal-status-badge pending';
+    badge.textContent = 'Nevalidat';
+    $('calTitle').textContent = 'Propunere Calendar de Studiu';
+    $('calSub').textContent = 'Revizuiește orarul propus mai jos și apasă butonul de validare pentru a activa obiectivele.';
+    btnValid.textContent = '✓ Validează & Activează Calendarul';
+    btnValid.className = 'btn-primary';
+  }
+
+  // Render Orar Zilnic
+  const slots = buildSlotsFromMinutes(minutes, chapterName);
+  const slotsHost = $('dailySlotsList');
+  slotsHost.innerHTML = slots.map(s => `
+    <li class="slot-item">
+      <span class="slot-time">${s.time}</span>
+      <span class="slot-desc">${s.desc}</span>
+      <span class="slot-tag">${s.tag}</span>
+    </li>
+  `).join('');
+
+  // Render Săptămână
+  const days = ['Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă', 'Duminică'];
+  const todayIdx = (new Date().getDay() + 6) % 7;
+  const weekHost = $('weekGrid');
+  
+  weekHost.innerHTML = days.map((d, i) => `
+    <div class="day-col ${i === todayIdx ? 'today' : ''}">
+      <div class="day-name">${d}</div>
+      <div class="day-num">${10 + i} Nov</div>
+      <div class="day-task">${i === 5 ? 'Simulare Subiect' : i === 6 ? 'Pauză / Recap' : `${minutes} min Grile`}</div>
+    </div>
+  `).join('');
+}
+
+// ── 3. Obiective KPI Măsurabile ────────────────────────────
+function generateKPIs() {
+  const minutes = Number($('dailyGoal').value);
+  const chapterName = planData.chapter?.name || 'Capitol Curent';
+  const targetQuestions = Math.round(minutes * 0.6);
+
+  return [
+    {
+      id: 'kpi_grile',
+      icon: '🎯',
+      val: `${targetQuestions} Grile / Zi`,
+      label: `Rezolvate din ${chapterName}`,
+      progress: 40
+    },
+    {
+      id: 'kpi_accuracy',
+      icon: '📈',
+      val: '≥ 80% Acuratețe',
+      label: 'Scor minim recomandat',
+      progress: 65
+    },
+    {
+      id: 'kpi_flashcards',
+      icon: '🗂️',
+      val: '20 Flashcards / Zi',
+      label: 'Pachetul de memorare',
+      progress: 20
+    },
+    {
+      id: 'kpi_time',
+      icon: '⏱️',
+      val: `${minutes} min Studiu`,
+      label: 'Timp zilnic validat',
+      progress: 80
+    }
+  ];
+}
+
+function renderKpisUI() {
+  const container = $('kpiContainer');
+  const kpis = generateKPIs();
+
+  container.innerHTML = kpis.map(kpi => {
+    const isAccepted = acceptedKpis.includes(kpi.id) || acceptedKpis.includes('all');
+    return `
+      <div class="kpi-card ${isAccepted ? 'accepted' : ''}">
+        <div class="kpi-head">
+          <span class="kpi-icon">${kpi.icon}</span>
+          <span class="frow-badge ${isAccepted ? 'frow-badge-new' : ''}">${isAccepted ? 'Activat' : 'Propus'}</span>
+        </div>
+        <div class="kpi-val">${kpi.val}</div>
+        <div class="kpi-label">${kpi.label}</div>
+        <div class="kpi-progress">
+          <div class="kpi-progress-bar" style="width: ${isAccepted ? kpi.progress : 0}%"></div>
+        </div>
+        <button class="btn-kpi ${isAccepted ? 'accepted' : ''}" type="button" data-kpi-id="${kpi.id}">
+          ${isAccepted ? '✓ KPI Acceptat' : 'Acceptă Obiectivul'}
+        </button>
+      </div>
+    `;
+  }).join('');
+
+  // Event Listeners pentru butoanele de KPI
+  container.querySelectorAll('.btn-kpi').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const id = e.target.dataset.kpiId;
+      if (!acceptedKpis.includes(id)) {
+        acceptedKpis.push(id);
+        localStorage.setItem('submed_accepted_kpis', JSON.stringify(acceptedKpis));
+        renderKpisUI();
+        $('pageStatus').textContent = 'Obiectiv KPI acceptat și adăugat în planul de urmărire!';
+      }
+    });
+  });
+}
+
+// ── Handlers & Inițializare ────────────────────────────────
+$('btnValidateCal').addEventListener('click', () => {
+  isCalendarValidated = !isCalendarValidated;
+  localStorage.setItem('submed_cal_validated', String(isCalendarValidated));
+  renderCalendarUI();
+  $('pageStatus').textContent = isCalendarValidated 
+    ? 'Calendarul a fost validat! Obiectivele KPI sunt pregătite pentru acceptare.' 
+    : 'Ai trecut calendarul în modul de reeditare.';
+});
+
+$('btnRegenerateCal').addEventListener('click', () => {
+  renderCalendarUI();
+  $('pageStatus').textContent = 'Orarul zilnic și săptămânal a fost recalculat după noul obiectiv.';
+});
+
+$('btnAcceptAllKpis').addEventListener('click', () => {
+  acceptedKpis = ['all', 'kpi_grile', 'kpi_accuracy', 'kpi_flashcards', 'kpi_time'];
+  localStorage.setItem('submed_accepted_kpis', JSON.stringify(acceptedKpis));
+  renderKpisUI();
+  $('pageStatus').textContent = 'Toate obiectivele KPI au fost acceptate și integrate în pregătire!';
+});
+
+$('dailyGoal').addEventListener('change', () => {
+  renderCalendarUI();
+  renderKpisUI();
+});
+
+// Execuție inițială
+renderRecommendationUI();
+renderCalendarUI();
+renderKpisUI();
+</script>
+
+</body>
+</html>
