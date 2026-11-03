@@ -253,7 +253,7 @@
       </div>
       <div class="plan-actions">
         <a class="btn-light" id="planUpgrade" href="preturi.html">Vezi planurile</a>
-        <button class="btn-light" id="planManage" type="button" hidden>Gestionează plata</button>
+        <button class="btn-light" id="planManage" type="button" hidden>Actualizează metoda de plată</button>
         <button class="btn-ghost" id="planCancel" type="button" hidden>Anulează reînnoirea</button>
       </div>
     </div>
@@ -449,7 +449,7 @@ async function callFn(name, btn) {
   } finally { btn.disabled = false; }
 }
 $('planManage').addEventListener('click', async e => {
-  const r = await callFn('billing-portal', e.currentTarget);
+  const r = await callFn('update-payment-method', e.currentTarget);
   if (r?.url) location.href = r.url;
 });
 $('planCancel').addEventListener('click', async e => {
@@ -557,6 +557,14 @@ $('accLogout').addEventListener('click', () => Auth.logout());
 load();
 
 /* întoarcere din Stripe Checkout: webhook-ul poate întârzia câteva secunde */
+if (new URLSearchParams(location.search).get('payment_method') === 'updated') {
+  msg('Metoda de plată a fost actualizată.', 'success');
+  history.replaceState(null, '', location.pathname + '#abonament');
+}
+if (new URLSearchParams(location.search).get('plan') === 'updated') {
+  msg('Planul a fost actualizat. Starea abonamentului se sincronizează.', 'success');
+  history.replaceState(null, '', location.pathname + '#abonament');
+}
 if (new URLSearchParams(location.search).get('checkout') === 'success') {
   msg('Plata a fost primită. Îți activăm planul…', 'success');
   history.replaceState(null, '', location.pathname + '#abonament');
