@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Rezolvă grile de admitere la medicină — biologie și chimie, pe centru și dificultate, cu feedback instant sau mod examen.">
+<title>Submed · Grile de admitere</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css?v=mobile-layout-20261002">
+
+<style>
+  /* ── capitole ─────────────────────────────────────────── */
+  .chap-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; margin-bottom:10px; box-shadow:var(--shadow); display:flex; align-items:center; gap:16px; }
+  .chap-body { flex:1; min-width:0; }
+  .chap-name { font-weight:700; font-size:1.02rem; font-family:var(--font-display); }
+  .chap-meta { font-size:.78rem; color:var(--muted); font-family:var(--mono); margin-top:3px; }
+  .chap-prog { height:6px; background:var(--blue-tint-2); border-radius:4px; overflow:hidden; margin-top:8px; }
+  .chap-prog div { height:100%; background:linear-gradient(90deg,#2bbf82,#0f9e63); border-radius:4px; }
+  .chap-actions { display:flex; gap:8px; flex-shrink:0; }
+  .chap-actions .btn-primary, .chap-actions .btn-secondary { padding:8px 14px; font-size:.84rem; }
+
+  /* ── configurator ─────────────────────────────────────── */
+  .config-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:22px 24px; box-shadow:var(--shadow); margin-bottom:18px; }
+  .cfg-row { padding:15px 0; border-bottom:1px solid var(--blue-tint-2); }
+  .cfg-row:first-child { padding-top:0; }
+  .cfg-row.cfg-last { border-bottom:0; }
+  .cfg-row > label { display:block; font-family:var(--mono); font-size:.7rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin-bottom:10px; }
+  .cfg-chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .cfg-chip { display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:100px; border:1.5px solid var(--line-2); background:var(--surface); font-size:.9rem; font-weight:600; color:var(--ink-2); cursor:pointer; user-select:none; transition:all .15s; font-family:var(--font); }
+  .cfg-chip:hover { border-color:var(--blue); color:var(--blue-deep); }
+  .cfg-chip.on { background:var(--blue); border-color:var(--blue); color:#fff; box-shadow:0 4px 12px -5px rgba(45,110,255,.6); }
+  .cfg-switch { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .cfg-switch .sw-txt { font-size:.92rem; font-weight:600; }
+  .cfg-switch .sw-sub { font-size:.8rem; color:var(--muted); font-weight:400; margin-top:2px; max-width:52ch; }
+  .switch { position:relative; width:50px; height:28px; flex:0 0 auto; }
+  .switch input { opacity:0; width:0; height:0; }
+  .switch .track { position:absolute; inset:0; background:var(--line-2); border-radius:100px; transition:background .18s; cursor:pointer; }
+  .switch .track::before { content:''; position:absolute; height:22px; width:22px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform .18s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
+  .switch input:checked + .track { background:var(--blue); }
+  .switch input:checked + .track::before { transform:translateX(22px); }
+  .cfg-actions { display:flex; align-items:center; gap:14px; margin-top:20px; flex-wrap:wrap; }
+  .cfg-count { font-family:var(--mono); font-size:.8rem; color:var(--ink-3); }
+  .cfg-count b { color:var(--blue-deep); }
+
+  .demo-note { display:inline-flex; align-items:center; gap:7px; font-family:var(--mono); font-size:.68rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--wip,#9a5a00); background:var(--orange-bg); border:1px solid #f4dcb2; border-radius:100px; padding:4px 11px; }
+
+  /* ── sesiune ──────────────────────────────────────────── */
+  .quiz-head { margin-bottom:16px; }
+  .quiz-top { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .quiz-prog { font-family:var(--mono); font-size:.82rem; color:var(--ink-2); font-weight:600; }
+  .quiz-prog b { color:var(--ink); }
+  .quiz-timer { font-family:var(--mono); font-weight:700; font-size:.92rem; padding:4px 12px; border-radius:100px; background:var(--blue-tint-2); border:1px solid var(--line); color:var(--blue-deep); }
+  .quiz-timer.warn { background:var(--red-bg); border-color:#f3b8ba; color:var(--red); }
+  .quiz-tools { margin-left:auto; display:flex; gap:8px; }
+  .qtool { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:.8rem; font-weight:600; font-family:var(--font); border-radius:10px; border:1.5px solid var(--line-2); background:var(--surface); color:var(--ink-2); cursor:pointer; transition:all .15s; }
+  .qtool:hover { border-color:var(--blue); color:var(--blue-deep); }
+  .qtool.on { border-color:#f4c752; background:#FFF7E6; color:#9a5a00; }
+  .qbar { height:7px; background:var(--blue-tint-2); border-radius:4px; overflow:hidden; }
+  .qbar > i { display:block; height:100%; background:linear-gradient(90deg,var(--blue-bright),var(--blue-deep)); border-radius:4px; transition:width .3s var(--fx); }
+
+  .q-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:24px; box-shadow:var(--shadow); }
+  .q-meta { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+  .q-tag { font-family:var(--mono); font-size:.62rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:3px 9px; border-radius:100px; }
+  .q-tag.d-usor { background:var(--green-bg); color:#0c7a4f; }
+  .q-tag.d-mediu { background:#FFF2E0; color:#9a5a00; }
+  .q-tag.d-greu { background:var(--red-bg); color:var(--red); }
+  .q-tag.chap { background:var(--blue-tint-2); color:var(--blue-deep); border:1px solid var(--line); }
+  .q-tag.multi { background:var(--plan-tint,#EEF1F8); color:var(--ink-2); border:1px solid var(--line); }
+  .q-text { font-size:1.1rem; font-weight:600; line-height:1.5; margin-bottom:18px; font-family:var(--font-display); letter-spacing:-.01em; }
+  .q-text .q-num { color:var(--ink-3); font-family:var(--mono); margin-right:8px; }
+  .opt { display:flex; align-items:center; gap:12px; padding:13px 15px; border:1.5px solid var(--border); border-radius:12px; margin-bottom:9px; cursor:pointer; transition:all .12s; }
+  .opt:hover { border-color:var(--blue); background:var(--blue-tint-2); }
+  .opt.sel { border-color:var(--blue); background:var(--blue-tint); }
+  .opt.correct { border-color:var(--green); background:var(--green-bg); }
+  .opt.wrong { border-color:var(--red); background:var(--red-bg); }
+  .opt.locked { cursor:default; }
+  .opt.locked:hover { background:inherit; }
+  .opt-key { width:28px; height:28px; border-radius:8px; border:1.5px solid var(--line-2); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.82rem; font-family:var(--mono); flex-shrink:0; text-transform:uppercase; }
+  .opt.sel .opt-key { border-color:var(--blue); background:var(--blue); color:#fff; }
+  .opt.correct .opt-key { border-color:var(--green); background:var(--green); color:#fff; }
+  .opt.wrong .opt-key { border-color:var(--red); background:var(--red); color:#fff; }
+  .opt-text { flex:1; line-height:1.45; }
+  .opt-mark { margin-left:auto; font-family:var(--mono); font-size:.72rem; font-weight:700; flex-shrink:0; }
+  .opt.correct .opt-mark { color:var(--green); }
+  .opt.wrong .opt-mark { color:var(--red); }
+  .explain { margin-top:14px; padding:14px 16px; background:var(--surface-2); border:1px solid var(--border); border-radius:12px; font-size:.9rem; line-height:1.55; }
+  .explain b { color:var(--ink); }
+  .explain.ok b { color:#0c7a4f; }
+  .explain.no b { color:var(--red); }
+  .q-actions { display:flex; gap:10px; margin-top:18px; }
+  .q-actions .btn-primary, .q-actions .btn-secondary { flex:1; }
+  .kbd-hint { text-align:center; margin-top:12px; font-family:var(--mono); font-size:.7rem; color:var(--ink-3); }
+  .kbd-hint kbd { background:var(--surface-2); border:1px solid var(--line-2); border-bottom-width:2px; border-radius:5px; padding:1px 6px; font-family:var(--mono); font-size:.7rem; color:var(--ink-2); }
+
+  /* navigator întrebări */
+  .navgrid { margin-top:14px; display:grid; grid-template-columns:repeat(auto-fill,minmax(38px,1fr)); gap:7px; padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:12px; }
+  .navcell { aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:.8rem; font-weight:700; border-radius:8px; border:1.5px solid var(--line-2); background:var(--surface); color:var(--ink-2); cursor:pointer; transition:all .12s; position:relative; }
+  .navcell:hover { border-color:var(--blue); }
+  .navcell.answered { background:var(--blue-tint); border-color:#bcd4ff; color:var(--blue-deep); }
+  .navcell.current { border-color:var(--blue); box-shadow:0 0 0 3px var(--blue-tint); }
+  .navcell.flagged::after { content:''; position:absolute; top:-3px; right:-3px; width:9px; height:9px; background:#f5a623; border-radius:50%; border:1.5px solid var(--surface); }
+
+  /* ── rezultat ─────────────────────────────────────────── */
+  .res-head { display:flex; align-items:center; gap:22px; flex-wrap:wrap; margin-bottom:22px; }
+  .res-ring { --p:0; position:relative; width:118px; height:118px; border-radius:50%; flex:0 0 auto;
+              background:conic-gradient(var(--ring-c,var(--blue)) calc(var(--p)*1%), var(--blue-tint) 0); display:grid; place-items:center; }
+  .res-ring::before { content:''; position:absolute; inset:11px; border-radius:50%; background:var(--surface); }
+  .res-ring .rv { position:relative; text-align:center; }
+  .res-ring .rv b { font-family:var(--font-display); font-weight:800; font-size:1.9rem; letter-spacing:-.03em; display:block; line-height:1; }
+  .res-ring .rv span { font-family:var(--mono); font-size:.62rem; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-3); }
+  .res-headtxt h2 { font-size:1.5rem; font-weight:800; letter-spacing:-.02em; }
+  .res-headtxt p { color:var(--ink-2); font-size:.92rem; margin-top:4px; }
+  .res-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px; }
+  @media(max-width:560px){ .res-stats { grid-template-columns:repeat(2,1fr); } }
+  .rstat { background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:14px; text-align:center; }
+  .rstat .v { font-family:var(--font-display); font-weight:800; font-size:1.5rem; letter-spacing:-.03em; }
+  .rstat .k { font-family:var(--mono); font-size:.6rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-3); margin-top:4px; }
+  .rstat.good .v { color:var(--green); } .rstat.bad .v { color:var(--red); }
+  .res-actions { display:flex; gap:10px; flex-wrap:wrap; }
+  .res-actions button { flex:1; min-width:150px; }
+
+  .hidden { display:none !important; }
+</style>
+</head>
+
+<body data-nav="full">
+
+<main class="dash-shell">
+
+  <!-- ───────── VIEW: configurator + capitole ───────── -->
+  <section id="viewChapters">
+    <div class="greeting">
+      <h2>Grile de admitere</h2>
+      <p>Construiește-ți sesiunea: materie, centru, dificultate, câte întrebări și cum vrei feedbackul.</p>
+    </div>
+
+    <div class="alert-banner" id="guestBanner"></div>
+
+    <!-- Configurator -->
+    <div class="config-card">
+      <div class="cfg-row">
+        <label>Materie</label>
+        <div class="cfg-chips" id="cfgSubject">
+          <span class="cfg-chip on" data-val="biologie">🧬 Biologie</span>
+          <span class="cfg-chip" data-val="chimie">⚗️ Chimie</span>
+        </div>
+      </div>
+      <div class="cfg-row">
+        <label>Centru universitar</label>
+        <div class="cfg-chips" id="cfgCenter">
+          <span class="cfg-chip on" data-val="toate">Toate centrele</span>
+          <span class="cfg-chip" data-val="cluj">UMF Cluj</span>
+          <span class="cfg-chip" data-val="iasi">UMF Iași</span>
+        </div>
+      </div>
+      <div class="cfg-row">
+        <label>Dificultate</label>
+        <div class="cfg-chips" id="cfgDiff">
+          <span class="cfg-chip on" data-val="toate">Toate</span>
+          <span class="cfg-chip" data-val="usor">🟢 Ușor</span>
+          <span class="cfg-chip" data-val="mediu">🟠 Mediu</span>
+          <span class="cfg-chip" data-val="greu">🔴 Greu</span>
+        </div>
+      </div>
+      <div class="cfg-row">
+        <label>Număr de întrebări</label>
+        <div class="cfg-chips" id="cfgCount">
+          <span class="cfg-chip" data-val="10">10</span>
+          <span class="cfg-chip on" data-val="20">20</span>
+          <span class="cfg-chip" data-val="30">30</span>
+          <span class="cfg-chip" data-val="50">50</span>
+          <span class="cfg-chip" data-val="0">Toate</span>
+        </div>
+      </div>
+      <div class="cfg-row cfg-switch">
+        <div>
+          <div class="sw-txt">Feedback instant</div>
+          <div class="sw-sub">Îți arată răspunsul corect imediat ce ai bifat. Dezactivat = vezi rezultatul la final, ca la examen.</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="cfgInstant" checked><span class="track"></span></label>
+      </div>
+      <div class="cfg-row cfg-switch cfg-last">
+        <div>
+          <div class="sw-txt">Cronometru</div>
+          <div class="sw-sub">Contra cronometru — un minut de întrebare. Când timpul expiră, sesiunea se încheie automat.</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="cfgTimer"><span class="track"></span></label>
+      </div>
+      <div class="cfg-actions">
+        <button class="btn-primary" id="cfgStart">⚡ Începe sesiunea</button>
+        <span class="cfg-count" id="cfgAvail"></span>
+      </div>
+    </div>
+
+    <div class="alert-banner" id="banner"></div>
+
+    <!-- Sau pe capitole -->
+    <div class="sec-lbl">Sau alege un capitol anume</div>
+    <div id="chapList"><div class="empty-hint">Se încarcă...</div></div>
+  </section>
+
+  <!-- ───────── VIEW: sesiune ───────── -->
+  <section id="viewQuiz" class="hidden">
+    <div class="quiz-head">
+      <div class="quiz-top">
+        <div class="quiz-prog" id="quizProg">—</div>
+        <div class="quiz-timer hidden" id="quizTimer"></div>
+        <div class="quiz-tools">
+          <button class="qtool" id="btnFlag" title="Marchează pentru recapitulare (F)">🚩 <span id="flagLbl">Marchează</span></button>
+          <button class="qtool hidden" id="btnNav" title="Toate întrebările">▦ Grilă</button>
+          <button class="qtool" id="quizExit">✕ Ieși</button>
+        </div>
+      </div>
+      <div class="qbar"><i id="qbarFill" style="width:0%"></i></div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-meta" id="qMeta"></div>
+      <div class="q-text" id="qText"></div>
+      <div id="qOptions"></div>
+      <div class="explain hidden" id="qExplain"></div>
+      <div class="q-actions" id="qActions"></div>
+      <div class="kbd-hint" id="kbdHint"></div>
+    </div>
+
+    <div class="navgrid hidden" id="navGrid"></div>
+  </section>
+
+  <!-- ───────── VIEW: rezultat ───────── -->
+  <section id="viewResult" class="hidden">
+    <div class="q-card">
+      <div class="res-head">
+        <div class="res-ring" id="resRing"><div class="rv"><b id="resPct">—</b><span>corect</span></div></div>
+        <div class="res-headtxt">
+          <h2 id="resTitle">Rezultat</h2>
+          <p id="resSub"></p>
+        </div>
+      </div>
+      <div class="res-stats" id="resStats"></div>
+      <div class="res-actions">
+        <button class="btn-primary" id="resReview">🔎 Revizuiește răspunsurile</button>
+        <button class="btn-secondary" id="resWrong">↻ Repetă doar greșelile</button>
+        <button class="btn-secondary" id="resAgain">Încă o dată</button>
+        <button class="btn-secondary" id="resHome">Înapoi</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="assets/js/components.js?v=public-grile-20261028"></script>
+<script type="module">
+import { Auth } from './assets/js/auth.js?v=supabase-singleton-20261028';
+import { Grile, gradeAnswer } from './assets/js/api.js';
+
+const $ = id => document.getElementById(id);
+const show = v => { for (const s of ['viewChapters','viewQuiz','viewResult']) $(s).classList.toggle('hidden', s !== v); };
+const banner = $('banner');
+const msg = (t, type='error') => { banner.textContent = t; banner.className = `alert-banner show ${type}`; };
+const clearMsg = () => { banner.className = 'alert-banner'; };
+
+/* ── autentificare opțională (mod demonstrativ pentru invitați) ── */
+let currentUser = null;
+try { currentUser = await Auth.getUser(); } catch (e) { currentUser = null; }
+if (!currentUser) {
+  const g = $('guestBanner');
+  g.className = 'alert-banner show success';
+  g.innerHTML = 'Mod vizitator — poți rezolva grilele fără cont. <a href="login.html" style="color:inherit;font-weight:700;text-decoration:underline">Autentifică-te</a> ca să-ți salvezi progresul.';
+}
+const canSave = !!currentUser;
+
+/* ── constante ─────────────────────────────────────────── */
+const CENTER_MAP   = { toate: null, cluj: ['cluj'], iasi: ['iași', 'iasi'] };
+const CENTER_LABEL = { toate: 'toate centrele', cluj: 'UMF Cluj', iasi: 'UMF Iași' };
+const DIFF_LABEL   = { usor: 'Ușor', mediu: 'Mediu', greu: 'Greu' };
+const SEC_PER_Q    = 60;
+
+const coachParams = new URLSearchParams(window.location.search);
+const recommendedChapterId = coachParams.get('chapter');
+let recommendedChapterOpened = false;
+let subject = coachParams.get('subject') === 'chimie' ? 'chimie' : 'biologie';
+let centerSel = 'toate', diffSel = 'toate', countSel = 20;
+let progress = {};
+
+/* ── bancă demonstrativă (înlocuită de conținutul real) ──── */
+const DEMO = (() => {
+  const CHAP = {
+    biologie: ['Celula','Sistemul nervos','Sistemul circulator','Genetică','Diviziunea celulară'],
+    chimie:   ['Alcooli','Acizi carboxilici','Hidrocarburi','Amine','Reacții de oxidare'],
+  };
+  const CENTERS = ['Cluj','Iași'];
+  const DIFFS = ['usor','mediu','greu'];
+  const K = ['A','B','C','D'];
+  const banks = {};
+  function make(subject, i) {
+    const chap = CHAP[subject][i % 5];
+    const center = CENTERS[i % 2];
+    const diff = DIFFS[i % 3];
+    const ci = i % 4;
+    const multiple = (i % 6 === 0);
+    const correct = multiple ? [K[ci], K[(ci + 2) % 4]].sort() : [K[ci]];
+    return {
+      id: `demo-${subject}-${i}`,
+      text: `(${chap}) Întrebare demonstrativă #${i + 1}. Text de test pentru verificarea funcțiilor — conținutul real se adaugă ulterior.`,
+      options: K.map(k => ({ key: k, text: `Varianta ${k} — răspuns demonstrativ` })),
+      correct, multiple,
+      explanation: `Răspuns demonstrativ corect: ${correct.join(', ')}. Explicația reală va însoți conținutul.`,
+      difficulty: diff, source: `Admitere ${center} 2024`,
+      chapter_id: `demo-ch-${subject}-${i % 5}`, chapter_name: chap,
+    };
+  }
+  function bank(subject) { return banks[subject] || (banks[subject] = Array.from({ length: 60 }, (_, i) => make(subject, i))); }
+  return {
+    filter(subject, { center, difficulty } = {}) {
+      let qs = bank(subject).slice();
+      if (center) { const p = (Array.isArray(center) ? center : [center]).map(s => s.toLowerCase()); qs = qs.filter(q => p.some(x => q.source.toLowerCase().includes(x))); }
+      if (difficulty && difficulty !== 'toate') qs = qs.filter(q => q.difficulty === difficulty);
+      return qs;
+    },
+    chapters(subject) { return CHAP[subject].map((n, i) => ({ id: `demo-ch-${subject}-${i}`, name: n, subject, question_count: 12 })); },
+  };
+})();
+
+let usingDemo = false;
+const normDiff = d => {
+  if (d == null) return null;
+  const s = String(d).toLowerCase();
+  if (['1','usor','ușor','easy'].includes(s)) return 'usor';
+  if (['2','mediu','medium'].includes(s)) return 'mediu';
+  if (['3','greu','hard','dificil'].includes(s)) return 'greu';
+  return s;
+};
+const shuffle = a => a.sort(() => Math.random() - 0.5);
+
+/* ── strat de date: real cu fallback demonstrativ ────────── */
+async function fetchQuestions({ subject, center, difficulty, limit }) {
+  let qs = [];
+  try { qs = await Grile.listQuestionsBySubject(subject, { center: CENTER_MAP[center], shuffle: true, limit: null }); }
+  catch (e) { qs = []; }
+  if (!qs.length) { usingDemo = true; qs = shuffle(DEMO.filter(subject, { center: CENTER_MAP[center] })); }
+  else usingDemo = false;
+  if (difficulty && difficulty !== 'toate') qs = qs.filter(q => normDiff(q.difficulty) === difficulty);
+  if (limit) qs = qs.slice(0, limit);
+  return qs;
+}
+async function countAvail({ subject, center, difficulty }) {
+  try {
+    let arr = await Grile.listQuestionsBySubject(subject, { center: CENTER_MAP[center], shuffle: false, limit: null });
+    if (arr && arr.length) {
+      usingDemo = false;
+      if (difficulty && difficulty !== 'toate') arr = arr.filter(q => normDiff(q.difficulty) === difficulty);
+      return arr.length;
+    }
+  } catch (e) {}
+  usingDemo = true;
+  return DEMO.filter(subject, { center: CENTER_MAP[center], difficulty }).length;
+}
+
+/* ── configurator ──────────────────────────────────────── */
+function bindChipGroup(id, onChange) {
+  const group = $(id); if (!group) return;
+  group.addEventListener('click', e => {
+    const chip = e.target.closest('.cfg-chip'); if (!chip) return;
+    group.querySelectorAll('.cfg-chip').forEach(c => c.classList.remove('on'));
+    chip.classList.add('on');
+    onChange(chip.dataset.val);
+  });
+}
+bindChipGroup('cfgSubject', v => { subject = v; loadChapters(); updateAvail(); });
+bindChipGroup('cfgCenter',  v => { centerSel = v; updateAvail(); });
+bindChipGroup('cfgDiff',    v => { diffSel = v; updateAvail(); });
+bindChipGroup('cfgCount',   v => { countSel = parseInt(v, 10); });
+
+async function updateAvail() {
+  const el = $('cfgAvail'); if (!el) return; el.textContent = 'se numără...';
+  const n = await countAvail({ subject, center: centerSel, difficulty: diffSel });
+  el.innerHTML = `<b>${n}</b> întrebări disponibile` + (usingDemo ? ' &nbsp;<span class="demo-note">mod demonstrativ</span>' : '');
+}
+
+$('cfgStart').addEventListener('click', startCustomSession);
+
+async function startCustomSession() {
+  clearMsg();
+  const instant = $('cfgInstant').checked;
+  const timed = $('cfgTimer').checked;
+  const limit = countSel > 0 ? countSel : null;
+  const questions = await fetchQuestions({ subject, center: centerSel, difficulty: diffSel, limit });
+  if (!questions.length) { msg('Nu există întrebări pentru această combinație. Încearcă „Toate".'); return; }
+  const parts = [subject === 'biologie' ? 'Biologie' : 'Chimie', CENTER_LABEL[centerSel]];
+  if (diffSel !== 'toate') parts.push(DIFF_LABEL[diffSel]);
+  beginSession({
+    mode: instant ? 'practice' : 'exam', label: parts.join(' · '),
+    questions, timed, rerun: startCustomSession,
+  });
+}
+
+/* ── capitole ──────────────────────────────────────────── */
+function normalizeChapterLabel(value) {
+  return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function mergeCellChapterAliases(chapters) {
+  if (subject !== 'biologie') return chapters;
+  const cellNames = new Set([
+    normalizeChapterLabel('Celula'),
+    normalizeChapterLabel('Organizarea corpului uman. Celula'),
+  ]);
+  const cellRows = chapters.filter(chapter => cellNames.has(normalizeChapterLabel(chapter.name)));
+  if (!cellRows.length) return chapters;
+  if (cellRows.length === 1 && normalizeChapterLabel(cellRows[0].name) === normalizeChapterLabel('Celula')) return chapters;
+
+  const canonical = cellRows.find(chapter => normalizeChapterLabel(chapter.name) === normalizeChapterLabel('Celula')) || cellRows[0];
+  const merged = {
+    ...canonical,
+    name: 'Celula',
+    chapter_ids: [...new Set(cellRows.flatMap(chapter => chapter.chapter_ids || [chapter.id]).filter(Boolean))],
+    question_count: cellRows.reduce((total, chapter) => total + (Number(chapter.question_count) || 0), 0),
+  };
+  const firstCellIndex = chapters.findIndex(chapter => cellNames.has(normalizeChapterLabel(chapter.name)));
+  const insertAt = chapters.slice(0, firstCellIndex)
+    .filter(chapter => !cellNames.has(normalizeChapterLabel(chapter.name))).length;
+  const result = chapters.filter(chapter => !cellNames.has(normalizeChapterLabel(chapter.name)));
+  result.splice(insertAt, 0, merged);
+  return result;
+}
+
+async function loadChapters() {
+  const list = $('chapList'); list.innerHTML = '<div class="empty-hint">Se încarcă...</div>';
+  let chapters = [];
+  try { chapters = await Grile.listChapters(subject); }
+  catch (e) { chapters = []; }
+  try { progress = canSave ? await Grile.myProgress() : {}; }
+  catch (e) { progress = {}; }
+  if (!chapters.length) { chapters = DEMO.chapters(subject); }
+  chapters = mergeCellChapterAliases(chapters);
+  list.innerHTML = '';
+  chapters.forEach(c => {
+    const p = (c.chapter_ids || [c.id]).reduce((total, id) => {
+      const chapterProgress = progress[id] || {};
+      total.attempted += chapterProgress.attempted || 0;
+      total.correct += chapterProgress.correct || 0;
+      return total;
+    }, { attempted: 0, correct: 0 });
+    const pct = c.question_count ? Math.round(p.correct / c.question_count * 100) : 0;
+    const row = document.createElement('div');
+    row.className = 'chap-card';
+    row.innerHTML = `
+      <div class="chap-body">
+        <div class="chap-name">${c.name}</div>
+        <div class="chap-meta">${c.question_count} întrebări · ${p.attempted} rezolvate · ${p.correct} corecte</div>
+        <div class="chap-prog"><div style="width:${pct}%"></div></div>
+      </div>
+      <div class="chap-actions">
+        <button class="btn-primary p-btn">Practică</button>
+        <button class="btn-secondary e-btn">Examen</button>
+      </div>`;
+    row.querySelector('.p-btn').addEventListener('click', () => startChapter(c, 'practice'));
+    row.querySelector('.e-btn').addEventListener('click', () => startChapter(c, 'exam'));
+    list.appendChild(row);
+  });
+  if (recommendedChapterId && !recommendedChapterOpened) {
+    const recommended = chapters.find(item => item.id === recommendedChapterId || item.chapter_ids?.includes(recommendedChapterId));
+    if (recommended) {
+      recommendedChapterOpened = true;
+      await startChapter(recommended, coachParams.get('mode') === 'exam' ? 'exam' : 'practice', { allowDemo: false });
+    }
+  }
+}
+
+async function startChapter(chapter, mode, { allowDemo = true } = {}) {
+  clearMsg();
+  let questions = [];
+  const requestedCount = Number.parseInt(coachParams.get('count'), 10);
+  const questionLimit = mode === 'exam' ? 20 : Number.isFinite(requestedCount) && requestedCount > 0 ? requestedCount : null;
+  try { questions = await Grile.listQuestions(chapter.chapter_ids || [chapter.id], { shuffle: true, limit: questionLimit }); }
+  catch (e) { questions = []; }
+  if (!questions.length) {
+    try {
+      const chapterIds = chapter.chapter_ids || [chapter.id];
+      const subjectQuestions = await Grile.listQuestionsBySubject(subject, { shuffle: true, limit: null });
+      questions = subjectQuestions.filter(question => chapterIds.includes(question.chapter_id));
+      if (questionLimit) questions = questions.slice(0, questionLimit);
+    } catch (e) { questions = []; }
+  }
+  if (!questions.length) {
+    if (!allowDemo) {
+      msg('Capitolul recomandat nu are încă întrebări publicate. Alege un alt capitol din listă.');
+      return;
+    }
+    usingDemo = true;
+    questions = shuffle(DEMO.filter(subject, {})).filter(q => (chapter.chapter_ids || [chapter.id]).includes(q.chapter_id));
+    if (!questions.length) questions = shuffle(DEMO.filter(subject, {})).slice(0, questionLimit || 12);
+    if (questionLimit) questions = questions.slice(0, questionLimit);
+  }
+  beginSession({
+    mode, label: chapter.name, questions, timed: mode === 'exam',
+    rerun: () => startChapter(chapter, mode),
+  });
+}
+
+/* ── motor de sesiune ──────────────────────────────────── */
+let S = null;
+
+function beginSession({ mode, label, questions, timed, rerun }) {
+  S = {
+    mode, origMode: mode, label, questions,
+    idx: 0, answers: {}, checked: new Set(), flags: new Set(), results: [],
+    timed, timerId: null, timeLeft: timed ? questions.length * SEC_PER_Q : 0,
+    pendingSaves: [], finishing: false,
+    startedAt: Date.now(), rerun, demo: usingDemo,
+  };
+  $('navGrid').classList.add('hidden');
+  $('btnNav').classList.toggle('hidden', mode !== 'exam');
+  show('viewQuiz');
+  if (timed) startTimer(); else { const t = $('quizTimer'); t.classList.add('hidden'); }
+  renderQuestion();
+}
+
+function startTimer() {
+  const t = $('quizTimer'); t.classList.remove('hidden');
+  const upd = () => {
+    const m = Math.floor(S.timeLeft / 60), s = S.timeLeft % 60;
+    t.textContent = `⏱ ${m}:${String(s).padStart(2, '0')}`;
+    t.classList.toggle('warn', S.timeLeft <= 30);
+    if (S.timeLeft <= 0) { finishSession(); return; }
+    S.timeLeft--;
+  };
+  upd(); S.timerId = setInterval(upd, 1000);
+}
+
+function revealFor(q) { return S.mode === 'review' || (S.mode === 'practice' && S.checked.has(q.id)); }
+
+function renderQuestion() {
+  const q = S.questions[S.idx];
+  const n = S.questions.length;
+  $('quizProg').innerHTML = `${S.label} · <b>${S.idx + 1}</b>/${n}`;
+  $('qbarFill').style.width = ((S.idx + 1) / n * 100) + '%';
+
+  // meta
+  const d = normDiff(q.difficulty);
+  const meta = [];
+  if (q.chapter_name) meta.push(`<span class="q-tag chap">${q.chapter_name}</span>`);
+  if (d && DIFF_LABEL[d]) meta.push(`<span class="q-tag d-${d}">${DIFF_LABEL[d]}</span>`);
+  if (q.multiple) meta.push(`<span class="q-tag multi">Răspuns multiplu</span>`);
+  $('qMeta').innerHTML = meta.join('');
+
+  $('qText').innerHTML = `<span class="q-num">${S.idx + 1}.</span>${q.text}`;
+
+  const reveal = revealFor(q);
+  const sel = new Set(S.answers[q.id] || []);
+  const correct = new Set(q.correct);
+  const opts = $('qOptions'); opts.innerHTML = '';
+  q.options.forEach(o => {
+    const el = document.createElement('div');
+    let cls = 'opt';
+    if (reveal) {
+      cls += ' locked';
+      if (correct.has(o.key)) cls += ' correct';
+      else if (sel.has(o.key)) cls += ' wrong';
+    } else if (sel.has(o.key)) cls += ' sel';
+    el.className = cls;
+    let mark = '';
+    if (reveal && correct.has(o.key)) mark = '<span class="opt-mark">✓ corect</span>';
+    else if (reveal && sel.has(o.key)) mark = '<span class="opt-mark">✕ ales</span>';
+    el.innerHTML = `<div class="opt-key">${o.key}</div><div class="opt-text">${o.text}</div>${mark}`;
+    if (!reveal) el.addEventListener('click', () => toggleOpt(q, o.key));
+    opts.appendChild(el);
+  });
+
+  // explicație
+  const ex = $('qExplain');
+  if (reveal && q.explanation) {
+    const ok = gradeAnswer([...sel], q.correct);
+    ex.className = 'explain ' + (ok ? 'ok' : 'no');
+    ex.innerHTML = `<b>${ok ? 'Corect!' : 'Greșit.'}</b> ${q.explanation}`;
+  } else ex.className = 'explain hidden';
+
+  renderFlag(q);
+  renderActions();
+  renderKbdHint();
+  if (!$('navGrid').classList.contains('hidden')) renderNav();
+}
+
+function toggleOpt(q, key) {
+  let sel = new Set(S.answers[q.id] || []);
+  if (q.multiple) { sel.has(key) ? sel.delete(key) : sel.add(key); }
+  else { sel = sel.has(key) ? new Set() : new Set([key]); }
+  S.answers[q.id] = [...sel];
+  renderQuestion();
+}
+
+function renderFlag(q) {
+  const on = S.flags.has(q.id);
+  const b = $('btnFlag'); b.classList.toggle('on', on);
+  $('flagLbl').textContent = on ? 'Marcată' : 'Marchează';
+}
+
+function renderActions() {
+  const a = $('qActions'); a.innerHTML = '';
+  const last = S.idx === S.questions.length - 1;
+  const q = S.questions[S.idx];
+
+  if (S.mode === 'review') {
+    if (S.idx > 0) a.appendChild(btn('btn-secondary', '← Înapoi', () => nav(-1)));
+    a.appendChild(btn('btn-primary', last ? 'Închide recenzia' : 'Următoarea →', () => { last ? showResult() : nav(1); }));
+    return;
+  }
+  if (S.mode === 'practice') {
+    if (!S.checked.has(q.id)) {
+      a.appendChild(btn('btn-primary', 'Verifică', () => checkPractice()));
+    } else {
+      a.appendChild(btn('btn-primary', last ? 'Vezi rezultatul' : 'Următoarea →', () => { last ? finishSession() : nav(1); }));
+    }
+    return;
+  }
+  // exam
+  if (S.idx > 0) a.appendChild(btn('btn-secondary', '← Înapoi', () => nav(-1)));
+  a.appendChild(btn('btn-primary', last ? 'Termină examenul' : 'Următoarea →', () => { last ? finishSession() : nav(1); }));
+}
+function btn(cls, txt, fn) { const b = document.createElement('button'); b.className = cls; b.textContent = txt; b.addEventListener('click', fn); return b; }
+
+function renderKbdHint() {
+  if (S.mode === 'review') { $('kbdHint').innerHTML = 'Navighează cu <kbd>←</kbd> <kbd>→</kbd>'; return; }
+  $('kbdHint').innerHTML = 'Alege cu <kbd>A</kbd>–<kbd>D</kbd> sau <kbd>1</kbd>–<kbd>4</kbd> · <kbd>Enter</kbd> continuă · <kbd>F</kbd> marchează';
+}
+
+function nav(dir) {
+  const t = S.idx + dir;
+  if (t < 0 || t >= S.questions.length) return;
+  S.idx = t; renderQuestion();
+}
+function jumpTo(i) { S.idx = i; renderQuestion(); }
+
+function checkPractice() {
+  const q = S.questions[S.idx];
+  const sel = S.answers[q.id] || [];
+  if (!sel.length) { msg('Selectează un răspuns.'); return; }
+  clearMsg();
+  S.checked.add(q.id);
+  const ok = gradeAnswer(sel, q.correct);
+  S.results = S.results.filter(r => r.questionId !== q.id);
+  S.results.push({ questionId: q.id, selected: sel, isCorrect: ok });
+  if (canSave && !S.demo) {
+    const pending = Grile.recordAttempt(q.id, sel, ok).catch(error => {
+      console.warn('Răspunsul nu a putut fi salvat:', error.message);
+      throw error;
+    });
+    S.pendingSaves.push(pending);
+  }
+  renderQuestion();
+}
+
+/* ── navigator întrebări (mod examen) ──────────────────── */
+$('btnNav').addEventListener('click', () => {
+  const g = $('navGrid'); g.classList.toggle('hidden');
+  if (!g.classList.contains('hidden')) renderNav();
+});
+function renderNav() {
+  const g = $('navGrid'); g.innerHTML = '';
+  S.questions.forEach((q, i) => {
+    const c = document.createElement('div');
+    c.className = 'navcell'
+      + (i === S.idx ? ' current' : '')
+      + ((S.answers[q.id] && S.answers[q.id].length) ? ' answered' : '')
+      + (S.flags.has(q.id) ? ' flagged' : '');
+    c.textContent = i + 1;
+    c.addEventListener('click', () => { jumpTo(i); });
+    g.appendChild(c);
+  });
+}
+
+/* ── flag ──────────────────────────────────────────────── */
+$('btnFlag').addEventListener('click', () => {
+  const q = S.questions[S.idx];
+  S.flags.has(q.id) ? S.flags.delete(q.id) : S.flags.add(q.id);
+  renderFlag(q);
+  if (!$('navGrid').classList.contains('hidden')) renderNav();
+});
+
+/* ── scurtături tastatură ──────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if ($('viewQuiz').classList.contains('hidden')) return;
+  if (/input|textarea|select/i.test(e.target.tagName)) return;
+  const q = S.questions[S.idx];
+  const key = e.key.toLowerCase();
+  const letters = ['a','b','c','d','e'];
+  if (S.mode !== 'review' && !revealFor(q)) {
+    let idx = -1;
+    if (letters.includes(key)) idx = letters.indexOf(key);
+    else if (/^[1-5]$/.test(key)) idx = parseInt(key, 10) - 1;
+    if (idx >= 0 && q.options[idx]) { e.preventDefault(); toggleOpt(q, q.options[idx].key); return; }
+  }
+  if (key === 'f' && S.mode !== 'review') { e.preventDefault(); $('btnFlag').click(); return; }
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); nav(-1); return; }
+  if (e.key === 'ArrowRight') { e.preventDefault(); nav(1);  return; }
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const primary = $('qActions').querySelector('.btn-primary');
+    if (primary) primary.click();
+  }
+});
+
+/* ── final + rezultat ──────────────────────────────────── */
+async function finishSession() {
+  if (!S || S.finishing) return;
+  S.finishing = true;
+  if (S.timerId) { clearInterval(S.timerId); S.timerId = null; }
+  S.results = S.questions.map(q => {
+    const sel = S.answers[q.id] || [];
+    return { questionId: q.id, selected: sel, isCorrect: gradeAnswer(sel, q.correct) };
+  });
+  if (S.mode === 'exam' && canSave && !S.demo) {
+    try { await Grile.recordAttempts(S.results); }
+    catch (error) { console.warn('Rezultatele examenului nu au putut fi salvate:', error.message); }
+  }
+  if (S.pendingSaves.length) await Promise.allSettled(S.pendingSaves);
+  S.elapsed = Math.round((Date.now() - S.startedAt) / 1000);
+  showResult();
+}
+
+function showResult() {
+  const total = S.questions.length;
+  const correct = S.results.filter(r => r.isCorrect).length;
+  const answered = S.questions.filter(q => (S.answers[q.id] || []).length).length;
+  const wrong = answered - correct;
+  const pct = Math.round(correct / total * 100);
+
+  const ring = $('resRing');
+  ring.style.setProperty('--p', pct);
+  ring.style.setProperty('--ring-c', pct >= 70 ? 'var(--green)' : pct >= 50 ? '#e88b1a' : 'var(--red)');
+  $('resPct').textContent = pct + '%';
+  $('resTitle').textContent = pct >= 70 ? 'Foarte bine! 🎉' : pct >= 50 ? 'Bun progres 💪' : 'Continuă să exersezi';
+  const mins = S.elapsed != null ? `${Math.floor(S.elapsed / 60)}:${String(S.elapsed % 60).padStart(2, '0')}` : '—';
+  $('resSub').innerHTML = `${S.label}` + (S.demo ? ' &nbsp;<span class="demo-note">mod demonstrativ</span>' : '');
+
+  $('resStats').innerHTML = `
+    <div class="rstat good"><div class="v">${correct}</div><div class="k">corecte</div></div>
+    <div class="rstat bad"><div class="v">${wrong}</div><div class="k">greșite</div></div>
+    <div class="rstat"><div class="v">${total - answered}</div><div class="k">nerezolvate</div></div>
+    <div class="rstat"><div class="v mono">${mins}</div><div class="k">timp</div></div>`;
+
+  const wrongQ = S.questions.filter(q => !S.results.find(r => r.questionId === q.id)?.isCorrect);
+  $('resWrong').classList.toggle('hidden', wrongQ.length === 0);
+  $('resWrong')._wrong = wrongQ;
+  show('viewResult');
+}
+
+$('resReview').addEventListener('click', () => { S.mode = 'review'; S.idx = 0; $('btnNav').classList.remove('hidden'); show('viewQuiz'); renderQuestion(); });
+$('resWrong').addEventListener('click', function () {
+  const wrongQ = this._wrong || [];
+  if (!wrongQ.length) return;
+  beginSession({ mode: S.origMode, label: S.label + ' · doar greșeli', questions: wrongQ.slice(), timed: false, rerun: S.rerun });
+});
+$('resAgain').addEventListener('click', () => { if (S?.rerun) S.rerun(); else backHome(); });
+$('resHome').addEventListener('click', backHome);
+$('quizExit').addEventListener('click', () => {
+  if (S?.mode === 'review') { showResult(); return; }
+  if (S?.timerId) clearInterval(S.timerId);
+  backHome();
+});
+function backHome() { if (S?.timerId) clearInterval(S.timerId); show('viewChapters'); loadChapters(); updateAvail(); }
+
+/* ── init ──────────────────────────────────────────────── */
+if (subject === 'chimie') {
+  document.querySelector('#cfgSubject [data-val="biologie"]')?.classList.remove('on');
+  document.querySelector('#cfgSubject [data-val="chimie"]')?.classList.add('on');
+}
+
+async function startDueMistakes() {
+  clearMsg();
+  if (!canSave) {
+    msg('Autentifică-te ca să poți relua întrebările greșite salvate în contul tău.', 'error');
+    return;
+  }
+  let questions = [];
+  try {
+    const count = Number.parseInt(coachParams.get('count'), 10);
+    const reviewSubject = coachParams.get('subject');
+    questions = await Grile.listDueReviews(Number.isFinite(count) && count > 0 ? count : 20, { subject: reviewSubject });
+  } catch (error) {
+    msg('Nu am putut încărca întrebările programate pentru recapitulare. Încearcă din nou.', 'error');
+    return;
+  }
+  if (!questions.length) {
+    msg('Nu ai întrebări greșite programate pentru azi. Revino după următoarea sesiune de grile.', 'success');
+    return;
+  }
+  usingDemo = false;
+  beginSession({
+    mode: 'practice',
+    label: 'Greșeli de reluat',
+    questions,
+    timed: false,
+    rerun: startDueMistakes,
+  });
+}
+if (coachParams.get('mode') === 'mistakes') startDueMistakes();
+else {
+  loadChapters();
+  updateAvail();
+}
+</script>
+
+</body>
+</html>

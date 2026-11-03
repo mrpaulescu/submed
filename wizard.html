@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Creează-ți contul SubMed în câțiva pași — alege centrul, materiile și obiectivul tău.">
+<title>Submed · Creare cont</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css">
+
+<style>
+  body { padding-bottom: 0; }
+  .wz-shell { min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 110px 20px 60px; }
+  .wz-wrap { width: 100%; max-width: 560px; }
+
+  /* progres */
+  .wz-steps { display: flex; align-items: center; gap: 8px; margin-bottom: 26px; }
+  .wz-steps .st { flex: 1; height: 6px; border-radius: 4px; background: var(--line); transition: background .3s var(--fx); }
+  .wz-steps .st.on { background: linear-gradient(90deg, var(--blue-bright), var(--blue-deep)); }
+  .wz-count { font-family: var(--mono); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px; display: block; }
+
+  .wz-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 32px; box-shadow: var(--shadow-md); }
+  .wz-card h2 { font-size: 1.5rem; font-weight: 800; letter-spacing: -.03em; margin-bottom: 6px; }
+  .wz-card .sub { color: var(--muted); font-size: .95rem; margin-bottom: 24px; }
+
+  .wz-opts { display: flex; flex-direction: column; gap: 10px; }
+  .wz-opts.row { flex-direction: row; flex-wrap: wrap; }
+  .wz-opt { display: flex; align-items: center; gap: 13px; padding: 15px 16px; border: 1.5px solid var(--line-2); border-radius: 13px; cursor: pointer; transition: all .15s; user-select: none; background: var(--surface); }
+  .wz-opt:hover { border-color: var(--blue); background: var(--blue-tint-2); }
+  .wz-opt.on { border-color: var(--blue); background: var(--blue-tint); box-shadow: 0 4px 14px -6px rgba(45,110,255,.5); }
+  .wz-opt .em { font-size: 1.5rem; line-height: 1; flex: 0 0 auto; }
+  .wz-opt .txt { flex: 1; min-width: 0; }
+  .wz-opt .nm { font-weight: 700; font-size: .98rem; }
+  .wz-opt .ds { font-size: .8rem; color: var(--muted); margin-top: 1px; }
+  .wz-opt .rc { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line-2); flex: 0 0 auto; display: grid; place-items: center; transition: all .15s; }
+  .wz-opt.on .rc { border-color: var(--blue); background: var(--blue); }
+  .wz-opt .rc svg { width: 12px; height: 12px; stroke: #fff; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity .15s; }
+  .wz-opt.on .rc svg { opacity: 1; }
+  .wz-opt.soon { opacity: .55; pointer-events: none; }
+
+  .wz-chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .wz-chip { padding: 10px 16px; border-radius: 100px; border: 1.5px solid var(--line-2); background: var(--surface); font-weight: 600; font-size: .92rem; color: var(--ink-2); cursor: pointer; transition: all .15s; user-select: none; }
+  .wz-chip:hover { border-color: var(--blue); color: var(--blue-deep); }
+  .wz-chip.on { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+  .wz-field { margin-top: 14px; }
+  .wz-field label { display: block; font-family: var(--mono); font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px; }
+  .wz-field input { width: 100%; height: 48px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 12px; font-family: var(--font); font-size: 1rem; color: var(--text); background: var(--surface-2); outline: none; transition: border-color .15s, box-shadow .15s; }
+  .wz-field input:focus { border-color: var(--blue); background: var(--card); box-shadow: 0 0 0 3px rgba(45,110,255,.14); }
+
+  /* rezumat pas final */
+  .wz-summary { display: flex; flex-direction: column; gap: 10px; margin-bottom: 4px; }
+  .wz-srow { display: flex; align-items: center; gap: 12px; padding: 13px 15px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; }
+  .wz-srow .em { font-size: 1.25rem; }
+  .wz-srow .k { font-family: var(--mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); }
+  .wz-srow .v { font-weight: 700; font-size: .95rem; }
+  .wz-srow .v span { color: var(--ink-3); font-weight: 500; }
+
+  .wz-nav { display: flex; gap: 12px; margin-top: 26px; }
+  .wz-nav .btn-secondary { flex: 0 0 auto; }
+  .wz-nav .btn-primary { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-secondary, .btn-primary { padding: 13px 20px; font-size: 1rem; }
+  .wz-hint { text-align: center; margin-top: 18px; font-size: .85rem; color: var(--muted); }
+  .wz-hint a { color: var(--blue); font-weight: 700; }
+
+  .wz-note { margin-top: 16px; font-family: var(--mono); font-size: .68rem; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); text-align: center; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+
+<body data-nav="minimal">
+
+<main class="wz-shell">
+  <div class="wz-wrap">
+    <div class="wz-steps" id="wzBars"></div>
+    <span class="wz-count" id="wzCount">Pasul 1 din 4</span>
+
+    <div class="wz-card">
+
+      <!-- Pas 1: centru -->
+      <section class="wz-step" data-step="0">
+        <h2>Alege-ți centrul</h2>
+        <p class="sub">La ce centru universitar dai admiterea? Poți schimba oricând din contul tău.</p>
+        <div class="wz-opts" id="optCenter">
+          <div class="wz-opt" data-val="cluj"><span class="em">🏛️</span><span class="txt"><span class="nm">UMF „Iuliu Hațieganu”</span><span class="ds">Cluj-Napoca</span></span><span class="rc"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+          <div class="wz-opt" data-val="iasi"><span class="em">🏛️</span><span class="txt"><span class="nm">UMF „Grigore T. Popa”</span><span class="ds">Iași</span></span><span class="rc"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+          <div class="wz-opt soon" data-val="mures"><span class="em">🏛️</span><span class="txt"><span class="nm">UMFST „G. E. Palade”</span><span class="ds">Târgu Mureș · în curând</span></span><span class="rc"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></div>
+        </div>
+      </section>
+
+      <!-- Pas 2: materii -->
+      <section class="wz-step hidden" data-step="1">
+        <h2>Ce materii pregătești?</h2>
+        <p class="sub">Alege una sau ambele. Panoul și recomandările se vor potrivi alegerii tale.</p>
+        <div class="wz-chip-row" id="optSubjects">
+          <span class="wz-chip" data-val="biologie">🧬 Biologie</span>
+          <span class="wz-chip" data-val="chimie">⚗️ Chimie</span>
+        </div>
+      </section>
+
+      <!-- Pas 3: obiectiv -->
+      <section class="wz-step hidden" data-step="2">
+        <h2>Obiectivul tău</h2>
+        <p class="sub">Ne ajută să-ți construim un plan realist până în ziua examenului.</p>
+        <label style="display:block;font-family:var(--mono);font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px">Scor țintă</label>
+        <div class="wz-chip-row" id="optGoal">
+          <span class="wz-chip" data-val="admis">✅ Vreau să intru</span>
+          <span class="wz-chip" data-val="top">🎯 Vreau un scor mare</span>
+          <span class="wz-chip" data-val="max">🏆 Vreau maximul</span>
+        </div>
+        <div class="wz-field">
+          <label>Scorul pe care ți-l propui (din 45, opțional)</label>
+          <input type="number" id="wzTarget" min="1" max="45" placeholder="ex. 35" inputmode="numeric">
+        </div>
+        <div class="wz-field">
+          <label>Prenumele tău (opțional)</label>
+          <input type="text" id="wzName" placeholder="ex. Andrei" autocomplete="given-name">
+        </div>
+      </section>
+
+      <!-- Pas 4: confirmare -->
+      <section class="wz-step hidden" data-step="3">
+        <h2>Gata de start! 🎉</h2>
+        <p class="sub">Verifică alegerile tale, apoi creează-ți contul ca să salvezi progresul.</p>
+        <div class="wz-summary" id="wzSummary"></div>
+        <div class="wz-note">Contul se creează în pasul următor — preferințele tale sunt păstrate.</div>
+      </section>
+
+      <!-- navigare -->
+      <div class="wz-nav">
+        <button class="btn-secondary hidden" id="wzBack">Înapoi</button>
+        <button class="btn-primary" id="wzNext">Continuă <span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+
+    <p class="wz-hint">Ai deja cont? <a href="login.html">Autentifică-te</a></p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="assets/js/components.js"></script>
+<script>
+  (function () {
+    const TOTAL = 4;
+    let step = 0;
+    const data = { center: null, subjects: [], goal: null, target_score: null, name: '' };
+
+    const $ = id => document.getElementById(id);
+    const steps = [...document.querySelectorAll('.wz-step')];
+    const bars = $('wzBars');
+    const CENTER_LABEL = { cluj: 'UMF Cluj-Napoca', iasi: 'UMF Iași', mures: 'UMF Târgu Mureș' };
+    const GOAL_LABEL = { admis: 'Vreau să intru', top: 'Scor mare', max: 'Maximul' };
+    const SUBJ_LABEL = { biologie: 'Biologie', chimie: 'Chimie' };
+
+    // bare de progres
+    for (let i = 0; i < TOTAL; i++) { const b = document.createElement('span'); b.className = 'st'; bars.appendChild(b); }
+    const barEls = [...bars.children];
+
+    function render() {
+      steps.forEach(s => s.classList.toggle('hidden', +s.dataset.step !== step));
+      barEls.forEach((b, i) => b.classList.toggle('on', i <= step));
+      $('wzCount').textContent = `Pasul ${step + 1} din ${TOTAL}`;
+      $('wzBack').classList.toggle('hidden', step === 0);
+      const last = step === TOTAL - 1;
+      $('wzNext').innerHTML = last ? 'Creează cont <span aria-hidden="true">→</span>' : 'Continuă <span aria-hidden="true">→</span>';
+      if (last) buildSummary();
+    }
+
+    function buildSummary() {
+      const subj = data.subjects.length ? data.subjects.map(s => SUBJ_LABEL[s]).join(' & ') : '—';
+      $('wzSummary').innerHTML = `
+        <div class="wz-srow"><span class="em">🏛️</span><div><div class="k">Centru</div><div class="v">${data.center ? CENTER_LABEL[data.center] : '<span>neselectat</span>'}</div></div></div>
+        <div class="wz-srow"><span class="em">📚</span><div><div class="k">Materii</div><div class="v">${subj}</div></div></div>
+        <div class="wz-srow"><span class="em">🎯</span><div><div class="k">Obiectiv</div><div class="v">${GOAL_LABEL[data.goal] || '—'}</div></div></div>
+        <div class="wz-srow"><span class="em">📈</span><div><div class="k">Scor țintă</div><div class="v">${data.target_score ? data.target_score + '/45' : 'îl poți seta mai târziu'}</div></div></div>
+        <div class="wz-srow"><span class="em">📅</span><div><div class="k">Următorul examen</div><div class="v">Îl adaugi în planul personal</div></div></div>`;
+    }
+
+    // pas 1 — centru (single)
+    $('optCenter').addEventListener('click', e => {
+      const o = e.target.closest('.wz-opt'); if (!o || o.classList.contains('soon')) return;
+      $('optCenter').querySelectorAll('.wz-opt').forEach(x => x.classList.remove('on'));
+      o.classList.add('on'); data.center = o.dataset.val;
+    });
+    // pas 2 — materii (multi)
+    $('optSubjects').addEventListener('click', e => {
+      const c = e.target.closest('.wz-chip'); if (!c) return;
+      c.classList.toggle('on');
+      data.subjects = [...$('optSubjects').querySelectorAll('.wz-chip.on')].map(x => x.dataset.val);
+    });
+    // pas 3 — obiectiv (single)
+    $('optGoal').addEventListener('click', e => {
+      const c = e.target.closest('.wz-chip'); if (!c) return;
+      $('optGoal').querySelectorAll('.wz-chip').forEach(x => x.classList.remove('on'));
+      c.classList.add('on'); data.goal = c.dataset.val;
+    });
+
+    $('wzBack').addEventListener('click', () => { if (step > 0) { step--; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
+    $('wzNext').addEventListener('click', () => {
+      if (step === 0 && !data.center) { $('optCenter').animate([{ transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'translateX(0)' }], { duration: 200 }); return; }
+      if (step === 1 && !data.subjects.length) { $('optSubjects').animate([{ transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'translateX(0)' }], { duration: 200 }); return; }
+      if (step === 2) {
+        if (!data.goal) { $('optGoal').animate([{ transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'translateX(0)' }], { duration: 200 }); return; }
+        data.name = $('wzName').value.trim();
+        data.target_score = parseInt($('wzTarget').value, 10) || null;
+        if (data.target_score && (data.target_score < 1 || data.target_score > 45)) { $('wzTarget').focus(); return; }
+      }
+      if (step < TOTAL - 1) { step++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+      else {
+        // salvăm preferințele local; backendul de creare cont se conectează ulterior
+        try { localStorage.setItem('submed_onboarding', JSON.stringify(data)); } catch (e) {}
+        window.location = 'register.html';
+      }
+    });
+
+    render();
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Scanează foaia de grilă completată și primești scorul instant, cu greșelile marcate.">
+  <title>Submed · Scanare Foaie de Grilă</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/app.css?v=mobile-layout-20261002">
+
+  <style>
+    /* ── Stiluri specifice paginii de scanare ─────────────── */
+    .exam-select-group { margin-bottom: 24px; }
+    .exam-select-label { font-size: .75rem; font-family: var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 8px; display: block; }
+    .exam-select { width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--text); font-family: var(--font); font-size: .95rem; transition: border .15s; }
+    .exam-select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(64,123,255,.1); }
+
+    /* ── Filtru click-to-add ──────────────────────────── */
+    .filter-group { margin-bottom: 18px; }
+    .filter-label { font-size: .75rem; font-family: var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 8px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { padding: 7px 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--card); font-size: .85rem; font-weight: 600; cursor: pointer; transition: all .15s; user-select: none; }
+    .chip:hover { border-color: var(--primary); }
+    .chip.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .exam-list { display: flex; flex-direction: column; gap: 8px; }
+    .exam-opt { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); cursor: pointer; transition: all .15s; }
+    .exam-opt:hover { border-color: var(--primary); }
+    .exam-opt.selected { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(64,123,255,.12); }
+    .exam-opt-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; position: relative; }
+    .exam-opt.selected .exam-opt-radio { border-color: var(--primary); }
+    .exam-opt.selected .exam-opt-radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--primary); }
+    .exam-opt-body { flex: 1; min-width: 0; }
+    .exam-opt-name { font-weight: 600; font-size: .95rem; }
+    .exam-opt-meta { font-size: .78rem; color: var(--muted); font-family: var(--mono); margin-top: 2px; }
+    .exam-opt-cat { font-size: .66rem; font-family: var(--mono); text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: #EAF0FA; color: var(--muted); flex-shrink: 0; }
+
+    .scan-card { background: var(--card); border: 2px dashed var(--border); border-radius: var(--radius); padding: 48px 24px; text-align: center; cursor: pointer; transition: all .2s; }
+    .scan-card:hover { border-color: var(--primary); box-shadow: var(--shadow); transform: translateY(-2px); }
+    .scan-card.dragover { border-color: var(--primary); background: rgba(64,123,255,.04); }
+    .scan-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+    .scan-card p { color: var(--muted); font-size: .95rem; }
+    .scan-icon { width: 56px; height: 56px; margin: 0 auto 16px; background: var(--primary); border-radius: 14px; display: flex; align-items: center; justify-content: center; opacity: .2; }
+    .scan-icon svg { width: 28px; height: 28px; stroke: var(--text); stroke-width: 2; fill: none; }
+    input[type="file"] { display: none; }
+
+    .progress-section, .result-image, .score-display { display: none; margin-top: 24px; }
+    .progress-section.active, .result-image.active, .score-display.active { display: block; }
+    .progress-section, .score-display { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+    .progress-title { font-size: .95rem; font-weight: 700; margin-bottom: 16px; }
+    .progress-bar-track { height: 6px; background: #EAF0FA; border-radius: 4px; overflow: hidden; margin-bottom: 12px; }
+    .progress-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: width .3s ease; }
+    .status-text { font-size: .85rem; color: var(--muted); font-family: var(--mono); }
+
+    .result-image img { width: 100%; max-height: 500px; object-fit: contain; border-radius: var(--radius); border: 1px solid var(--border); }
+
+    .score-header { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .score-pill { text-align: center; padding: 12px; background: #F8FBFF; border-radius: 10px; }
+    .score-label { font-size: .75rem; font-family: var(--mono); text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .score-value { font-size: 1.8rem; font-weight: 800; }
+    .btn-group { display: flex; gap: 12px; margin-top: 20px; }
+    .btn-group .btn-primary, .btn-group .btn-secondary { flex: 1; }
+
+    .failsafe { border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; font-size: .88rem; background: #F8FBFF; }
+    .failsafe ul { margin: 8px 0 0; padding-left: 18px; }
+    .failsafe li { margin-bottom: 3px; }
+    .failsafe .fs-warn { color: var(--red); font-weight: 600; }
+    .failsafe .fs-ok { color: var(--green); font-weight: 600; }
+
+    /* ── Cameră live ──────────────────────────────────── */
+    .cam-or { text-align: center; color: var(--muted); font-family: var(--mono); font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; margin: 14px 0; }
+    .cam-open-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); font-family: var(--font); font-weight: 600; color: var(--text); cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+    .cam-open-btn:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+    .cam-panel { display: none; margin-top: 16px; background: #000; border-radius: var(--radius); overflow: hidden; position: relative; }
+    .cam-panel.active { display: block; }
+    .cam-panel video { width: 100%; max-height: 70vh; object-fit: contain; display: block; background: #000; }
+    .cam-guide { position: absolute; left: 6%; right: 6%; top: 7%; bottom: 22%; border: 2px dashed rgba(255,255,255,.55); border-radius: 10px; pointer-events: none; }
+    .cam-hint { position: absolute; left: 0; right: 0; bottom: 76px; text-align: center; color: #fff; font-size: .8rem; padding: 0 16px; text-shadow: 0 1px 4px rgba(0,0,0,.8); pointer-events: none; }
+    .cam-actions { display: flex; gap: 12px; padding: 14px; background: var(--card); }
+    .cam-actions .btn-primary, .cam-actions .btn-secondary { flex: 1; }
+
+    @media (max-width: 768px) { .scan-card { padding: 32px 16px; } .score-header { grid-template-columns: 1fr; } }
+  </style>
+</head>
+
+<body data-nav="full">
+
+<main class="dash-shell">
+
+  <div class="greeting">
+    <h2>Scanează foaia de grilă</h2>
+    <p>Încarcă o fotografie sau o scanare a foii completate și vei primi scorul instant.</p>
+  </div>
+
+  <!-- Filtru examene (click-to-add) -->
+  <div class="filter-group">
+    <div class="filter-label">Facultate</div>
+    <div class="chips" id="facChips"></div>
+  </div>
+  <div class="filter-group">
+    <div class="filter-label">Categorie</div>
+    <div class="chips" id="catChips"></div>
+  </div>
+  <div class="filter-group">
+    <div class="filter-label">Examen</div>
+    <div class="exam-list" id="examList"><div class="empty-hint" style="padding:16px">Se încarcă...</div></div>
+  </div>
+
+  <!-- Card upload -->
+  <div class="scan-card" id="scanCard">
+    <div class="scan-icon">
+      <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+    </div>
+    <h3>Încarcă foaia de grilă</h3>
+    <p>JPG, PNG, WebP sau PDF · max 20 MB</p>
+    <input type="file" id="fileInput" accept="image/*,application/pdf,.pdf">
+  </div>
+
+  <!-- Sau camera live -->
+  <div class="cam-or">sau</div>
+  <button class="cam-open-btn" id="camOpenBtn" type="button">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+    Folosește camera dispozitivului
+  </button>
+
+  <!-- Panou cameră live -->
+  <div class="cam-panel" id="camPanel">
+    <video id="camVideo" playsinline autoplay muted></video>
+    <div class="cam-guide"></div>
+    <div class="cam-hint">Încadrează toată foaia în chenar, pe o suprafață plată, bine luminată.</div>
+    <div class="cam-actions">
+      <button class="btn-secondary" id="camCancel" type="button">Anulează</button>
+      <button class="btn-primary" id="camShoot" type="button">Capturează</button>
+    </div>
+  </div>
+
+  <!-- Banner status -->
+  <div class="alert-banner" id="alertBanner" style="margin-top:16px"></div>
+
+  <!-- Progres -->
+  <div class="progress-section" id="progressSection">
+    <div class="progress-title">Se scanează...</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="status-text" id="statusText">Inițializare...</div>
+  </div>
+
+  <!-- Imagine adnotată -->
+  <div class="result-image" id="resultImage">
+    <img id="annotatedImage" src="" alt="Foaia scanată cu răspunsuri marcate">
+  </div>
+
+  <!-- Scor -->
+  <div class="score-display" id="scoreDisplay">
+    <div class="score-header">
+      <div class="score-pill"><div class="score-label">Scor</div><div class="score-value" id="scoreValue">—</div></div>
+      <div class="score-pill"><div class="score-label">Procent</div><div class="score-value" id="percentValue">—</div></div>
+      <div class="score-pill"><div class="score-label">Notate</div><div class="score-value" id="totalValue">—</div></div>
+    </div>
+    <div id="resultDetails" style="font-size:.9rem;color:var(--muted);margin-bottom:16px"></div>
+
+    <!-- Failsafe: verificare înainte de salvare -->
+    <div class="failsafe" id="failsafe"></div>
+
+    <div class="btn-group">
+      <button class="btn-primary" id="saveBtn">Confirmă și salvează</button>
+      <button class="btn-secondary" id="retryBtn">Reia scanarea</button>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="assets/js/components.js?v=supabase-singleton-20261028"></script>
+
+<script type="module">
+import { Auth } from './assets/js/auth.js?v=supabase-singleton-20261028';
+import { API }  from './assets/js/api.js';
+import { processSheet, annotate, analyzeMatrix } from './assets/js/omr.js?v=ocr-quality-20260621';
+import { isPdfFile, renderPdfFirstPageToImageFile } from './assets/js/pdf-renderer.js?v=pdf-upload-20260621';
+
+await Auth.requireLogin();
+const me = await Auth.getUser();
+const userCode = String(me?.student_code || '—');
+const expectedUserCode = /^\d{5}$/.test(userCode) ? userCode : null;
+
+const scanCard   = document.getElementById('scanCard');
+const fileInput  = document.getElementById('fileInput');
+const facChips   = document.getElementById('facChips');
+const catChips   = document.getElementById('catChips');
+const examList   = document.getElementById('examList');
+const banner     = document.getElementById('alertBanner');
+let exams = [];
+let currentExamId = '';
+let currentSheetType = 'submed';
+let currentResult = null;      // {score,total,percentage,answer_key_id,questions}
+let currentFile   = null;
+let currentAnnotated = null;   // dataURL imagine adnotată
+let currentMatrix = null;      // matricea 150×5 (pentru verificarea calității)
+let currentContest = null;     // {code, digits, ambiguous} citit din zona de cod
+let currentDiagnostics = null;  // confidence/ambiguitate la nivel de bulina
+let currentQualityReport = null;
+
+function showMsg(msg, type = 'error') {
+  banner.textContent = msg;
+  banner.className = `alert-banner show ${type}`;
+}
+function hideMsg() { banner.className = 'alert-banner'; }
+
+function qualityMessage(report) {
+  const first = report?.warnings?.[0];
+  if (!first) return '';
+  if (first.code === 'empty-sheet') return 'Nu am detectat nicio bulina completata. Incarca o poza mai clara.';
+  if (first.code === 'too-few-answers') return first.message;
+  if (first.code === 'contest-code-mismatch') return 'Codul de concurs de pe foaie nu corespunde contului curent.';
+  if (first.code === 'ambiguous-contest-code') return 'Codul de concurs citit de pe foaie este ambiguu.';
+  if (first.code === 'overfilled-questions') return 'Scanarea are intrebari cu prea multe buline completate.';
+  if (first.code === 'low-confidence-bubbles') return 'Scanarea are buline aproape de pragul de decizie. Verifica imaginea adnotata.';
+  return first.message || 'Scanarea are semnale de calitate care trebuie verificate.';
+}
+
+function assertScanQuality(report) {
+  if (report && !report.ok) throw new Error(qualityMessage(report));
+}
+
+function pdfTargetWidthForSheet(sheetType) {
+  if (sheetType === 'cluj') return 2481;
+  return 1500;
+}
+
+/* ── filtru examene (facultate + categorie, click-to-add) ────── */
+const CAT_LABELS = { admitere: 'Admitere', simulare: 'Simulare', presimulare: 'Presimulare' };
+const activeFacs = new Set();
+const activeCats = new Set();
+
+try {
+  exams = await API.listExams();
+} catch (e) {
+  showMsg('Nu am putut încărca lista de examene.');
+}
+renderFilters();
+renderExamList();
+
+function renderFilters() {
+  const facs = [...new Map(exams.filter(e => e.faculty_slug)
+    .map(e => [e.faculty_slug, e.faculty_name])).entries()];
+  facChips.innerHTML = facs.length ? '' : '<span class="empty-hint" style="padding:0">—</span>';
+  facs.forEach(([slug, name]) => facChips.appendChild(makeChip(name, activeFacs, slug)));
+
+  const cats = [...new Set(exams.map(e => e.category).filter(Boolean))];
+  catChips.innerHTML = '';
+  cats.forEach(c => catChips.appendChild(makeChip(CAT_LABELS[c] || c, activeCats, c)));
+}
+
+function makeChip(label, set, value) {
+  const el = document.createElement('div');
+  el.className = 'chip' + (set.has(value) ? ' active' : '');
+  el.textContent = label;
+  el.addEventListener('click', () => {
+    set.has(value) ? set.delete(value) : set.add(value);
+    el.classList.toggle('active');
+    renderExamList();
+  });
+  return el;
+}
+
+function renderExamList() {
+  const filtered = exams.filter(e =>
+    (!activeFacs.size || activeFacs.has(e.faculty_slug)) &&
+    (!activeCats.size || activeCats.has(e.category)));
+  if (!filtered.length) {
+    examList.innerHTML = '<div class="empty-hint" style="padding:16px">Niciun examen pentru acest filtru.</div>';
+    currentExamId = '';
+    return;
+  }
+  examList.innerHTML = '';
+  filtered.forEach(e => {
+    const row = document.createElement('div');
+    row.className = 'exam-opt' + (e.id === currentExamId ? ' selected' : '');
+    row.innerHTML = `
+      <div class="exam-opt-radio"></div>
+      <div class="exam-opt-body">
+        <div class="exam-opt-name">${e.name}</div>
+        <div class="exam-opt-meta">${e.faculty_name || '—'} · ${e.year || ''} · ${e.exam_date || ''}</div>
+      </div>
+      ${e.category ? `<span class="exam-opt-cat">${CAT_LABELS[e.category] || e.category}</span>` : ''}`;
+    row.addEventListener('click', () => {
+      currentExamId = e.id;
+      currentSheetType = e.sheet_type || 'submed';
+      [...examList.children].forEach(c => c.classList.remove('selected'));
+      row.classList.add('selected');
+    });
+    examList.appendChild(row);
+  });
+}
+
+/* ── upload (click + drag) ─────────────────────────── */
+scanCard.addEventListener('click', () => {
+  fileInput.value = '';
+  fileInput.click();
+});
+scanCard.addEventListener('dragover', e => { e.preventDefault(); scanCard.classList.add('dragover'); });
+scanCard.addEventListener('dragleave', () => scanCard.classList.remove('dragover'));
+scanCard.addEventListener('drop', e => { e.preventDefault(); scanCard.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (file) handleFile(file);
+});
+
+/* ── cameră live ───────────────────────────────────── */
+const camPanel = document.getElementById('camPanel');
+const camVideo = document.getElementById('camVideo');
+let camStream = null;
+
+document.getElementById('camOpenBtn').addEventListener('click', openCamera);
+document.getElementById('camCancel').addEventListener('click', closeCamera);
+document.getElementById('camShoot').addEventListener('click', shootCamera);
+window.addEventListener('pagehide', closeCamera);
+
+async function openCamera() {
+  if (!currentExamId) { showMsg('Alege mai întâi un examen.'); return; }
+  if (!navigator.mediaDevices?.getUserMedia) {
+    showMsg('Camera nu e disponibilă în acest browser — folosește încărcarea unei poze.');
+    return;
+  }
+  hideMsg();
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+      audio: false,
+    });
+    camVideo.srcObject = camStream;
+    camPanel.classList.add('active');
+    camPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch (e) {
+    showMsg('Nu am putut accesa camera (' + (e.name || e.message) + '). Verifică permisiunile sau folosește încărcarea.');
+  }
+}
+
+function closeCamera() {
+  if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+  camVideo.srcObject = null;
+  camPanel.classList.remove('active');
+}
+
+async function shootCamera() {
+  if (!camStream) return;
+  const w = camVideo.videoWidth, h = camVideo.videoHeight;
+  if (!w || !h) { showMsg('Camera nu e încă pregătită, mai încearcă o secundă.'); return; }
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d').drawImage(camVideo, 0, 0, w, h);
+  const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.92));
+  closeCamera();
+  handleFile(new File([blob], `captura_${Date.now()}.jpg`, { type: 'image/jpeg' }));
+}
+
+async function handleFile(file) {
+  if (!currentExamId) { showMsg('Alege mai întâi un examen.'); return; }
+  const isPdf = isPdfFile(file);
+  if (!file || (!file.type.startsWith('image/') && !isPdf)) { showMsg('Alege o imagine sau un PDF.'); return; }
+  if (file.size > 20 * 1024 * 1024) { showMsg('Fișierul e prea mare (max 20 MB).'); return; }
+
+  hideMsg();
+  currentFile = file;
+  currentResult = null;
+  currentAnnotated = null;
+  currentMatrix = null;
+  currentContest = null;
+  currentDiagnostics = null;
+  currentQualityReport = null;
+  scanCard.style.opacity = '0.5';
+  scanCard.style.pointerEvents = 'none';
+  document.getElementById('progressSection').classList.add('active');
+  let ocrFile = file;
+
+  try {
+    if (isPdf) {
+      setProgress('Se converteste PDF-ul in imagine...', 18);
+      ocrFile = await renderPdfFirstPageToImageFile(file, {
+        targetWidth: pdfTargetWidthForSheet(currentSheetType),
+      });
+    }
+
+    setProgress('Se citește grila (în browser)...', 30);
+    const { matrix, image, contest, diagnostics } = await processSheet(ocrFile, currentSheetType);
+    currentMatrix = matrix;
+    currentContest = contest;
+    currentDiagnostics = diagnostics;
+    currentQualityReport = analyzeMatrix(matrix, {
+      contest,
+      diagnostics,
+      expectedContestCode: expectedUserCode,
+    });
+    assertScanQuality(currentQualityReport);
+
+    setProgress('Se verifică baremul...', 70);
+    currentResult = await API.scoreMatrix(currentExamId, matrix);
+
+    // construiește cheia corectă din rezultat, doar pentru adnotare
+    const key = {};
+    for (const qq of currentResult.questions || [])
+      if (qq.correct?.length) key[String(qq.q)] = qq.correct;
+    currentAnnotated = annotate(image, matrix, key, currentSheetType);
+
+    setProgress('Gata!', 100);
+    setTimeout(() => displayResult(currentResult), 300);
+  } catch (e) {
+    showMsg('Eroare la scanare: ' + e.message);
+    resetCard();
+  }
+}
+
+function setProgress(text, pct) {
+  document.getElementById('statusText').textContent = text;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+function resetCard() {
+  document.getElementById('progressSection').classList.remove('active');
+  scanCard.style.opacity = '1';
+  scanCard.style.pointerEvents = 'auto';
+}
+
+function displayResult(r) {
+  resetCard();
+  if (currentAnnotated) {
+    document.getElementById('annotatedImage').src = currentAnnotated;
+    document.getElementById('resultImage').classList.add('active');
+  }
+  document.getElementById('scoreValue').textContent   = r.score ?? 0;
+  document.getElementById('percentValue').textContent = (r.percentage ?? 0) + '%';
+  document.getElementById('totalValue').textContent   = r.total ?? 0;
+
+  const wrong = (r.questions || []).filter(q => q.status === 'wrong');
+  let html = `<strong>${r.score}/${r.total} răspunsuri corecte</strong>`;
+  if (wrong.length) {
+    html += `<br><span style="color:var(--red)">${wrong.length} greșeli</span>`;
+    if (wrong.length <= 8) html += '<br>Întrebări greșite: ' + wrong.map(q => 'Q' + q.q).join(', ');
+  }
+  document.getElementById('resultDetails').innerHTML = html;
+  renderFailsafe(currentMatrix);
+  document.getElementById('scoreDisplay').classList.add('active');
+}
+
+/* ── failsafe: rezumat calitate + reamintire cod, înainte de salvare ── */
+function renderFailsafe(matrix) {
+  let marked = 0, blank = 0, suspect = 0;
+  if (matrix) for (let q = 0; q < 150; q++) {
+    const n = matrix[q].reduce((a, b) => a + b, 0);
+    if (n === 0) blank++; else marked++;
+    const scored = currentResult?.questions?.find(item => item.q === q + 1);
+    if (n >= 4 && scored?.status !== 'correct') suspect++;
+  }
+  // verificarea codului de concurs citit de pe foaie
+  let codeLine, codeWarn = false;
+  const detected = currentContest?.code;
+  if (!detected) {
+    codeLine = `Codul tău: <strong>${userCode}</strong> (codul de pe foaie nu a putut fi citit)`;
+  } else if (currentContest.ambiguous) {
+    codeWarn = true;
+    codeLine = `<span class="fs-warn">Cod de pe foaie ambiguu (${detected}) — o coloană are 0 sau 2+ bule. Recompletează clar.</span>`;
+  } else if (detected !== userCode) {
+    codeWarn = true;
+    codeLine = `<span class="fs-warn">Codul de pe foaie (<strong>${detected}</strong>) diferă de codul tău (<strong>${userCode}</strong>).</span>`;
+  } else {
+    codeLine = `<span class="fs-ok">Cod de concurs ${detected} — corespunde contului tău ✓</span>`;
+  }
+
+  document.getElementById('failsafe').innerHTML = `
+    <div style="font-weight:700;margin-bottom:6px">Verifică înainte de a salva</div>
+    <ul>
+      <li>${marked} întrebări cu răspuns · ${blank} goale</li>
+      ${suspect
+        ? `<li class="fs-warn">${suspect} întrebări cu 4+ bule — posibil scanare/completare greșită</li>`
+        : `<li class="fs-ok">Niciun marcaj suspect detectat</li>`}
+      <li>${codeLine}</li>
+    </ul>
+    ${(suspect || codeWarn)
+      ? '<div class="fs-warn" style="margin-top:8px">Compară cu imaginea adnotată de mai sus. Dacă ceva nu e în regulă, apasă „Reia scanarea".</div>'
+      : ''}`;
+}
+
+/* ── reia scanarea (renunță la rezultatul curent) ──── */
+document.getElementById('retryBtn').addEventListener('click', () => {
+  currentResult = currentMatrix = currentAnnotated = currentFile = currentContest = currentDiagnostics = currentQualityReport = null;
+  document.getElementById('scoreDisplay').classList.remove('active');
+  document.getElementById('resultImage').classList.remove('active');
+  hideMsg();
+  scanCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+/* ── salvare în Supabase ───────────────────────────── */
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  if (!currentResult) return;
+  try {
+    assertScanQuality(currentQualityReport);
+  } catch (e) {
+    showMsg('Nu pot salva: ' + e.message);
+    return;
+  }
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true; btn.textContent = 'Se salvează...';
+  try {
+    await API.saveSubmission(currentResult, {
+      examId: currentExamId,
+      answerKeyId: currentResult.answer_key_id,
+      sheetFile: currentFile,
+      annotatedDataUrl: currentAnnotated,
+    });
+    showMsg('Rezultat salvat!', 'success');
+    setTimeout(() => location.href = 'dashboard.html', 1200);
+  } catch (e) {
+    showMsg('Nu am putut salva: ' + e.message);
+    btn.disabled = false; btn.textContent = 'Salvează rezultat';
+  }
+});
+</script>
+
+</body>
+</html>

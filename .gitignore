@@ -1,0 +1,44 @@
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+*.local
+*.local.*
+config.local.js
+config.*.local.js
+config.js
+!config.example.js
+
+# Supabase/service/admin secrets
+supabase/.temp/
+*service-role*
+*service_role*
+*supabase-service*
+*admin-secret*
+*credentials*
+*secrets*
+*.pem
+*.key
+
+# Dependencies and build outputs
+node_modules/
+dist/
+build/
+coverage/
+
+# Temporary/generated local files
+.tmp-js-check-*/
+*.log
+New Text Document.txt
+SubMed_Raport_*.docx
+
+# Python local artifacts
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Editor/OS noise
+.DS_Store
+Thumbs.db
+.vscode/

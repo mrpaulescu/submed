@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulator Examen Medicină</title>
+  <style>
+    :root {
+      --primary: #2D6EFF;
+      --primary-dark: #105AFF;
+      --bg-main: #F4F7FD;
+      --bg-panel: #ffffff;
+      --text-dark: #111B33;
+      --text-gray: #535F79;
+      --border: #D3DBEB;
+      --correct: #16A46B;
+      --wrong: #E5484D;
+      --selected: #E7F0FF;
+    }
+
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background-color: var(--bg-main);
+      color: var(--text-dark);
+    }
+
+    /* Bara superioară */
+    .top-bar {
+      background-color: var(--bg-panel);
+      height: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      z-index: 10;
+    }
+
+    .exam-title { font-weight: 600; font-size: 1.1rem; }
+    
+    .timer {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--wrong);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-finish {
+      background-color: var(--text-dark);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* Layout Principal */
+    .main-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Panoul Lateral (Navigare Grile) */
+    .sidebar {
+      width: 320px;
+      background-color: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 15px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      text-align: center;
+      background-color: #F8FBFF;
+    }
+
+    .grid-container {
+      padding: 15px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      overflow-y: auto;
+    }
+
+    .grid-item {
+      aspect-ratio: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-gray);
+    }
+
+    .grid-item.active { border-color: var(--primary); background-color: var(--primary); color: white; }
+    .grid-item.answered { background-color: var(--border); color: var(--text-dark); }
+    
+    /* Culori pentru recenzie după examen */
+    .grid-item.correct { background-color: var(--correct); color: white; border-color: var(--correct); }
+    .grid-item.wrong { background-color: var(--wrong); color: white; border-color: var(--wrong); }
+
+    /* Zona de Rezolvare */
+    .content-area {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    .question-card {
+      background-color: var(--bg-panel);
+      width: 100%;
+      max-width: 850px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      padding: 40px;
+      border: 1px solid var(--border);
+    }
+
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-gray);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .question-text {
+      font-size: 1.25rem;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .options-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .option {
+      display: flex;
+      align-items: flex-start;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .option:hover { background-color: #F8FBFF; }
+
+    .option input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-right: 15px;
+      margin-top: 2px;
+      cursor: pointer;
+    }
+
+    .option-letter {
+      font-weight: bold;
+      margin-right: 10px;
+      color: var(--primary-dark);
+    }
+
+    .option-text { flex: 1; line-height: 1.5; }
+
+    /* Butoane Acțiune */
+    .actions {
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      border: none;
+    }
+
+    .btn-prev { background-color: white; border: 1px solid var(--border); color: var(--text-dark); }
+    .btn-next { background-color: var(--primary); color: white; }
+    .btn-next:hover { background-color: var(--primary-dark); }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <div class="exam-title">Simulare Examen Rezidențiat - Domeniul Medicină</div>
+    <div class="timer">⏳ 03:59:45</div>
+    <button class="btn-finish">Încheie Simularea</button>
+  </header>
+
+  <div class="main-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        Navigare Grile (1/200)
+      </div>
+      <div class="grid-container">
+        <div class="grid-item answered">1</div>
+        <div class="grid-item answered">2</div>
+        <div class="grid-item active">3</div>
+        <div class="grid-item">4</div>
+        <div class="grid-item">5</div>
+        <div class="grid-item">6</div>
+        <div class="grid-item">7</div>
+        <div class="grid-item">8</div>
+        <div class="grid-item">9</div>
+        <div class="grid-item">10</div>
+        </div>
+    </aside>
+
+    <main class="content-area">
+      <div class="question-card">
+        <div class="question-meta">
+          <span>Grila #3</span>
+          <span>Complement Multiplu</span>
+        </div>
+        
+        <h2 class="question-text">
+          Selectați afirmațiile corecte referitoare la manifestările clinice ale endocarditei infecțioase:
+        </h2>
+
+        <div class="options-list">
+          <label class="option">
+            <input type="checkbox" name="q3" value="A">
+            <span class="option-letter">A.</span>
+            <span class="option-text">Nodulii Osler sunt leziuni maculare nedureroase de la nivelul palmelor și plantelor.</span>
+          </label>
+          <label class="option">
+            <input type="checkbox" name="q3" value="B">
+            <span class="option-letter">B.</span>
+            <span class="option-text">Peteșiile pot fi observate la nivelul conjunctivei și mucoasei bucale.</span>
+          </label>
+          <label class="option">
+            <input type="checkbox" name="q3" value="C">
+            <span class="option-letter">C.</span>
+            <span class="option-text">Febra este prezentă la majoritatea pacienților, excepție făcând uneori vârstnicii sau pacienții cu insuficiență cardiacă severă.</span>
+          </label>
+          <label class="option">
+            <input type="checkbox" name="q3" value="D">
+            <span class="option-letter">D.</span>
+            <span class="option-text">Liniile Splinter reprezintă hemoragii subunghiale liniare.</span>
+          </label>
+          <label class="option">
+            <input type="checkbox" name="q3" value="E">
+            <span class="option-letter">E.</span>
+            <span class="option-text">Leziunile Janeway sunt noduli subcutanați dureroși situați la nivelul pulpei degetelor.</span>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-prev">← Grila Anterioară</button>
+          <button class="btn btn-next">Grila Următoare →</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>

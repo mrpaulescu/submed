@@ -1,0 +1,500 @@
+SUBMED – CONTEXT PENTRU CHATGPT / CODEX
+Data contextului: iunie 2026
+Repo GitHub: https://github.com/mrpaulescu/submed-v2
+
+============================================================
+1. DESCRIERE GENERALĂ
+============================================================
+
+SubMed este un startup care încearcă să construiască o platformă educațională pentru elevii care:
+- dau Bacalaureatul la biologie;
+- dau Bacalaureatul la chimie;
+- se pregătesc pentru admiterea la medicină.
+
+Ideea principală: platforma trebuie să ajute utilizatorul să exerseze grile/subiecte, să își scaneze răspunsurile, să primească rezultate comparate cu baremul și să își vadă progresul pe capitole/materii.
+
+Platforma trebuie gândită modular:
+- bază de date cu subiecte;
+- bază de date cu bareme;
+- sistem OCR / scanare răspunsuri;
+- sistem de comparare răspunsuri vs barem;
+- rezultate, statistici și analiză;
+- conturi utilizatori;
+- istoric progres;
+- flashcard-uri;
+- sistem de grile;
+- eventual monetizare prin abonamente / acces premium.
+
+============================================================
+2. SCOP PRODUS
+============================================================
+
+Scopul MVP-ului este să permită unui utilizator să:
+1. încarce sau pozeze o foaie de răspuns / grilă completată;
+2. sistemul să detecteze răspunsurile marcate;
+3. răspunsurile detectate să fie comparate cu baremul corect;
+4. platforma să afișeze rezultatul;
+5. greșelile să fie legate de materia / capitolul din care fac parte;
+6. utilizatorul să vadă statistici despre progresul său;
+7. utilizatorul să poată repeta materia prin grile și flashcard-uri.
+
+============================================================
+3. TASK-URI DIN PLANUL ACTUAL
+============================================================
+
+Tabelul din screenshot este un plan pe aproximativ 6 luni.
+
+A. DATA COLLECTION
+- Gather all subjects
+  - Durată: 3 săptămâni
+  - Scop: colectarea subiectelor necesare pentru platformă.
+- Organize subjects
+  - Depinde de: A1
+  - Durată: 1 săptămână
+  - Scop: organizarea subiectelor pe materii, ani, capitole, tipuri etc.
+
+B. OCR
+- Build OCR for answer keys
+  - Depinde de: A2
+  - Durată: 2 săptămâni
+  - Scop: construirea unui sistem OCR / parser pentru bareme sau foi de răspuns.
+- Admin review tools
+  - Depinde de: B1
+  - Durată: 1 săptămână
+  - Scop: unelte prin care adminul poate verifica și corecta datele detectate.
+
+C. USER SCANNER
+- Scan completed answer sheets
+  - Depinde de: B2
+  - Durată: 3 săptămâni
+  - Scop: funcție prin care utilizatorul scanează / încarcă o foaie completată.
+- Improve preprocessing
+  - Depinde de: C1
+  - Durată: 1 săptămână
+  - Scop: îmbunătățirea imaginii înainte de OCR: crop, contrast, aliniere, noise reduction etc.
+
+D. VALIDATION
+- Compare answer tables
+  - Depinde de: C1 + B2
+  - Durată: 1 săptămână
+  - Scop: compararea răspunsurilor utilizatorului cu baremul.
+- Statistics and analytics
+  - Depinde de: D1
+  - Durată: 1 săptămână
+  - Scop: calcularea scorurilor, procentelor, greșelilor pe capitole, progresului etc.
+
+E. BACKEND
+- Database design
+  - Depinde de: D1
+  - Durată: 1 săptămână
+  - Scop: proiectarea bazei de date pentru utilizatori, subiecte, bareme, răspunsuri, capitole, grile, flashcard-uri.
+
+F. ACCOUNTS
+- User registration system
+  - Durată: 1 săptămână
+  - Scop: conturi de utilizator.
+- Google authentication
+  - Durată: 1 săptămână
+  - Scop: login cu Google.
+- Profiles and history
+  - Durată: 1 săptămână
+  - Scop: profil utilizator și istoric rezultate.
+
+G. FRONTEND
+- Scanner UI
+  - Durată: 2 săptămâni
+  - Scop: interfață pentru upload / scanare.
+- Results page
+  - Durată: 1 săptămână
+  - Scop: pagină unde utilizatorul vede scorul, răspunsurile corecte/greșite și explicații.
+- Dashboard UI
+  - Durată: 1 săptămână
+  - Scop: dashboard cu progres și statistici.
+
+H. HOSTING
+- cPanel compatibility
+  - Durată: 2 săptămâni
+  - Scop: compatibilitate cu hosting-ul disponibil, probabil cPanel.
+
+I. INTEGRATION
+- Connect all modules
+  - Durată: 2 săptămâni
+  - Scop: legarea backendului, OCR-ului, scannerului, conturilor și frontendului.
+
+J. DEPLOYMENT
+- Upload and testing
+  - Durată: 1 săptămână
+  - Scop: urcarea aplicației și testarea inițială.
+
+K. MONETIZATION
+- Billing and subscriptions
+  - Durată: 2 săptămâni
+  - Scop: abonamente / sistem de plată.
+- Premium access control
+  - Durată: 1 săptămână
+  - Scop: diferențiere între funcții gratuite și premium.
+
+L. TESTING
+- Beta testing and fixes
+  - Durată: 3 săptămâni
+  - Scop: testare beta, bug fixing și ajustări.
+
+M. RELEASE
+- Version 1.0 launch
+  - Durată: 1 săptămână
+  - Scop: lansarea versiunii 1.0.
+
+============================================================
+4. TODO LIST DIN SCREENSHOT
+============================================================
+
+Task-uri notate separat în plan:
+
+- Paul S.
+- Funcție de scanare pentru subiecte pozate / încărcate de user.
+- După scanare, sistemul compară răspunsurile cu baremul.
+- Sistemul afișează rezultatul.
+- Bază de date pentru bareme.
+- Creare de capitole / funcții astfel încât, la grilele greșite, să fie marcată materia/capitolul din care fac parte.
+- Sistem de flashcard-uri.
+- Sistem de grile.
+- Bază de date pentru grile.
+- Database cu structuri chimice pentru flashcard-uri.
+
+============================================================
+5. MODULE PRINCIPALE RECOMANDATE
+============================================================
+
+5.1. Modul de subiecte
+Rol:
+- gestionează subiectele pentru BAC bio/chimie și admitere medicină.
+
+Date posibile:
+- id subiect;
+- materie: biologie / chimie;
+- tip: BAC / admitere;
+- an;
+- sursă;
+- capitol;
+- dificultate;
+- fișier PDF / imagine;
+- listă de întrebări.
+
+5.2. Modul de bareme
+Rol:
+- stochează răspunsurile corecte pentru fiecare subiect.
+
+Date posibile:
+- id barem;
+- id subiect;
+- întrebare;
+- răspuns corect;
+- explicație;
+- capitol;
+- tags;
+- punctaj.
+
+5.3. Modul OCR / scanner
+Rol:
+- primește o imagine sau un PDF încărcat de utilizator;
+- detectează răspunsurile marcate;
+- returnează un tabel de răspunsuri.
+
+Funcții posibile:
+- upload imagine/PDF;
+- preprocessing imagine;
+- detectare grilă;
+- detectare răspuns selectat;
+- validare manuală când detecția este incertă.
+
+5.4. Modul de verificare
+Rol:
+- compară răspunsurile utilizatorului cu baremul.
+
+Output:
+- scor total;
+- număr răspunsuri corecte;
+- număr răspunsuri greșite;
+- listă greșeli;
+- capitole problematice;
+- recomandări de recapitulare.
+
+5.5. Modul de statistici
+Rol:
+- oferă utilizatorului feedback despre progres.
+
+Metrici utile:
+- scor mediu;
+- evoluție în timp;
+- capitole cu cele mai multe greșeli;
+- materii slabe;
+- întrebări repetate greșit;
+- timp de lucru, dacă se implementează timer.
+
+5.6. Modul conturi
+Rol:
+- autentificare și profil utilizator.
+
+Funcții:
+- înregistrare;
+- login;
+- login cu Google;
+- profil;
+- istoric rezultate;
+- plan gratuit / premium.
+
+5.7. Modul flashcard-uri
+Rol:
+- învățare rapidă pentru noțiuni importante.
+
+Pentru chimie:
+- flashcard-uri cu formule;
+- structuri chimice;
+- denumiri;
+- reacții;
+- proprietăți.
+
+Pentru biologie:
+- termeni;
+- definiții;
+- procese;
+- scheme;
+- relații între concepte.
+
+5.8. Modul grile
+Rol:
+- utilizatorul poate rezolva grile direct în platformă.
+
+Funcții:
+- selectare materie;
+- selectare capitol;
+- generare set de grile;
+- verificare răspunsuri;
+- explicații;
+- salvare progres.
+
+5.9. Modul monetizare
+Rol:
+- acces gratuit + premium.
+
+Idei:
+- free: număr limitat de scanări / grile / flashcard-uri;
+- premium: scanări nelimitate, statistici avansate, istoric complet, recomandări personalizate.
+
+============================================================
+6. POSIBILĂ STRUCTURĂ DE DATE
+============================================================
+
+Tabele / colecții posibile:
+
+users
+- id
+- email
+- name
+- auth_provider
+- created_at
+- subscription_status
+
+subjects
+- id
+- title
+- subject_type
+- exam_type
+- year
+- source
+- file_url
+- created_at
+
+chapters
+- id
+- name
+- subject_type
+- parent_chapter_id
+
+questions
+- id
+- subject_id
+- question_number
+- text
+- chapter_id
+- difficulty
+- tags
+
+answer_keys
+- id
+- question_id
+- correct_answer
+- explanation
+- points
+
+user_submissions
+- id
+- user_id
+- subject_id
+- uploaded_file_url
+- created_at
+- status
+
+user_answers
+- id
+- submission_id
+- question_id
+- detected_answer
+- confidence
+- is_correct
+
+results
+- id
+- submission_id
+- total_score
+- correct_count
+- wrong_count
+- created_at
+
+flashcards
+- id
+- subject_type
+- chapter_id
+- front
+- back
+- image_url
+- structure_data
+
+subscriptions
+- id
+- user_id
+- provider
+- plan
+- status
+- started_at
+- expires_at
+
+============================================================
+7. PRIORITATE MVP
+============================================================
+
+Pentru prima versiune, trebuie evitate funcțiile prea mari înainte ca flow-ul principal să fie stabil.
+
+Prioritatea 1:
+- bază de date subiecte;
+- bază de date bareme;
+- upload imagine/PDF;
+- detectare răspunsuri sau introducere semi-manuală;
+- comparare cu barem;
+- pagină rezultate.
+
+Prioritatea 2:
+- conturi;
+- istoric rezultate;
+- dashboard simplu;
+- statistici pe capitole.
+
+Prioritatea 3:
+- sistem de grile;
+- flashcard-uri;
+- structuri chimice;
+- recomandări personalizate.
+
+Prioritatea 4:
+- abonamente;
+- premium;
+- optimizări;
+- beta testing;
+- lansare 1.0.
+
+============================================================
+8. INSTRUCȚIUNI PENTRU CODEX
+============================================================
+
+Lucrează în repo-ul:
+https://github.com/mrpaulescu/submed-v2
+
+Obiectiv:
+Construiește platforma SubMed gradual, fără a rupe funcționalitățile existente.
+
+Reguli de lucru:
+1. Inspectează structura proiectului înainte să modifici fișiere.
+2. Nu rescrie aplicația de la zero dacă există deja structură funcțională.
+3. Creează componente/module clare și ușor de extins.
+4. Separă logica de business de interfață.
+5. Nu hardcoda bareme sau întrebări direct în componentele UI.
+6. Folosește modele/tabele clare pentru users, subjects, answer_keys, submissions, results, chapters, flashcards.
+7. Adaugă validare pentru inputurile utilizatorului.
+8. Pentru OCR/scanner, începe cu un flow simplu:
+   - upload fișier;
+   - salvare fișier;
+   - extragere / simulare răspunsuri;
+   - comparare cu baremul;
+   - afișare rezultat.
+9. Dacă OCR-ul complet este prea instabil la început, implementează temporar un sistem semi-manual / mock, dar pregătit pentru integrare OCR real.
+10. Scrie cod ușor de testat și de înlocuit ulterior.
+11. Nu modifica inutil styling-ul global.
+12. Lasă comentarii doar unde ajută la înțelegerea logicii.
+13. Fă schimbările pe pași mici.
+
+Ordine recomandată pentru dezvoltare:
+1. Definește schema de date.
+2. Creează flow-ul de subiecte + bareme.
+3. Creează upload/scanner UI.
+4. Creează funcția de comparare răspunsuri.
+5. Creează pagina de rezultate.
+6. Adaugă conturi și istoric.
+7. Adaugă dashboard.
+8. Adaugă grile/flashcard-uri.
+9. Adaugă premium/abonamente.
+10. Pregătește beta testing.
+
+============================================================
+9. PROMPT SCURT PENTRU CODEX
+============================================================
+
+Lucrez la SubMed, o platformă educațională pentru elevii care dau BAC la biologie/chimie sau admiterea la medicină. Repo-ul este: https://github.com/mrpaulescu/submed-v2
+
+Vreau să construiești platforma modular. Flow-ul principal este:
+1. utilizatorul încarcă sau pozează o foaie de răspuns;
+2. sistemul detectează răspunsurile;
+3. răspunsurile sunt comparate cu baremul din baza de date;
+4. utilizatorul vede rezultatul;
+5. greșelile sunt legate de capitole/materie;
+6. rezultatele sunt salvate în profil și apar în dashboard.
+
+Task-urile principale:
+- bază de date subiecte;
+- bază de date bareme;
+- OCR/scanner pentru foi de răspuns;
+- admin review tools;
+- comparare răspunsuri cu barem;
+- statistici și analytics;
+- conturi utilizatori;
+- login cu Google;
+- profil și istoric;
+- scanner UI;
+- results page;
+- dashboard UI;
+- sistem de grile;
+- sistem flashcard-uri;
+- structuri chimice pentru flashcard-uri;
+- hosting compatibil cu cPanel;
+- integrarea tuturor modulelor;
+- upload și testing;
+- billing/subscriptions;
+- premium access control;
+- beta testing;
+- launch v1.0.
+
+Te rog să începi prin a inspecta repo-ul, apoi să propui structura de date și pașii concreți de implementare. Nu rescrie proiectul de la zero. Păstrează ce există deja și adaugă modulele incremental.
+
+============================================================
+10. OBSERVAȚII / NECUNOSCUTE
+============================================================
+
+De clarificat înainte de implementare completă:
+- Stack-ul exact al proiectului din repo.
+- Dacă backendul este deja ales sau trebuie ales.
+- Dacă baza de date este SQL, Supabase, Firebase, MongoDB etc.
+- Dacă hosting-ul final va fi cPanel clasic sau alt provider.
+- Cum arată foile de răspuns care trebuie scanate.
+- Dacă subiectele/baremele vin din PDF-uri, imagini sau introducere manuală.
+- Cât de precis trebuie să fie OCR-ul în MVP.
+- Ce funcții sunt gratuite și ce funcții sunt premium.
+- Cine sunt userii țintă inițiali: BAC, admitere medicină sau ambele.

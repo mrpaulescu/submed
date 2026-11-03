@@ -4,27 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IUPAC Name Quiz — Organic Compounds</title>
+<script type="module" src="assets/js/guard.js"></script>
 <script src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
 
   * { box-sizing: border-box; }
 
   :root {
-    --bg: #0f1419;
-    --surface: #1a2332;
-    --surface2: #243044;
-    --border: #2d3d52;
-    --text: #e6edf3;
-    --muted: #8b9cb3;
-    --accent: #58a6ff;
-    --accent-dim: #388bfd66;
-    --success: #3fb950;
-    --danger: #f85149;
+    --bg: #F4F7FD;
+    --surface: #FFFFFF;
+    --surface2: #F1F6FF;
+    --border: #E6EBF5;
+    --text: #111B33;
+    --muted: #535F79;
+    --accent: #2D6EFF;
+    --accent-dim: #2D6EFF42;
+    --success: #16A46B;
+    --danger: #E5484D;
   }
 
   body {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     background: var(--bg);
     color: var(--text);
     margin: 0;
@@ -36,11 +37,12 @@
   }
 
   h1 {
+    font-family: 'Sora', sans-serif;
     font-weight: 700;
     font-size: 1.75rem;
     letter-spacing: -0.02em;
     margin: 0 0 8px 0;
-    background: linear-gradient(135deg, #58a6ff, #a371f7);
+    background: linear-gradient(135deg, #407BFF, #105AFF);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -91,7 +93,7 @@
   }
 
   #moleculeCanvas {
-    background: #0d1117;
+    background: #FFFFFF;
     border-radius: 8px;
     display: block;
   }
@@ -166,7 +168,7 @@
   }
 
   .btn-primary:hover {
-    background: #79b8ff;
+    background: #105AFF;
   }
 
   .btn-secondary {
@@ -373,12 +375,12 @@
 
     function drawStructure(smiles) {
       SmilesDrawer.parse(smiles, function(tree) {
-        drawer.draw(tree, 'moleculeCanvas', 'dark', false);
+        drawer.draw(tree, 'moleculeCanvas', 'light', false);
       }, function(err) {
         console.error(err);
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#8b9cb3';
-        ctx.font = '16px Outfit, sans-serif';
+        ctx.fillStyle = '#535F79';
+        ctx.font = '16px Plus Jakarta Sans, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('Could not draw structure', canvas.width / 2, canvas.height / 2);
       });

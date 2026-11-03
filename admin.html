@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Submed · Admin examene</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css">
+
+<style>
+  .adm-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .fld { margin-bottom: 12px; }
+  .fld label { display: block; font-size: .72rem; font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 5px; }
+  .fld input, .fld select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); font-family: var(--font); font-size: .92rem; color: var(--text); }
+  .fld input:focus, .fld select:focus { outline: none; border-color: var(--primary); }
+
+  .exam-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); margin-bottom: 8px; box-shadow: var(--shadow); }
+  .exam-row .er-body { flex: 1; min-width: 0; }
+  .exam-row .er-name { font-weight: 600; }
+  .exam-row .er-meta { font-size: .76rem; font-family: var(--mono); color: var(--muted); margin-top: 2px; }
+  .er-badge { font-size: .64rem; font-family: var(--mono); text-transform: uppercase; padding: 3px 9px; border-radius: 999px; }
+  .er-badge.has { background: var(--green-bg); color: var(--green); }
+  .er-badge.no  { background: var(--red-bg); color: var(--red); }
+
+  /* grila de barem */
+  .key-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 4px 16px; max-height: 460px; overflow-y: auto; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: #F8FBFF; }
+  .qrow { display: flex; align-items: center; gap: 6px; padding: 2px 0; }
+  .qrow .qn { width: 30px; font-family: var(--mono); font-size: .76rem; color: var(--muted); text-align: right; }
+  .bub { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--border); background: #fff; font-size: .72rem; font-weight: 600; color: var(--muted); cursor: pointer; font-family: var(--mono); transition: all .12s; }
+  .bub.on { background: var(--text); border-color: var(--text); color: #fff; }
+  .key-preview img { width: 100%; max-height: 320px; object-fit: contain; border: 1px solid var(--border); border-radius: 12px; }
+  .gate { text-align: center; padding: 60px 20px; color: var(--muted); }
+</style>
+</head>
+
+<body data-nav="full">
+
+<main class="dash-shell" id="admMain" style="display:none">
+
+  <div class="greeting">
+    <h2>Admin · examene & bareme</h2>
+    <p>Creează examene și încarcă baremele oficiale pentru studenți.</p>
+  </div>
+
+  <div class="alert-banner" id="banner"></div>
+
+  <!-- ── Examen nou ─────────────────────────────────── -->
+  <div class="sec-lbl">Examen nou</div>
+  <div class="panel">
+    <div class="adm-grid2">
+      <div class="fld">
+        <label>Facultate</label>
+        <select id="fFaculty"></select>
+      </div>
+      <div class="fld">
+        <label>Tip foaie</label>
+        <select id="fSheet"><option value="submed">submed (poză telefon)</option><option value="cluj">cluj (scan)</option></select>
+      </div>
+    </div>
+    <div class="fld">
+      <label>Nume examen</label>
+      <input id="fName" placeholder="ex. Admitere Iulie 2024 – Varianta 1">
+    </div>
+    <div class="adm-grid2">
+      <div class="fld"><label>Categorie</label>
+        <select id="fCat"><option value="admitere">Admitere</option><option value="simulare">Simulare</option><option value="presimulare">Presimulare</option></select>
+      </div>
+      <div class="fld"><label>An</label><input id="fYear" type="number" placeholder="2024"></div>
+    </div>
+    <div class="adm-grid2">
+      <div class="fld"><label>Sesiune (opțional)</label><input id="fSession" placeholder="mai / iulie / septembrie"></div>
+      <div class="fld"><label>Data (opțional)</label><input id="fDate" type="date"></div>
+    </div>
+    <button class="btn-primary" id="btnCreateExam">Creează examen</button>
+    <span style="margin-left:10px;font-size:.82rem;color:var(--muted)">
+      Facultate lipsă? <a href="#" id="lnkNewFac" style="color:var(--primary)">adaugă una</a>
+    </span>
+
+    <!-- mini-form facultate nouă -->
+    <div id="facForm" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+      <div class="adm-grid2">
+        <div class="fld"><label>Nume facultate</label><input id="ncName" placeholder="UMF „Grigore T. Popa"></div>
+        <div class="fld"><label>Slug</label><input id="ncSlug" placeholder="iasi"></div>
+      </div>
+      <div class="fld"><label>Oraș</label><input id="ncCity" placeholder="Iași"></div>
+      <button class="btn-secondary" id="btnCreateFac">Salvează facultatea</button>
+    </div>
+  </div>
+
+  <!-- ── Lista examene ──────────────────────────────── -->
+  <div class="sec-lbl">Examene existente</div>
+  <div id="examList"><div class="empty-hint">Se încarcă...</div></div>
+
+  <!-- ── Builder barem ──────────────────────────────── -->
+  <div class="sec-lbl">Barem (cheia corectă)</div>
+  <div class="panel">
+    <div class="fld">
+      <label>Examen</label>
+      <select id="kExam"><option value="">Alege examenul...</option></select>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="btn-secondary" id="btnScanKey">📷 Scanează poza baremului</button>
+      <button class="btn-secondary" id="btnClearKey">Golește grila</button>
+      <button class="btn-secondary" id="btnImportJsonKey">Importa JSON barem</button>
+      <input type="file" id="keyFile" accept="image/*" hidden>
+      <input type="file" id="keyJsonFile" accept="application/json,.json" hidden>
+    </div>
+
+    <div class="key-preview" id="keyPreview" style="margin-bottom:14px;display:none">
+      <img id="keyPreviewImg" alt="Barem scanat">
+    </div>
+
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:8px">
+      Click pe bule pentru a corecta. Negru = răspuns corect. (Mai multe pe întrebare = răspuns multiplu.)
+    </p>
+    <div class="key-grid" id="keyGrid"></div>
+
+    <div style="margin-top:16px;display:flex;gap:10px;align-items:center">
+      <button class="btn-primary" id="btnSaveKey">Salvează baremul</button>
+      <span id="keyStat" style="font-size:.82rem;color:var(--muted)"></span>
+    </div>
+  </div>
+
+</main>
+
+<div class="gate" id="gate">Se verifică accesul…</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="assets/js/components.js?v=supabase-singleton-20261028"></script>
+<script type="module">
+import { Auth } from './assets/js/auth.js?v=supabase-singleton-20261028';
+import { Admin } from './assets/js/api.js';
+import { processSheet, matrixToKey, annotate } from './assets/js/omr.js';
+import { answerKeyToMatrix, normalizeAnswerKeyJson } from './assets/js/answer-key-json.js?v=json-key-20260626';
+
+const $ = id => document.getElementById(id);
+const banner = $('banner');
+const msg = (t, type='error') => { banner.textContent = t; banner.className = `alert-banner show ${type}`; };
+const clearMsg = () => { banner.className = 'alert-banner'; };
+
+// ── gate admin ──────────────────────────────────────
+const user = await Auth.requireAdmin();
+if (!user) { /* requireAdmin a redirecționat deja */ }
+$('gate').style.display = 'none';
+$('admMain').style.display = '';
+
+let faculties = [], exams = [];
+let keyMatrix = Array.from({ length: 150 }, () => [0,0,0,0,0]);
+let keySheetType = 'submed';
+
+await refreshFaculties();
+await refreshExams();
+buildGrid();
+
+// ── facultăți ───────────────────────────────────────
+async function refreshFaculties() {
+  faculties = await Admin.listFaculties();
+  $('fFaculty').innerHTML = faculties.map(f => `<option value="${f.id}">${f.name}</option>`).join('')
+    || '<option value="">(nicio facultate)</option>';
+}
+
+$('lnkNewFac').addEventListener('click', e => { e.preventDefault(); $('facForm').style.display = $('facForm').style.display === 'none' ? 'block' : 'none'; });
+
+$('btnCreateFac').addEventListener('click', async () => {
+  clearMsg();
+  try {
+    await Admin.createFaculty({ name: $('ncName').value.trim(), slug: $('ncSlug').value.trim().toLowerCase(), city: $('ncCity').value.trim() });
+    $('ncName').value = $('ncSlug').value = $('ncCity').value = '';
+    $('facForm').style.display = 'none';
+    await refreshFaculties();
+    msg('Facultate adăugată.', 'success');
+  } catch (e) { msg('Eroare: ' + e.message); }
+});
+
+// ── creare examen ───────────────────────────────────
+$('btnCreateExam').addEventListener('click', async () => {
+  clearMsg();
+  const name = $('fName').value.trim();
+  if (!name) { msg('Completează numele examenului.'); return; }
+  try {
+    await Admin.createExam({
+      faculty_id: $('fFaculty').value || null,
+      name,
+      year: $('fYear').value ? Number($('fYear').value) : null,
+      category: $('fCat').value,
+      session: $('fSession').value.trim() || null,
+      sheet_type: $('fSheet').value,
+      exam_date: $('fDate').value || null,
+    });
+    $('fName').value = $('fYear').value = $('fSession').value = $('fDate').value = '';
+    await refreshExams();
+    msg('Examen creat.', 'success');
+  } catch (e) { msg('Eroare: ' + e.message); }
+});
+
+// ── lista examene ───────────────────────────────────
+async function refreshExams() {
+  exams = await Admin.listExams();
+  const list = $('examList');
+  if (!exams.length) { list.innerHTML = '<div class="empty-hint">Niciun examen încă.</div>'; }
+  else {
+    list.innerHTML = '';
+    exams.forEach(e => {
+      const hasKey = (e.answer_keys || []).length > 0;
+      const row = document.createElement('div');
+      row.className = 'exam-row';
+      row.innerHTML = `
+        <div class="er-body">
+          <div class="er-name">${e.name}</div>
+          <div class="er-meta">${e.faculties?.name || '—'} · ${e.category || '—'} · ${e.year || ''} · foaie ${e.sheet_type}</div>
+        </div>
+        <span class="er-badge ${hasKey ? 'has' : 'no'}">${hasKey ? 'barem ✓' : 'fără barem'}</span>
+        <button class="btn-secondary er-edit" data-id="${e.id}" style="padding:6px 12px;font-size:.8rem">Barem</button>
+        <button class="btn-secondary er-del" data-id="${e.id}" style="padding:6px 12px;font-size:.8rem;color:var(--red);border-color:#F3B8BA">Șterge</button>`;
+      row.querySelector('.er-edit').addEventListener('click', () => { $('kExam').value = e.id; loadKeyForExam(e.id); document.querySelector('.key-grid').scrollIntoView({ behavior:'smooth', block:'center' }); });
+      row.querySelector('.er-del').addEventListener('click', async () => {
+        if (!confirm(`Ștergi „${e.name}"? (se șterge și baremul)`)) return;
+        try { await Admin.deleteExam(e.id); await refreshExams(); msg('Examen șters.', 'success'); }
+        catch (err) { msg('Eroare: ' + err.message); }
+      });
+      list.appendChild(row);
+    });
+  }
+  // dropdown barem
+  $('kExam').innerHTML = '<option value="">Alege examenul...</option>' +
+    exams.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+}
+
+// ── builder barem ───────────────────────────────────
+function buildGrid() {
+  const g = $('keyGrid');
+  g.innerHTML = '';
+  for (let q = 0; q < 150; q++) {
+    const row = document.createElement('div');
+    row.className = 'qrow';
+    row.innerHTML = `<span class="qn">${q + 1}</span>` +
+      'abcde'.split('').map((l, o) =>
+        `<button class="bub${keyMatrix[q][o] ? ' on' : ''}" data-q="${q}" data-o="${o}">${l}</button>`).join('');
+    g.appendChild(row);
+  }
+  g.querySelectorAll('.bub').forEach(b => b.addEventListener('click', () => {
+    const q = +b.dataset.q, o = +b.dataset.o;
+    keyMatrix[q][o] ^= 1;
+    b.classList.toggle('on');
+    updateKeyStat();
+  }));
+  updateKeyStat();
+}
+
+function updateKeyStat() {
+  const n = keyMatrix.filter(r => r.some(v => v)).length;
+  $('keyStat').textContent = `${n} întrebări cu răspuns`;
+}
+
+$('kExam').addEventListener('change', e => { if (e.target.value) loadKeyForExam(e.target.value); });
+
+async function loadKeyForExam(examId) {
+  clearMsg();
+  const ex = exams.find(x => x.id === examId);
+  keySheetType = ex?.sheet_type || 'submed';
+  keyMatrix = Array.from({ length: 150 }, () => [0,0,0,0,0]);
+  try {
+    const ak = await Admin.getAnswerKey(examId);
+    if (ak?.key) for (const [q, letters] of Object.entries(ak.key))
+      letters.forEach(l => { const o = 'abcde'.indexOf(l); if (o >= 0) keyMatrix[+q - 1][o] = 1; });
+  } catch (e) { msg('Nu am putut citi baremul: ' + e.message); }
+  $('keyPreview').style.display = 'none';
+  buildGrid();
+}
+
+// scanare poză barem → pre-completează grila
+$('btnScanKey').addEventListener('click', () => {
+  if (!$('kExam').value) { msg('Alege întâi examenul.'); return; }
+  $('keyFile').click();
+});
+$('keyFile').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  clearMsg(); msg('Se procesează poza baremului...', 'success');
+  try {
+    const { matrix, image } = await processSheet(file, keySheetType);
+    keyMatrix = matrix;
+    $('keyPreviewImg').src = annotate(image, matrix, null, keySheetType);
+    $('keyPreview').style.display = 'block';
+    buildGrid();
+    clearMsg();
+  } catch (err) { msg('Eroare la scanare: ' + err.message); }
+  e.target.value = '';
+});
+
+$('btnImportJsonKey').addEventListener('click', () => {
+  if (!$('kExam').value) { msg('Alege intai examenul.'); return; }
+  $('keyJsonFile').value = '';
+  $('keyJsonFile').click();
+});
+
+$('keyJsonFile').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  clearMsg(); msg('Se importa baremul JSON...', 'success');
+  try {
+    const raw = JSON.parse(await file.text());
+    const key = normalizeAnswerKeyJson(raw);
+    keyMatrix = answerKeyToMatrix(key);
+    $('keyPreview').style.display = 'none';
+    buildGrid();
+    msg(`Barem JSON importat (${Object.keys(key).length} intrebari). Verifica si salveaza.`, 'success');
+  } catch (err) {
+    msg('Eroare la import JSON: ' + err.message);
+  }
+  e.target.value = '';
+});
+
+$('btnClearKey').addEventListener('click', () => {
+  keyMatrix = Array.from({ length: 150 }, () => [0,0,0,0,0]);
+  $('keyPreview').style.display = 'none';
+  buildGrid();
+});
+
+$('btnSaveKey').addEventListener('click', async () => {
+  clearMsg();
+  const examId = $('kExam').value;
+  if (!examId) { msg('Alege examenul.'); return; }
+  const key = matrixToKey(keyMatrix);
+  if (!Object.keys(key).length) { msg('Baremul e gol.'); return; }
+  try {
+    await Admin.saveAnswerKey(examId, '1', key, true);
+    await refreshExams();
+    $('kExam').value = examId;
+    msg(`Barem salvat (${Object.keys(key).length} întrebări).`, 'success');
+  } catch (e) { msg('Eroare la salvare: ' + e.message); }
+});
+</script>
+
+</body>
+</html>

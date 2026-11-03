@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Submed · Admin grile</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css">
+
+<style>
+  .fld { margin-bottom: 12px; }
+  .fld label { display:block; font-size:.72rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:5px; }
+  .fld input, .fld select, .fld textarea { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--bg); font-family:var(--font); font-size:.92rem; color:var(--text); }
+  .fld textarea { font-family:var(--mono); font-size:.82rem; min-height:90px; }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .opt-row { display:flex; align-items:center; gap:10px; margin-bottom:7px; }
+  .opt-row .k { width:26px; height:26px; border-radius:50%; background:#EAF0FA; display:flex; align-items:center; justify-content:center; font-weight:700; font-family:var(--mono); flex-shrink:0; }
+  .opt-row input[type=text] { flex:1; }
+  .opt-row label.ck { display:flex; align-items:center; gap:5px; font-size:.8rem; color:var(--muted); white-space:nowrap; }
+  .chap-row { display:flex; align-items:center; gap:12px; padding:10px 14px; border:1px solid var(--border); border-radius:10px; margin-bottom:7px; background:var(--card); }
+  .gate { text-align:center; padding:60px 20px; color:var(--muted); }
+</style>
+</head>
+
+<body data-nav="full">
+
+<main class="dash-shell" id="admMain" style="display:none">
+  <div class="greeting"><h2>Admin · grile pe capitole</h2><p>Capitole, întrebări și import în masă.</p></div>
+  <div class="alert-banner" id="banner"></div>
+
+  <!-- Capitole -->
+  <div class="sec-lbl">Capitole</div>
+  <div class="panel">
+    <div class="row2">
+      <div class="fld"><label>Materie</label><select id="cSubj"><option value="biologie">Biologie</option><option value="chimie">Chimie</option></select></div>
+      <div class="fld"><label>Nume capitol</label><input id="cName" placeholder="ex. Celula"></div>
+    </div>
+    <button class="btn-primary" id="cAdd">Adaugă capitol</button>
+    <div id="chapList" style="margin-top:16px"></div>
+  </div>
+
+  <!-- Întrebare nouă -->
+  <div class="sec-lbl" id="qFormTitle">Întrebare nouă</div>
+  <div class="panel" id="qFormPanel">
+    <div class="fld"><label>Capitol</label><select id="qChap"></select></div>
+    <div class="fld"><label>Textul întrebării</label><textarea id="qText" style="font-family:var(--font);min-height:70px"></textarea></div>
+    <label style="font-size:.72rem;font-family:var(--mono);text-transform:uppercase;color:var(--muted)">Variante (bifează cele corecte)</label>
+    <div id="optRows" style="margin:8px 0 12px"></div>
+    <div class="row2">
+      <div class="fld"><label>Dificultate</label><select id="qDiff"><option value="">—</option><option value="usor">Ușor</option><option value="mediu">Mediu</option><option value="greu">Greu</option></select></div>
+      <div class="fld"><label>Sursă (opțional)</label><input id="qSrc" placeholder="ex. Admitere Cluj 2024"></div>
+    </div>
+    <div class="fld"><label>Explicație (opțional)</label><textarea id="qExpl" style="font-family:var(--font);min-height:60px"></textarea></div>
+    <button class="btn-primary" id="qAdd">Salvează întrebarea</button>
+    <button class="btn-secondary" id="qCancelEdit" type="button" style="display:none;margin-left:8px">Anulează editarea</button>
+  </div>
+
+  <!-- Import în masă -->
+  <div class="sec-lbl">Import în masă (JSON)</div>
+  <div class="panel">
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:10px">
+      Array de obiecte. Capitolele inexistente se creează automat. Format:
+    </p>
+    <pre style="background:#F8FBFF;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:.76rem;overflow:auto">[
+  {
+    "subject": "biologie",
+    "chapter": "Celula",
+    "text": "Membrana celulară conține:",
+    "options": ["lipide", "proteine", "celuloză", "colesterol", "amidon"],
+    "correct": ["a", "b", "d"],
+    "explanation": "Modelul mozaicului fluid...",
+    "difficulty": "mediu",
+    "source": "Admitere Cluj 2024"
+  }
+]</pre>
+    <div class="fld"><textarea id="impText" placeholder="Lipește JSON aici..."></textarea></div>
+    <button class="btn-primary" id="impBtn">Importă</button>
+    <span id="impStat" style="margin-left:10px;font-size:.85rem;color:var(--muted)"></span>
+  </div>
+
+  <!-- Întrebări existente -->
+  <div class="sec-lbl">Întrebări pe capitol</div>
+  <div class="panel">
+    <div class="fld"><label>Capitol</label><select id="vChap"><option value="">Alege...</option></select></div>
+    <div id="qList"></div>
+  </div>
+</main>
+
+<div class="gate" id="gate">Se verifică accesul…</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="assets/js/components.js?v=supabase-singleton-20261028"></script>
+<script type="module">
+import { Auth } from './assets/js/auth.js?v=supabase-singleton-20261028';
+import { Admin, Grile } from './assets/js/api.js?v=20261028-2';
+import { normalizeChapterName } from './assets/js/learning-import.js?v=20261028-1';
+
+const $ = id => document.getElementById(id);
+const banner = $('banner');
+const msg = (t,type='error') => { banner.textContent=t; banner.className=`alert-banner show ${type}`; };
+
+const user = await Auth.requireAdmin();
+if (!user) { /* redirecționat */ }
+$('gate').style.display = 'none'; $('admMain').style.display = '';
+
+let chapters = [];
+let editingQuestionId = null;
+
+// opțiuni a-e
+$('optRows').innerHTML = 'abcde'.split('').map(k => `
+  <div class="opt-row">
+    <div class="k">${k}</div>
+    <input type="text" id="opt_${k}" placeholder="Varianta ${k}">
+    <label class="ck"><input type="checkbox" id="ck_${k}"> corect</label>
+  </div>`).join('');
+
+async function refreshChapters() {
+  chapters = [...await Grile.listChapters('biologie'), ...await Grile.listChapters('chimie')];
+  $('chapList').innerHTML = chapters.map(c => `
+    <div class="chap-row">
+      <div style="flex:1"><strong>${c.name}</strong> <span style="color:var(--muted);font-size:.8rem">(${c.subject} · ${c.question_count} întrebări)</span></div>
+      <button class="btn-secondary delc" data-id="${c.id}" style="padding:5px 11px;font-size:.78rem;color:var(--red);border-color:#F3B8BA">Șterge</button>
+    </div>`).join('') || '<div class="empty-hint">Niciun capitol.</div>';
+  $('chapList').querySelectorAll('.delc').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm('Ștergi capitolul și toate întrebările lui?')) return;
+    try { await Admin.deleteChapter(b.dataset.id); await refreshChapters(); msg('Capitol șters.','success'); } catch(e){ msg(e.message); }
+  }));
+  const opts = '<option value="">Alege...</option>' + chapters.map(c => `<option value="${c.id}">${c.subject} · ${c.name}</option>`).join('');
+  $('qChap').innerHTML = chapters.map(c => `<option value="${c.id}">${c.subject} · ${c.name}</option>`).join('');
+  $('vChap').innerHTML = opts;
+}
+
+$('cAdd').addEventListener('click', async () => {
+  const subject = $('cSubj').value;
+  const name = normalizeChapterName(subject, $('cName').value); if (!name) { msg('Nume capitol gol.'); return; }
+  try { await Admin.createChapter({ subject, name, sort_order: chapters.length }); $('cName').value=''; await refreshChapters(); msg('Capitol adăugat.','success'); }
+  catch(e){ msg(e.message); }
+});
+
+$('qAdd').addEventListener('click', async () => {
+  const chapter_id = $('qChap').value; if (!chapter_id) { msg('Alege capitolul.'); return; }
+  const text = $('qText').value.trim(); if (!text) { msg('Text gol.'); return; }
+  const options = [], correct = [];
+  for (const k of 'abcde') {
+    const t = $('opt_'+k).value.trim();
+    if (t) { options.push({ key:k, text:t }); if ($('ck_'+k).checked) correct.push(k); }
+  }
+  if (options.length < 2) { msg('Minim 2 variante.'); return; }
+  if (!correct.length) { msg('Bifează cel puțin un răspuns corect.'); return; }
+  const payload = { chapter_id, text, options, correct, multiple: correct.length>1,
+      explanation: $('qExpl').value.trim()||null, difficulty: $('qDiff').value||null, source: $('qSrc').value.trim()||null };
+  try {
+    if (editingQuestionId) await Admin.updateQuestion(editingQuestionId, payload);
+    else await Admin.createQuestion(payload);
+    const wasEditing = Boolean(editingQuestionId);
+    resetQuestionForm();
+    $('qText').value=$('qExpl').value=$('qSrc').value=''; 'abcde'.split('').forEach(k=>{$('opt_'+k).value='';$('ck_'+k).checked=false;});
+    await refreshChapters();
+    if (wasEditing) $('vChap').value = chapter_id;
+    if ($('vChap').value) $('vChap').dispatchEvent(new Event('change'));
+    msg(wasEditing ? 'Întrebarea a fost actualizată.' : 'Întrebare salvată.','success');
+  } catch(e){ msg(e.message); }
+});
+
+function resetQuestionForm() {
+  editingQuestionId = null;
+  $('qAdd').textContent = 'Salvează întrebarea';
+  $('qCancelEdit').style.display = 'none';
+  $('qFormTitle').textContent = 'Întrebare nouă';
+}
+
+function beginQuestionEdit(question) {
+  editingQuestionId = question.id;
+  $('qChap').value = question.chapter_id;
+  $('qText').value = question.text || '';
+  $('qExpl').value = question.explanation || '';
+  $('qDiff').value = question.difficulty || '';
+  $('qSrc').value = question.source || '';
+  const options = Array.isArray(question.options) ? question.options : [];
+  const correct = new Set(Array.isArray(question.correct) ? question.correct : []);
+  for (const key of 'abcde') {
+    const option = options.find(item => item.key === key);
+    $('opt_' + key).value = option?.text || '';
+    $('ck_' + key).checked = correct.has(key);
+  }
+  $('qFormTitle').textContent = 'Editează întrebarea';
+  $('qAdd').textContent = 'Salvează modificările';
+  $('qCancelEdit').style.display = '';
+  $('qFormPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+$('qCancelEdit').addEventListener('click', () => {
+  resetQuestionForm();
+  $('qText').value = $('qExpl').value = $('qSrc').value = '';
+  $('qDiff').value = '';
+  'abcde'.split('').forEach(key => { $('opt_' + key).value = ''; $('ck_' + key).checked = false; });
+});
+
+// import în masă
+$('impBtn').addEventListener('click', async () => {
+  let arr; try { arr = JSON.parse($('impText').value); } catch(e){ msg('JSON invalid: '+e.message); return; }
+  if (!Array.isArray(arr) || !arr.length) { msg('Aștept un array de întrebări.'); return; }
+  try {
+    // rezolvă/creează capitolele după (subject,name)
+    const map = {};
+    chapters.forEach(c => {
+      const key = c.subject+'|'+normalizeChapterName(c.subject, c.name).toLowerCase();
+      const isCanonical = c.name.trim().toLowerCase() === normalizeChapterName(c.subject, c.name).toLowerCase();
+      if (!map[key] || isCanonical) map[key] = c.id;
+    });
+    const rows = [];
+    for (const q of arr) {
+      const subj = (q.subject||'biologie').toLowerCase();
+      const chapter = normalizeChapterName(subj, q.chapter);
+      const key = subj+'|'+chapter.toLowerCase();
+      if (!map[key]) { const c = await Admin.createChapter({ subject: subj, name: chapter }); map[key]=c.id; }
+      const options = (q.options||[]).map((t,i)=>({ key:'abcde'[i], text:String(t) }));
+      rows.push({ chapter_id: map[key], text: q.text, options, correct: q.correct||[],
+        multiple: (q.correct||[]).length>1, explanation: q.explanation||null,
+        difficulty: q.difficulty||null, source: q.source||null });
+    }
+    const n = await Admin.importQuestions(rows);
+    $('impStat').textContent = `${n} întrebări importate.`; $('impText').value='';
+    await refreshChapters(); msg(`${n} întrebări importate.`,'success');
+  } catch(e){ msg('Import eșuat: '+e.message); }
+});
+
+// listare întrebări pe capitol
+$('vChap').addEventListener('change', async e => {
+  const id = e.target.value; const box = $('qList');
+  if (!id) { box.innerHTML=''; return; }
+  box.innerHTML = '<div class="empty-hint">Se încarcă...</div>';
+  try {
+    const qs = await Admin.listQuestions(id);
+    box.innerHTML = qs.length ? qs.map(q => `
+      <div class="chap-row">
+        <div style="flex:1"><div style="font-weight:600">${q.text}</div>
+          <div style="font-size:.78rem;color:var(--muted);font-family:var(--mono)">corect: ${(q.correct||[]).join(',')} ${q.difficulty?'· '+q.difficulty:''}</div></div>
+        <div style="display:flex;gap:7px;flex-shrink:0">
+          <button class="btn-secondary editq" data-id="${q.id}" style="padding:5px 11px;font-size:.78rem">Editează</button>
+          <button class="btn-secondary delq" data-id="${q.id}" style="padding:5px 11px;font-size:.78rem;color:var(--red);border-color:#F3B8BA">Șterge</button>
+        </div>
+      </div>`).join('') : '<div class="empty-hint">Niciun întrebare în capitol.</div>';
+    box.querySelectorAll('.editq').forEach(b => b.addEventListener('click', () => {
+      const question = qs.find(item => String(item.id) === b.dataset.id);
+      if (question) beginQuestionEdit(question);
+    }));
+    box.querySelectorAll('.delq').forEach(b => b.addEventListener('click', async () => {
+      if (!confirm('Ștergi întrebarea?')) return;
+      try { await Admin.deleteQuestion(b.dataset.id); $('vChap').dispatchEvent(new Event('change')); await refreshChapters(); } catch(e){ msg(e.message); }
+    }));
+  } catch(e){ box.innerHTML = `<div class="empty-hint">${e.message}</div>`; }
+});
+
+await refreshChapters();
+</script>
+
+</body>
+</html>

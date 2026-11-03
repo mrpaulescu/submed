@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Planul tău de pregătire SubMed, construit din capitolele, răspunsurile și examenele tale.">
+<title>Submed · Coach-ul tău</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css">
+<style>
+  .coach-head { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; flex-wrap:wrap; margin-bottom:22px; }
+  .coach-head .lead { color:var(--ink-2); max-width:60ch; margin-top:6px; }
+  .coach-head .coach-tags { display:flex; gap:8px; flex-wrap:wrap; }
+  .coach-tag { border:1px solid var(--line); border-radius:100px; padding:7px 12px; color:var(--ink-2); background:var(--surface); font-size:.78rem; font-weight:700; }
+  .coach-grid { display:grid; grid-template-columns:1.4fr 1fr; gap:14px; align-items:start; }
+  .coach-grid > .coach-card + .coach-card { margin-top:0; }
+  @media(max-width:850px){.coach-grid{grid-template-columns:1fr}}
+  .coach-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:22px; box-shadow:var(--shadow); min-width:0; }
+  .coach-card + .coach-card { margin-top:14px; }
+  .coach-card h3 { font-size:1.02rem; font-weight:700; margin:0; }
+  .coach-card-head { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:15px; }
+  .coach-kicker { font-family:var(--mono); font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; color:var(--blue-deep); margin-bottom:7px; }
+  .coach-title { font-family:var(--font-display); font-weight:800; font-size:clamp(1.2rem,2.3vw,1.7rem); line-height:1.25; letter-spacing:-.025em; }
+  .coach-copy { color:var(--ink-2); font-size:.9rem; line-height:1.55; margin-top:8px; }
+  .coach-actions { display:flex; gap:9px; flex-wrap:wrap; margin-top:18px; }
+  .coach-actions a { text-decoration:none; }
+  .coach-status { color:var(--ink-3); font-size:.78rem; margin-top:13px; }
+  .coach-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
+  .coach-stat { padding:13px; text-align:center; background:var(--surface-2); border:1px solid var(--line); border-radius:13px; }
+  .coach-stat b { display:block; font-family:var(--font-display); font-size:1.35rem; }
+  .coach-stat span { display:block; color:var(--ink-3); font-size:.7rem; margin-top:2px; }
+  .coach-row { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--blue-tint-2); }
+  .coach-row:last-child { border-bottom:0; }
+  .coach-row-body { min-width:0; flex:1; }
+  .coach-row-title { font-weight:700; font-size:.88rem; }
+  .coach-row-sub { color:var(--ink-2); font-size:.76rem; margin-top:3px; }
+  .coach-bar { height:7px; border-radius:20px; background:var(--blue-tint-2); overflow:hidden; margin-top:8px; }
+  .coach-bar i { display:block; height:100%; background:linear-gradient(90deg,var(--blue-bright),var(--blue-deep)); border-radius:20px; }
+  .coach-date { font-family:var(--mono); font-size:.7rem; white-space:nowrap; color:var(--ink-2); }
+  .coach-form { display:grid; grid-template-columns:1.4fr 1fr 1fr auto; gap:9px; margin:14px 0; }
+  .coach-form input,.coach-form select { min-width:0; height:42px; padding:0 10px; border:1.5px solid var(--line); border-radius:9px; color:var(--ink); background:var(--surface-2); font:inherit; font-size:.83rem; }
+  @media(max-width:700px){.coach-form{grid-template-columns:1fr 1fr}.coach-form input:first-child,.coach-form button{grid-column:1/-1}}
+  .coach-delete { border:0; background:transparent; color:var(--ink-3); cursor:pointer; border-radius:8px; padding:5px 9px; }
+  .coach-delete:hover { color:var(--danger); background:var(--wrong-tint,#FBE8E8); }
+  .coach-select { height:42px; border:1.5px solid var(--line); border-radius:9px; background:var(--surface-2); padding:0 10px; font:inherit; font-size:.85rem; color:var(--ink); }
+  .coach-empty { color:var(--ink-3); font-size:.86rem; padding:12px 0; }
+  .coach-help { background:var(--blue-tint-2); border:1px solid #d8e6ff; border-radius:13px; padding:14px 16px; color:var(--ink-2); font-size:.83rem; line-height:1.55; }
+  .coach-rationale { margin-top:13px; color:var(--ink-2); font-size:.82rem; }
+  .coach-rationale summary { color:var(--blue-deep); font-weight:700; cursor:pointer; }
+  .coach-rationale p { margin:8px 0 0; line-height:1.5; }
+  .coach-session-steps,.coach-week-list { list-style:none; margin:0; padding:0; }
+  .coach-session-step,.coach-week-row { display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--blue-tint-2); padding:13px 0; }
+  .coach-session-step:last-child,.coach-week-row:last-child { border-bottom:0; }
+  .coach-session-step-copy { flex:1; min-width:0; }
+  .coach-session-step-title { font-size:.88rem; font-weight:700; }
+  .coach-session-step-detail { color:var(--ink-2); font-size:.76rem; margin-top:3px; }
+  .coach-step-time { color:var(--ink-3); font:700 .7rem var(--mono); white-space:nowrap; }
+  .coach-step-done { border:1px solid var(--line); border-radius:8px; background:var(--surface-2); color:var(--ink-2); padding:7px 10px; font:700 .75rem var(--font); }
+  .coach-step-done:disabled { opacity:.5; cursor:not-allowed; }
+  .coach-week-date { flex:0 0 112px; color:var(--blue-deep); font:700 .72rem var(--mono); }
+  .coach-week-copy { flex:1; min-width:0; }
+  .coach-week-copy b { display:block; font-size:.84rem; }
+  .coach-week-copy span { display:block; color:var(--ink-2); font-size:.74rem; margin-top:3px; }
+  .coach-session-result { margin-top:14px; }
+  .coach-session-result b { color:var(--ink); }
+  @media(max-width:560px){.coach-stats{grid-template-columns:1fr 1fr}.coach-card{padding:18px}}
+  @media(max-width:560px){.coach-session-step,.coach-week-row{align-items:flex-start;flex-wrap:wrap}.coach-week-date{flex-basis:100%}.coach-step-done{margin-left:auto}}
+</style>
+</head>
+<body data-nav="full">
+<main class="dash-shell">
+  <header class="coach-head">
+    <div>
+      <div class="coach-kicker">Plan de pregătire</div>
+      <h2>Coach-ul tău, <span id="coachName">student</span> 🎯</h2>
+      <p class="lead" id="coachIntro">Îți alegi următorul pas pe baza capitolelor și răspunsurilor tale.</p>
+    </div>
+    <div class="coach-tags">
+      <span class="coach-tag" id="coachCenter">Centru neales</span>
+      <a class="coach-tag" href="user.html" style="text-decoration:none">Preferințe ↗</a>
+    </div>
+  </header>
+
+  <div class="coach-grid">
+    <section class="coach-card" aria-labelledby="focusTitle">
+      <div class="coach-kicker" id="focusKicker">Următorul pas recomandat</div>
+      <h3 class="coach-title" id="focusTitle">Se încarcă progresul tău…</h3>
+      <p class="coach-copy" id="focusReason">Recomandarea apare pe baza capitolelor și răspunsurilor înregistrate în cont.</p>
+      <details class="coach-rationale"><summary>De ce este recomandarea potrivită pentru mine?</summary><p id="recommendationWhy">Analizăm răspunsurile și preferințele tale.</p></details>
+      <div class="coach-actions">
+        <a class="btn-primary" id="focusGrile" href="grile.html">Începe setul de grile →</a>
+        <a class="btn-secondary" id="focusCards" href="flashcards.html">Repetă cu flashcards</a>
+      </div>
+      <p class="coach-status" id="focusMeta"></p>
+    </section>
+
+    <section class="coach-card">
+      <div class="coach-card-head"><h3>Obiectivul tău</h3><a href="user.html" style="font-size:.8rem">Editează</a></div>
+      <div class="coach-stats">
+        <div class="coach-stat"><b id="statChapters">—</b><span>capitole lucrate</span></div>
+        <div class="coach-stat"><b id="statFlashcards">—</b><span>flashcards de repetat</span></div>
+        <div class="coach-stat"><b id="statExam">—</b><span>examene susținute</span></div>
+      </div>
+      <div class="coach-help" style="margin-top:14px">
+        <b>Ritm zilnic de studiu</b>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:9px;flex-wrap:wrap">
+          <select class="coach-select" id="dailyGoal" aria-label="Timp zilnic de studiu">
+            <option value="30">30 minute</option><option value="60">1 oră</option><option value="90">1 oră și 30 min</option><option value="120">2 ore</option><option value="180">3 ore</option><option value="240">4 ore</option>
+          </select>
+          <span id="goalSaveStatus">Timpul alocat sesiunii de azi.</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="coach-card" id="dailySessionCard" style="margin-top:14px" aria-labelledby="dailySessionTitle">
+    <div class="coach-card-head">
+      <div><div class="coach-kicker">Sesiunea ta de azi</div><h3 id="dailySessionTitle">Se pregătește sesiunea…</h3></div>
+      <span class="coach-date" id="dailySessionTime"></span>
+    </div>
+    <p class="coach-copy" id="dailySessionSummary">Pașii se adaptează la capitolele, răspunsurile și repetițiile tale.</p>
+    <ol class="coach-session-steps" id="dailySessionSteps"></ol>
+    <div class="coach-actions"><button class="btn-primary" id="coachSessionStart" type="button">Începe sesiunea</button><span class="coach-status" id="coachSessionStatus" role="status"></span></div>
+    <div class="coach-help coach-session-result" id="coachSessionOutcome" hidden></div>
+  </section>
+
+  <div class="sec-lbl">Progres pe capitole</div>
+  <section class="coach-card" id="progressCard"><div id="chapterProgress"></div></section>
+
+  <div class="sec-lbl">Planul următoarelor zile</div>
+  <section class="coach-card" id="weeklyPlanCard">
+    <p class="coach-copy" id="weeklyPlanIntro" style="margin:0 0 8px"></p>
+    <ol class="coach-week-list" id="weeklyPlanList"></ol>
+  </section>
+
+  <div class="coach-grid" style="margin-top:14px">
+    <section class="coach-card">
+      <div class="coach-card-head"><h3>Examenele și simulările tale</h3><span class="coach-date" id="examSummary">—</span></div>
+      <div class="coach-help" id="examNudge">Adaugă datele cunoscute pentru examene sau simulări; coach-ul le va afișa în ordinea apropierii.</div>
+      <form class="coach-form" id="examForm">
+        <input id="examName" type="text" maxlength="100" placeholder="Nume (ex. Simulare Cluj)" required>
+        <input id="examDate" type="date" required>
+        <select id="examType" aria-label="Tipul examenului"><option value="sim">Simulare</option><option value="exam">Examen</option></select>
+        <button class="btn-primary" type="submit">Adaugă</button>
+      </form>
+      <div id="examList" class="coach-empty">Se încarcă examenele…</div>
+    </section>
+
+    <section class="coach-card">
+      <div class="coach-card-head"><h3>Programul tău de azi</h3><span class="coach-date" id="todayLabel">—</span></div>
+      <p class="coach-copy" style="margin:0">Alege intervalele tale; recomandarea de studiu rămâne legată de capitolul selectat pentru tine.</p>
+      <form class="coach-form" id="eventForm">
+        <input id="eventName" type="text" maxlength="100" placeholder="Activitate (ex. meditație)" required>
+        <input id="eventTime" type="time" required>
+        <select id="eventDuration" aria-label="Durată"><option value="30">30 min</option><option value="60" selected>1 oră</option><option value="90">1½ ore</option><option value="120">2 ore</option></select>
+        <button class="btn-primary" type="submit">Adaugă</button>
+      </form>
+      <div id="eventList" class="coach-empty">Se încarcă programul…</div>
+    </section>
+  </div>
+
+  <div class="sec-lbl">Resurse pentru pregătirea ta</div>
+  <div class="tool-grid">
+    <a class="tool" id="resourceChapter" href="grile.html">
+      <span class="tool-name">Capitolul recomandat</span><span class="tool-desc" id="resourceChapterText">Setul recomandat îți oferă un punct clar de început.</span><span class="act-go">Deschide capitolul →</span>
+    </a>
+    <a class="tool" id="resourceFlashcards" href="flashcards.html">
+      <span class="tool-name">Flashcards potrivite</span><span class="tool-desc" id="resourceFlashcardsText">Repetă setul asociat capitolului tău.</span><span class="act-go">Începe recapitularea →</span>
+    </a>
+    <a class="tool" id="resourceExam" href="facultati.html">
+      <span class="tool-name">Subiecte pentru centrul tău</span><span class="tool-desc" id="resourceExamText">Alege subiecte anterioare pentru centrul selectat.</span><span class="act-go">Vezi subiecte →</span>
+    </a>
+  </div>
+  <p class="coach-status" id="pageStatus" role="status"></p>
+</main>
+
+<script type="module" src="assets/js/components.js?v=supabase-singleton-20261028"></script>
+<script type="module">
+import { Auth } from './assets/js/auth.js?v=supabase-singleton-20261028';
+import { Coach, Profiles } from './assets/js/api.js';
+import { getCoachRecommendations, CoachLabels } from './assets/js/coach-recommendations.js';
+import { buildDailyStudySession, buildWeeklyStudyPlan, compareSessionProgress } from './assets/js/coach-workflow.js';
+
+await Auth.requireLogin();
+const $ = id => document.getElementById(id);
+const today = new Date();
+const pad = value => String(value).padStart(2, '0');
+const todayString = today.getFullYear() + '-' + pad(today.getMonth() + 1) + '-' + pad(today.getDate());
+const dateLabel = value => new Date(value + 'T00:00:00').toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' });
+let plan = await getCoachRecommendations();
+
+let currentUser = null;
+try {
+  currentUser = await Auth.getUser();
+  if (currentUser?.name) $('coachName').textContent = currentUser.name.split(' ')[0];
+} catch (error) {}
+
+const sessionStorageKey = `submed_coach_sessions_${currentUser?.id || 'student'}`;
+const readLocalSessions = () => {
+  try {
+    const value = JSON.parse(localStorage.getItem(sessionStorageKey) || '[]');
+    return Array.isArray(value) ? value : [];
+  } catch (error) { return []; }
+};
+let sessionHistory = Array.isArray(plan.sessionHistory) ? [...plan.sessionHistory] : [];
+if (!sessionHistory.length) sessionHistory = readLocalSessions();
+plan.sessionHistory = sessionHistory;
+function rebuildPersonalPlans() {
+  plan.dailySession = buildDailyStudySession({
+    chapter: plan.chapter,
+    chapterHref: plan.chapterHref,
+    deck: plan.deck,
+    deckHref: plan.deckHref.replace(/&due=1$/, ''),
+    dueQuestionCount: plan.dueQuestions.length,
+    dailyMinutes: plan.dailyMinutes,
+    subjectLabel: plan.subjectLabel,
+    subjects: plan.subjects,
+  });
+  plan.weeklyPlan = buildWeeklyStudyPlan({
+    chapters: plan.chapters,
+    subjects: plan.subjects,
+    performance: plan.performance,
+    dailyMinutes: plan.dailyMinutes,
+    nextExam: plan.nextExam,
+    completedSessions: sessionHistory,
+    today: new Date(),
+  });
+}
+rebuildPersonalPlans();
+
+$('todayLabel').textContent = today.toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' });
+$('dailyGoal').value = String(plan.dailyMinutes);
+
+function renderCoachSummary() {
+  $('coachCenter').textContent = plan.centerLabel || 'Centru neales';
+  $('coachIntro').textContent = plan.preferences.target_score
+    ? 'Ținta ta este ' + plan.preferences.target_score + '/45. Recomandarea se ajustează după răspunsurile și capitolele lucrate.'
+    : 'Îți alegi următorul pas pe baza capitolelor și răspunsurilor tale.';
+  $('statChapters').textContent = String(plan.studiedChapterCount);
+  $('statFlashcards').textContent = String(plan.decks.reduce((sum, deck) => sum + (Number(deck.due_count) || 0), 0));
+  $('statExam').textContent = plan.stats ? String(plan.stats.total_exams || 0) : '—';
+}
+
+function renderRecommendation() {
+  $('focusKicker').textContent = plan.chapter?.wrong > 0 ? 'Capitolul cu cele mai multe greșeli' : 'Următorul pas recomandat';
+  if (plan.chapter) {
+    $('focusTitle').textContent = (CoachLabels.SUBJECT_NAMES[plan.chapter.subject] || plan.chapter.subject) + ' · ' + plan.chapter.name;
+    $('focusReason').textContent = plan.reason;
+    const urgentChapter = plan.chapter.wrong > 0;
+    const preferredFlashcards = plan.preferences.preferred_tool === 'flashcards' && plan.deck && !urgentChapter;
+    const preferredPaper = plan.preferences.preferred_tool === 'subiecte' && plan.paper && !urgentChapter;
+    $('focusGrile').href = preferredPaper
+      ? (plan.preferences.center === 'cluj' ? 'cluj.html' : plan.preferences.center === 'iasi' ? 'iasi.html' : 'facultati.html')
+      : preferredFlashcards ? plan.deckHref : plan.chapterHref;
+    $('focusGrile').textContent = preferredPaper ? 'Deschide subiectele centrului →' : preferredFlashcards ? 'Repetă cu flashcards →' : 'Începe setul de grile →';
+    $('focusCards').href = preferredFlashcards ? plan.chapterHref : plan.deckHref;
+    $('focusCards').textContent = preferredFlashcards ? 'Începe setul de grile' : 'Repetă cu flashcards';
+    $('focusCards').classList.toggle('disabled', !plan.deck && !preferredFlashcards);
+    $('focusCards').setAttribute('aria-disabled', String(!plan.deck && !preferredFlashcards));
+    $('focusMeta').textContent = plan.chapter.question_count + ' întrebări disponibile · ' + plan.chapter.attempts + ' răspunsuri ale tale' + (plan.chapter.accuracy === null ? '' : ' · ' + plan.chapter.accuracy + '% corecte') + ' · ' + plan.dailyMinutes + ' minute planificate azi';
+    $('recommendationWhy').textContent = plan.chapter.wrong > 0
+      ? `Dintre ${plan.eligibleChapterCount} capitole disponibile pentru materiile tale, acesta este pe locul ${plan.chapterRank || 1} la numărul de greșeli, cu ${plan.chapter.wrong} răspunsuri greșite din ${plan.chapter.attempts}. Recomandarea se va schimba când progresul tău se schimbă.`
+      : plan.chapter.attempts === 0
+        ? 'Nu ai greșeli înregistrate încă; am ales un capitol disponibil pe care nu l-ai început.'
+        : `Ai lucrat acest capitol de ${plan.chapter.attempts} ori și ai ${plan.chapter.accuracy}% răspunsuri corecte. Continuă până când următorul capitol devine o prioritate mai mare.`;
+  } else {
+    $('focusTitle').textContent = 'Alege capitolul cu care vrei să începi';
+    $('focusReason').textContent = plan.chapters.length
+      ? 'Nu există încă un set de întrebări pentru materiile alese; actualizează preferințele sau răsfoiește capitolele.'
+      : 'Nu am găsit capitole cu seturi de întrebări disponibile în acest moment.';
+    $('recommendationWhy').textContent = 'După ce există capitole disponibile și răspunsuri înregistrate, recomandarea se va baza pe progresul tău.';
+  }
+  $('resourceChapter').href = plan.chapterHref;
+  $('resourceChapterText').textContent = plan.chapter
+    ? plan.subjectLabel + ' · ' + plan.chapter.name + ' · ' + plan.reason
+    : 'Alege o materie și începe un set de grile.';
+  $('resourceFlashcards').href = plan.deckHref;
+  if (plan.deck) $('resourceFlashcardsText').textContent = (plan.deck.title || plan.deck.chapter_name || 'Set flashcards') + ' · ' + (plan.deck.due_count || 0) + ' de repetat';
+  const centerPage = plan.preferences.center === 'cluj' ? 'cluj.html' : plan.preferences.center === 'iasi' ? 'iasi.html' : 'facultati.html';
+  $('resourceExam').href = centerPage;
+  if (plan.paper) $('resourceExamText').textContent = plan.paper.name + (plan.paper.year ? ' · ' + plan.paper.year : '') + ' disponibil pentru centrul selectat.';
+}
+
+renderCoachSummary();
+renderRecommendation();
+
+function renderProgress() {
+  const host = $('chapterProgress');
+  const chapters = plan.chapters
+    .filter(chapter => chapter.question_count > 0 && (!plan.subjects.length || plan.subjects.includes(chapter.subject)))
+    .map(chapter => ({ ...chapter, progress: plan.performance[chapter.id] || { attempts: 0, correct: 0 } }))
+    .sort((a, b) => {
+      const aWrong = Math.max(a.progress.attempts - a.progress.correct, 0);
+      const bWrong = Math.max(b.progress.attempts - b.progress.correct, 0);
+      const aRate = a.progress.attempts ? a.progress.correct / a.progress.attempts : 1;
+      const bRate = b.progress.attempts ? b.progress.correct / b.progress.attempts : 1;
+      return bWrong - aWrong || aRate - bRate || (b.progress.attempts - a.progress.attempts);
+    }).slice(0, 8);
+  if (!chapters.length) {
+    host.innerHTML = '<div class="coach-empty">Progresul pe capitole apare după ce este disponibil și lucrezi un set de grile.</div>';
+    return;
+  }
+  host.innerHTML = '';
+  chapters.forEach(chapter => {
+    const attempts = chapter.progress.attempts;
+    const pct = attempts ? Math.round(chapter.progress.correct / attempts * 100) : 0;
+    const row = document.createElement('div');
+    row.className = 'coach-row';
+    const body = document.createElement('div');
+    body.className = 'coach-row-body';
+    const title = document.createElement('div');
+    title.className = 'coach-row-title';
+    title.textContent = (CoachLabels.SUBJECT_NAMES[chapter.subject] || chapter.subject) + ' · ' + chapter.name;
+    const meta = document.createElement('div');
+    meta.className = 'coach-row-sub';
+    const wrong = Math.max(attempts - chapter.progress.correct, 0);
+    meta.textContent = attempts ? wrong + ' greșite · ' + pct + '% corecte · ' + attempts + ' răspunsuri' : chapter.question_count + ' întrebări · încă neînceput';
+    const bar = document.createElement('div');
+    bar.className = 'coach-bar';
+    const fill = document.createElement('i');
+    fill.style.width = (attempts ? pct : 0) + '%';
+    bar.append(fill);
+    body.append(title, meta, bar);
+    const link = document.createElement('a');
+    link.className = 'coach-date';
+    link.href = 'grile.html?chapter=' + encodeURIComponent(chapter.id) + '&subject=' + encodeURIComponent(chapter.subject) + '&mode=practice';
+    link.textContent = 'Exersează';
+    row.append(body, link);
+    host.append(row);
+  });
+}
+renderProgress();
+
+async function saveSessionHistory() {
+  sessionHistory = [...sessionHistory]
+    .sort((a, b) => new Date(b.started_at || 0) - new Date(a.started_at || 0))
+    .slice(0, 60);
+  const settings = { ...(plan.preferences.settings || {}), coach_sessions: sessionHistory };
+  try {
+    await Profiles.savePreferences({ settings });
+    localStorage.removeItem(sessionStorageKey);
+    $('coachSessionStatus').textContent = 'Sesiunea este salvată în contul tău.';
+  } catch (error) {
+    try {
+      localStorage.setItem(sessionStorageKey, JSON.stringify(sessionHistory));
+      $('coachSessionStatus').textContent = 'Sesiunea este salvată pe acest dispozitiv.';
+    } catch (storageError) {
+      $('coachSessionStatus').textContent = 'Nu am putut salva sesiunea. Verifică spațiul disponibil și încearcă din nou.';
+      throw storageError;
+    }
+  }
+  plan.preferences.settings = settings;
+  plan.sessionHistory = sessionHistory;
+}
+
+function renderStudySession() {
+  const active = sessionHistory.find(session => !session.completed_at) || null;
+  const latestCompleted = sessionHistory.find(session => session.completed_at && session.result) || null;
+  const steps = active?.steps?.length ? active.steps : plan.dailySession;
+  const totalMinutes = steps.reduce((sum, step) => sum + (Number(step.minutes) || 0), 0);
+  $('dailySessionTitle').textContent = active
+    ? 'Sesiunea ta este în desfășurare'
+    : plan.chapter ? `${plan.chapter.name} · ${steps.length} pași` : 'Alege o materie ca să-ți pregătesc o sesiune';
+  $('dailySessionTime').textContent = totalMinutes ? `${totalMinutes} minute` : '';
+  $('dailySessionSummary').textContent = active
+    ? 'Deschide fiecare resursă, apoi marchează pasul ca terminat. La final îți arăt cum s-a schimbat progresul.'
+    : steps.length ? `Am combinat greșelile ajunse la termen, flashcardurile scadente și grilele din capitolul recomandat pentru obiectivul tău de ${plan.dailyMinutes} minute.`
+      : 'Alege materiile și un capitol disponibil în preferințele tale ca să primești o sesiune personalizată.';
+  $('dailySessionSteps').replaceChildren();
+  steps.forEach(step => {
+    const item = document.createElement('li');
+    item.className = 'coach-session-step';
+    const copy = document.createElement('div');
+    copy.className = 'coach-session-step-copy';
+    const title = document.createElement('div');
+    title.className = 'coach-session-step-title';
+    title.textContent = step.title;
+    const detail = document.createElement('div');
+    detail.className = 'coach-session-step-detail';
+    detail.textContent = step.detail;
+    copy.append(title, detail);
+    const time = document.createElement('span');
+    time.className = 'coach-step-time';
+    time.textContent = `${step.minutes} min`;
+    const link = document.createElement('a');
+    link.className = 'coach-date';
+    link.href = step.href;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.setAttribute('aria-disabled', String(!active));
+    link.textContent = 'Deschide →';
+    if (!active) {
+      link.removeAttribute('href');
+      link.classList.add('disabled');
+    }
+    const done = document.createElement('button');
+    done.type = 'button';
+    done.className = 'coach-step-done';
+    const isDone = !!active?.completed_steps?.includes(step.id);
+    done.textContent = isDone ? '✓ Gata' : 'Marchează gata';
+    done.disabled = !active || isDone;
+    done.addEventListener('click', async () => {
+      if (!active) return;
+      active.completed_steps = [...new Set([...(active.completed_steps || []), step.id])];
+      try {
+        await saveSessionHistory();
+        if (active.completed_steps.length >= active.steps.length) await finishStudySession(active);
+        else renderStudySession();
+      } catch (error) {}
+    });
+    item.append(copy, time, link, done);
+    $('dailySessionSteps').append(item);
+  });
+  const start = $('coachSessionStart');
+  start.disabled = !!active || !steps.length;
+  start.textContent = active ? 'Sesiune începută' : 'Începe sesiunea';
+  if (!plan.questionReviewAvailable) $('coachSessionStatus').textContent = 'Nu am putut încărca întrebările programate pentru recapitulare.';
+  if (latestCompleted) {
+    const result = latestCompleted.result;
+    const outcome = $('coachSessionOutcome');
+    outcome.hidden = false;
+    const accuracy = result.sessionAccuracy == null ? 'fără răspunsuri noi la grile' : `${result.addedCorrect}/${result.addedAttempts} corecte (${result.sessionAccuracy}%)`;
+    const change = result.accuracyChange == null ? '' : ` Acuratețea capitolului s-a schimbat cu ${result.accuracyChange > 0 ? '+' : ''}${result.accuracyChange} puncte procentuale.`;
+    const cards = result.reviewedFlashcards ? ` Ai repetat ${result.reviewedFlashcards} flashcarduri, dintre care ${result.newlyKnownFlashcards} au fost marcate ca știute.` : '';
+    outcome.textContent = `Ultima sesiune: ${accuracy}.${change}${cards}`;
+  } else $('coachSessionOutcome').hidden = true;
+}
+
+async function beginStudySession() {
+  const steps = plan.dailySession || [];
+  if (!steps.length || !plan.chapter) return;
+  const baseline = plan.performance[plan.chapter.id] || { attempts: 0, correct: 0 };
+  const session = {
+    id: globalThis.crypto?.randomUUID?.() || `coach-${Date.now()}`,
+    chapter_id: plan.chapter.id,
+    chapter_name: plan.chapter.name,
+    subject: plan.chapter.subject,
+    planned_minutes: steps.reduce((sum, step) => sum + (Number(step.minutes) || 0), 0),
+    baseline_attempts: Number(baseline.attempts) || 0,
+    baseline_correct: Number(baseline.correct) || 0,
+    deck_id: plan.deck?.id || null,
+    baseline_due_cards: Number(plan.deck?.due_count) || 0,
+    baseline_known_cards: Number(plan.deck?.known_count) || 0,
+    steps: steps.map(step => ({ ...step })),
+    completed_steps: [],
+    started_at: new Date().toISOString(),
+    completed_at: null,
+  };
+  sessionHistory.unshift(session);
+  try {
+    await saveSessionHistory();
+    renderStudySession();
+  } catch (error) {
+    sessionHistory = sessionHistory.filter(item => item.id !== session.id);
+    $('coachSessionStatus').textContent = 'Nu am putut porni sesiunea. Încearcă din nou.';
+  }
+}
+
+async function finishStudySession(session) {
+  $('coachSessionStatus').textContent = 'Se actualizează progresul tău…';
+  try {
+    const refreshed = await getCoachRecommendations();
+    const finalStats = refreshed.performance[session.chapter_id] || { attempts: 0, correct: 0 };
+    const finalDeck = refreshed.decks.find(deck => deck.id === session.deck_id) || { due_count: 0, known_count: 0 };
+    session.completed_at = new Date().toISOString();
+    session.result = compareSessionProgress({
+      baselineAttempts: session.baseline_attempts,
+      baselineCorrect: session.baseline_correct,
+      finalAttempts: finalStats.attempts,
+      finalCorrect: finalStats.correct,
+      baselineDueCards: session.baseline_due_cards,
+      finalDueCards: finalDeck.due_count,
+      baselineKnownCards: session.baseline_known_cards,
+      finalKnownCards: finalDeck.known_count,
+    });
+    sessionHistory = sessionHistory.map(item => item.id === session.id ? session : item);
+    await saveSessionHistory();
+    plan = { ...refreshed, sessionHistory };
+    plan.preferences.settings = { ...(plan.preferences.settings || {}), coach_sessions: sessionHistory };
+    plan.weeklyPlan = buildWeeklyStudyPlan({
+      chapters: plan.chapters,
+      subjects: plan.subjects,
+      performance: plan.performance,
+      dailyMinutes: plan.dailyMinutes,
+      nextExam: plan.nextExam,
+      completedSessions: sessionHistory,
+      today: new Date(),
+    });
+    renderCoachSummary();
+    renderRecommendation();
+    renderProgress();
+    renderWeeklyPlan();
+    renderStudySession();
+    $('coachSessionStatus').textContent = 'Sesiune terminată. Recomandarea a fost recalculată după progresul tău.';
+  } catch (error) {
+    $('coachSessionStatus').textContent = 'Sesiunea a fost salvată, dar progresul actualizat nu s-a putut încărca.';
+    renderStudySession();
+  }
+}
+
+function renderWeeklyPlan() {
+  const host = $('weeklyPlanList');
+  host.replaceChildren();
+  const weekly = plan.weeklyPlan || { days: [], daysToExam: null, exam: null };
+  $('weeklyPlanIntro').textContent = weekly.daysToExam == null
+    ? 'Nu ai încă un examen planificat; iată următoarele șapte zile de lucru.'
+    : weekly.daysToExam === 0
+      ? `${weekly.exam?.name || 'Examenul tău'} este astăzi. Planul pune accent pe recapitulare.`
+      : `Mai sunt ${weekly.daysToExam} zile până la ${weekly.exam?.name || 'examenul tău'}; planul se reface după fiecare sesiune încheiată.`;
+  if (!weekly.days.length) {
+    host.innerHTML = '<li class="coach-empty">Adaugă materii în preferințe ca să primești un plan pe capitole.</li>';
+    return;
+  }
+  weekly.days.forEach(day => {
+    const item = document.createElement('li');
+    item.className = 'coach-week-row';
+    const date = document.createElement('span');
+    date.className = 'coach-week-date';
+    date.textContent = day.date.toLocaleDateString('ro-RO', { weekday: 'short', day: 'numeric', month: 'short' });
+    const copy = document.createElement('div');
+    copy.className = 'coach-week-copy';
+    const title = document.createElement('b');
+    title.textContent = day.focus;
+    const sub = document.createElement('span');
+    sub.textContent = `${CoachLabels.SUBJECT_NAMES[day.chapter.subject] || day.chapter.subject} · ${day.minutes} minute`;
+    copy.append(title, sub);
+    const link = document.createElement('a');
+    link.className = 'coach-date';
+    link.href = day.href;
+    link.textContent = 'Deschide →';
+    item.append(date, copy, link);
+    host.append(item);
+  });
+}
+
+$('coachSessionStart').addEventListener('click', beginStudySession);
+renderStudySession();
+renderWeeklyPlan();
+
+let exams = [...plan.exams];
+function renderExams() {
+  const host = $('examList');
+  const ordered = [...exams].sort((a, b) => new Date(a.date) - new Date(b.date));
+  const upcoming = ordered.find(exam => exam.date >= todayString);
+  $('examSummary').textContent = upcoming ? upcoming.name + ' · ' + dateLabel(upcoming.date) : 'Niciun examen viitor';
+  $('examNudge').textContent = upcoming
+    ? upcoming.name + ' este următorul reper. Recomandarea ta curentă rămâne ' + (plan.chapter?.name || 'capitolul ales') + '; ajusteaz-o după cum te simți.'
+    : 'Adaugă datele cunoscute pentru examene sau simulări; coach-ul le va afișa în ordinea apropierii.';
+  if (!ordered.length) {
+    host.className = 'coach-empty';
+    host.textContent = 'Nu ai adăugat încă examene sau simulări.';
+    return;
+  }
+  host.className = '';
+  host.innerHTML = '';
+  ordered.forEach(exam => {
+    const row = document.createElement('div');
+    row.className = 'coach-row';
+    const body = document.createElement('div');
+    body.className = 'coach-row-body';
+    const title = document.createElement('div');
+    title.className = 'coach-row-title';
+    title.textContent = exam.name;
+    const meta = document.createElement('div');
+    meta.className = 'coach-row-sub';
+    meta.textContent = exam.type === 'exam' ? 'Examen' : 'Simulare';
+    const date = document.createElement('span');
+    date.className = 'coach-date';
+    date.textContent = dateLabel(exam.date);
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'coach-delete';
+    remove.textContent = 'Șterge';
+    remove.setAttribute('aria-label', 'Șterge ' + exam.name);
+    remove.addEventListener('click', async () => {
+      remove.disabled = true;
+      try {
+        await Coach.deleteExam(exam.id);
+        exams = exams.filter(item => item.id !== exam.id);
+        renderExams();
+      } catch (error) {
+        remove.disabled = false;
+        $('pageStatus').textContent = 'Nu am putut șterge acest examen. Încearcă din nou.';
+      }
+    });
+    body.append(title, meta);
+    row.append(body, date, remove);
+    host.append(row);
+  });
+}
+renderExams();
+
+$('examDate').min = todayString;
+$('examForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const name = $('examName').value.trim();
+  const date = $('examDate').value;
+  if (!name || !date || date < todayString) {
+    $('pageStatus').textContent = 'Alege un nume și o dată de azi sau din viitor.';
+    return;
+  }
+  const button = $('examForm').querySelector('button');
+  button.disabled = true;
+  try {
+    const exam = await Coach.addExam({ name, date, type: $('examType').value, center: plan.preferences.center || null });
+    exams.push(exam);
+    $('examForm').reset();
+    renderExams();
+    $('pageStatus').textContent = 'Examenul a fost salvat în contul tău.';
+  } catch (error) {
+    $('pageStatus').textContent = 'Nu am putut salva examenul. Verifică conexiunea și încearcă din nou.';
+  } finally {
+    button.disabled = false;
+  }
+});
+
+$('dailyGoal').addEventListener('change', async event => {
+  const minutes = Number(event.target.value);
+  const nextSettings = { ...(plan.preferences.settings || {}), coach_daily_minutes: minutes };
+  const status = $('goalSaveStatus');
+  try {
+    await Profiles.savePreferences({ settings: nextSettings });
+    if (currentUser?.id) localStorage.removeItem(`submed_prefs_${currentUser.id}`);
+    plan.preferences.settings = nextSettings;
+    plan.dailyMinutes = minutes;
+    rebuildPersonalPlans();
+    updateFocusMeta();
+    renderStudySession();
+    renderWeeklyPlan();
+    status.textContent = 'Salvat în contul tău.';
+  } catch (error) {
+    try {
+      if (!currentUser?.id) throw new Error('Neautentificat');
+      localStorage.setItem(`submed_prefs_${currentUser.id}`, JSON.stringify({ ...plan.preferences, settings: nextSettings }));
+      plan.preferences.settings = nextSettings;
+      plan.dailyMinutes = minutes;
+      rebuildPersonalPlans();
+      updateFocusMeta();
+      renderStudySession();
+      renderWeeklyPlan();
+      status.textContent = 'Salvat pe acest dispozitiv.';
+    } catch (storageError) {
+      status.textContent = 'Nu am putut salva setarea.';
+    }
+  }
+});
+
+function updateFocusMeta() {
+  if (!plan.chapter) return;
+  $('focusMeta').textContent = plan.chapter.question_count + ' întrebări disponibile · ' + plan.chapter.attempts + ' răspunsuri ale tale' + (plan.chapter.accuracy === null ? '' : ' · ' + plan.chapter.accuracy + '% corecte') + ' · ' + plan.dailyMinutes + ' minute planificate azi';
+}
+updateFocusMeta();
+
+const eventForm = $('eventForm');
+let dayEvents = [];
+function renderEvents() {
+  const host = $('eventList');
+  if (!dayEvents.length) {
+    host.className = 'coach-empty';
+    host.textContent = 'Nu ai adăugat încă activități pentru azi.';
+    return;
+  }
+  host.className = '';
+  host.innerHTML = '';
+  dayEvents.sort((a, b) => a.start_min - b.start_min).forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'coach-row';
+    const body = document.createElement('div');
+    body.className = 'coach-row-body';
+    const title = document.createElement('div');
+    title.className = 'coach-row-title';
+    title.textContent = item.name;
+    const meta = document.createElement('div');
+    meta.className = 'coach-row-sub';
+    meta.textContent = pad(Math.floor(item.start_min / 60)) + ':' + pad(item.start_min % 60) + ' · ' + item.duration_min + ' minute';
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'coach-delete';
+    remove.textContent = 'Șterge';
+    remove.addEventListener('click', async () => {
+      remove.disabled = true;
+      try {
+        await Coach.deleteDayEvent(item.id);
+        dayEvents = dayEvents.filter(event => event.id !== item.id);
+        renderEvents();
+      } catch (error) {
+        remove.disabled = false;
+        $('pageStatus').textContent = 'Nu am putut șterge activitatea.';
+      }
+    });
+    body.append(title, meta);
+    row.append(body, remove);
+    host.append(row);
+  });
+}
+try {
+  dayEvents = await Coach.listDayEvents(todayString);
+  renderEvents();
+} catch (error) {
+  $('eventList').textContent = 'Programul personal nu a putut fi încărcat.';
+}
+eventForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  const name = $('eventName').value.trim();
+  const time = $('eventTime').value;
+  const duration = Number($('eventDuration').value);
+  if (!name || !time) return;
+  const parts = time.split(':').map(Number);
+  const button = eventForm.querySelector('button');
+  button.disabled = true;
+  try {
+    const saved = await Coach.addDayEvent({ day: todayString, name, startMin: parts[0] * 60 + parts[1], durationMin: duration });
+    dayEvents.push(saved);
+    eventForm.reset();
+    renderEvents();
+    $('pageStatus').textContent = 'Activitatea a fost adăugată în programul tău.';
+  } catch (error) {
+    $('pageStatus').textContent = 'Nu am putut salva activitatea.';
+  } finally {
+    button.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

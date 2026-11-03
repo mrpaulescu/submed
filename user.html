@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Contul tău SubMed — vezi codul de concurs și personalizează-ți experiența: centru, materii, obiectiv și instrument preferat.">
+<title>Submed · Contul meu</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css">
+
+<style>
+  /* profil header */
+  .acc-head { display:flex; align-items:center; gap:18px; background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:22px 24px; box-shadow:var(--shadow); margin-bottom:16px; }
+  .acc-av { width:60px; height:60px; border-radius:50%; flex:0 0 auto; background:linear-gradient(145deg,var(--blue-bright),var(--blue-deep)); color:#fff; display:grid; place-items:center; font-family:var(--font-display); font-weight:800; font-size:1.5rem; overflow:hidden; }
+  .acc-av img { width:100%; height:100%; object-fit:cover; }
+  .acc-id .nm { font-family:var(--font-display); font-weight:800; font-size:1.25rem; letter-spacing:-.02em; }
+  .acc-id .em { font-family:var(--mono); font-size:.82rem; color:var(--ink-3); margin-top:2px; }
+  .acc-head .logout { margin-left:auto; }
+
+  /* cod de concurs */
+  #student-code { scroll-margin-top:100px; }
+  .sc-badge { display:inline-flex; align-items:center; gap:6px; background:var(--green-bg); border:1px solid var(--green-bd); border-radius:999px; padding:4px 14px; font-size:.78rem; font-weight:600; color:var(--green); margin-bottom:20px; }
+  .sc-badge.unavailable { background:#FFF2E0; border-color:#F4DCB2; color:#9A5A00; }
+  .student-code-title { font-size:1.4rem; font-weight:800; margin-bottom:10px; }
+  .student-code-copy { color:var(--muted); font-size:.93rem; line-height:1.6; margin-bottom:8px; }
+  .code-big { font-family:var(--mono); font-size:3.4rem; font-weight:700; letter-spacing:.3em; text-align:center; margin:18px 0 26px; padding-left:.3em; }
+  .grid-section { background:#F8FBFF; border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:24px; }
+  .grid-section h3 { font-size:.92rem; font-weight:700; margin-bottom:4px; }
+  .grid-section p { font-size:.82rem; color:var(--muted); margin-bottom:20px; line-height:1.5; }
+  .code-grid { display:flex; gap:16px; justify-content:center; }
+  .code-col { display:flex; flex-direction:column; gap:7px; align-items:center; }
+  .col-head { font-family:var(--mono); font-size:.7rem; color:var(--muted); margin-bottom:2px; }
+  .dbub { width:32px; height:32px; border-radius:50%; border:2px solid var(--border); background:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:.8rem; font-weight:600; color:#8B95AC; }
+  .dbub.on { background:var(--text); border-color:var(--text); color:#fff; }
+  .code-warning { background:#FFF2E0; border:1px solid #F4DCB2; border-radius:10px; padding:14px 16px; font-size:.82rem; color:#9A5A00; margin-bottom:22px; line-height:1.55; }
+  .code-unavailable { background:#FFF2E0; border:1px solid #F4DCB2; border-radius:10px; padding:14px 16px; font-size:.88rem; color:#7C4A00; margin:18px 0; line-height:1.55; }
+  .code-actions { display:flex; gap:10px; flex-wrap:wrap; }
+  .code-actions a { text-decoration:none; }
+  @media (max-width:480px) { .code-big { font-size:2.4rem; } .dbub { width:26px; height:26px; font-size:.72rem; } .code-grid { gap:9px; } }
+
+  /* card personalizare */
+  .custom-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:22px 24px; box-shadow:var(--shadow); }
+  .custom-row { padding:18px 0; border-bottom:1px solid var(--blue-tint-2); }
+  .custom-row:first-child { padding-top:0; }
+  .custom-row:last-child { border-bottom:0; padding-bottom:0; }
+  .custom-row > label { display:block; font-family:var(--mono); font-size:.7rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin-bottom:10px; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .chip { display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border-radius:100px; border:1.5px solid var(--line-2); background:var(--surface); font-size:.88rem; font-weight:600; color:var(--ink-2); cursor:pointer; user-select:none; transition:all .15s; font-family:var(--font); }
+  .chip:hover { border-color:var(--blue); color:var(--blue-deep); }
+  .chip.on { background:var(--blue); border-color:var(--blue); color:#fff; box-shadow:0 4px 12px -5px rgba(45,110,255,.6); }
+  .chip.soon { opacity:.5; pointer-events:none; }
+  .target-field { display:flex; align-items:center; gap:10px; }
+  .target-field input { width:90px; height:44px; text-align:center; border:1.5px solid var(--line); border-radius:10px; font-family:var(--mono); font-size:1rem; font-weight:700; color:var(--ink); background:var(--surface-2); outline:none; }
+  .target-field input:focus { border-color:var(--blue); background:#fff; box-shadow:0 0 0 3px rgba(45,110,255,.14); }
+  .target-field .of { color:var(--ink-3); font-family:var(--mono); font-size:.9rem; }
+
+  .acc-actions { display:flex; align-items:center; gap:14px; margin-top:22px; flex-wrap:wrap; }
+  .acc-actions .saved { font-size:.85rem; font-weight:600; color:var(--green); display:none; align-items:center; gap:6px; }
+  .acc-actions .saved.show { display:inline-flex; }
+
+  /* linkuri cont */
+  .acc-links { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
+  @media (max-width:640px){ .acc-links { grid-template-columns:1fr; } }
+  .acc-link { display:flex; align-items:center; gap:13px; background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:16px 18px; box-shadow:var(--shadow); text-decoration:none; color:var(--ink); transition:transform .16s var(--fx), box-shadow .16s, border-color .16s; }
+  .acc-link:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); border-color:#d3e0f7; color:var(--ink); }
+  .acc-link .ic { width:42px; height:42px; border-radius:12px; background:var(--blue-tint); border:1px solid #d3e2ff; display:grid; place-items:center; flex:0 0 auto; }
+  .acc-link .ic svg { width:21px; height:21px; stroke:var(--blue-deep); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .acc-link .nm { font-family:var(--font-display); font-weight:700; font-size:.98rem; }
+  .acc-link .ds { font-size:.82rem; color:var(--ink-2); margin-top:1px; }
+  .acc-link .go { margin-left:auto; color:var(--blue); font-size:1.1rem; }
+</style>
+</head>
+
+<body data-nav="full">
+
+<main class="dash-shell">
+
+  <div class="greeting">
+    <h2>Contul meu</h2>
+    <p>Gestionează-ți contul, vezi codul de concurs și personalizează-ți panoul.</p>
+  </div>
+
+  <div class="alert-banner" id="banner"></div>
+
+  <!-- Profil -->
+  <div class="acc-head">
+    <div class="acc-av" id="accAvatar">?</div>
+    <div class="acc-id">
+      <div class="nm" id="accName">Student</div>
+      <div class="em" id="accEmail">—</div>
+    </div>
+    <button class="btn-secondary logout" id="accLogout">Ieșire</button>
+  </div>
+
+  <!-- Codul de concurs -->
+  <div class="sec-lbl">Codul tău de concurs</div>
+  <section class="panel" id="student-code" aria-labelledby="studentCodeTitle">
+    <div class="sc-badge" id="studentCodeStatus">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      <span id="studentCodeStatusText">Cont activ</span>
+    </div>
+    <h3 class="student-code-title" id="studentCodeTitle">Acesta este codul tău unic</h3>
+    <p class="student-code-copy">
+      Pe foaia de grilă SubMed, în zona <strong>„aici vei completa numărul de concurs”</strong>,
+      completează codul afișat mai jos. Aplicația te recunoaște automat la scanare și trimite
+      rezultatul direct în istoricul tău.
+    </p>
+
+    <div class="code-big" id="codeBig" aria-live="polite">—</div>
+
+    <p class="code-unavailable" id="studentCodeUnavailable" hidden>
+      Codul de concurs nu este încă alocat contului tău. Revino puțin mai târziu sau contactează-ne.
+    </p>
+
+    <div class="grid-section" id="studentCodeGridSection" hidden>
+      <h3>Cum arată pe foaie</h3>
+      <p>5 coloane (cifrele codului) × 10 rânduri (0–9). Înnegrește bula evidențiată din fiecare coloană:</p>
+      <div class="code-grid" id="codeGrid" role="group" aria-label="Codul de concurs completat în bule"></div>
+    </div>
+
+    <div class="code-warning" id="studentCodeWarning" hidden>
+      ⚠ <strong>Important:</strong> completează codul o singură dată, înainte să rezolvi subiectul.
+      Bifează clar, complet, cu pix/creion negru. Un cod greșit sau incomplet nu va putea fi
+      asociat contului tău la scanare.
+    </div>
+
+    <div class="code-actions">
+      <a class="btn-primary" href="assets/files/BulineSubmed.pdf" download>⬇ Descarcă foaia de grilă (PDF)</a>
+      <a class="btn-secondary" href="dashboard.html">Panoul meu</a>
+    </div>
+  </section>
+
+  <!-- Personalizare (mutată din dashboard) -->
+  <div class="sec-lbl">Personalizează-ți panoul</div>
+  <div class="custom-card">
+    <div class="custom-row">
+      <label>Centrul tău</label>
+      <div class="chips" id="pCenter" data-single>
+        <span class="chip" data-val="cluj">🏛️ UMF Cluj</span>
+        <span class="chip" data-val="iasi">🏛️ UMF Iași</span>
+        <span class="chip soon" data-val="mures">🏛️ Târgu Mureș</span>
+      </div>
+    </div>
+    <div class="custom-row">
+      <label>Materii pe care te concentrezi</label>
+      <div class="chips" id="pSubjects">
+        <span class="chip" data-val="biologie">🧬 Biologie</span>
+        <span class="chip" data-val="chimie">⚗️ Chimie organică</span>
+        <span class="chip" data-val="chimie-anorg">⚗️ Chimie anorganică</span>
+      </div>
+    </div>
+    <div class="custom-row">
+      <label>Instrumentul tău preferat (apare primul pe panou)</label>
+      <div class="chips" id="pTool" data-single>
+        <span class="chip" data-val="grile">Grile</span>
+        <span class="chip" data-val="flashcards">Flashcards</span>
+        <span class="chip" data-val="subiecte">Subiecte</span>
+      </div>
+    </div>
+    <div class="custom-row">
+      <label>Obiectivul tău</label>
+      <div class="chips" id="pGoal" data-single>
+        <span class="chip" data-val="admis">✅ Vreau să intru</span>
+        <span class="chip" data-val="top">🎯 Scor mare</span>
+        <span class="chip" data-val="max">🏆 Maximul</span>
+      </div>
+    </div>
+    <div class="custom-row">
+      <label>Scor țintă</label>
+      <div class="target-field">
+        <input type="number" id="pTarget" min="1" max="45" placeholder="—">
+        <span class="of">din 45 (aproximativ)</span>
+      </div>
+    </div>
+    <div class="acc-actions">
+      <button class="btn-primary" id="accSave">Salvează preferințele</button>
+      <span class="saved" id="accSaved">✓ Salvat</span>
+    </div>
+  </div>
+
+  <!-- Linkuri cont -->
+  <div class="sec-lbl">Contul tău</div>
+  <div class="acc-links">
+    <a class="acc-link" href="#student-code">
+      <span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 20h10M9 8h6M9 12h4"/></svg></span>
+      <span><span class="nm">Codul meu de concurs</span><span class="ds">Codul de bule pentru foaia de examen</span></span>
+      <span class="go">→</span>
+    </a>
+    <a class="acc-link" href="dashboard.html">
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
+      <span><span class="nm">Panoul meu</span><span class="ds">Statistici, progres și istoric</span></span>
+      <span class="go">→</span>
+    </a>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="assets/js/components.js?v=supabase-singleton-20261028"></script>
+
+<script type="module">
+import { Auth } from './assets/js/auth.js?v=supabase-singleton-20261028';
+import { Profiles } from './assets/js/api.js';
+
+const $ = id => document.getElementById(id);
+const banner = $('banner');
+const msg = (t, type='error') => { banner.textContent = t; banner.className = `alert-banner show ${type}`; };
+const PREF_KEY = 'submed_prefs';
+
+/* stare curentă */
+let prefs = { name: null, center: null, subjects: [], preferred_tool: null, goal: null, target_score: null };
+
+/* ── încărcare: DB → localStorage/onboarding ─────────────────── */
+async function load() {
+  // profil (nume/email/avatar)
+  let accountUser = null;
+  try {
+    accountUser = await Auth.getUser();
+    if (accountUser) {
+      $('accName').textContent  = accountUser.name || 'Student';
+      $('accEmail').textContent = accountUser.email || '';
+      const av = $('accAvatar');
+      if (accountUser.avatar_url) av.innerHTML = `<img src="${accountUser.avatar_url}" alt="">`;
+      else av.textContent = (accountUser.name || '?')[0].toUpperCase();
+    }
+  } catch (e) {}
+  renderStudentCode(accountUser);
+
+  // Preferințele din profil sunt sursa principală. Cache-ul local e separat per cont.
+  let profile = null, saved = {};
+  try { profile = await Profiles.getPreferences(); } catch (e) {}
+  const localKey = accountUser?.id ? `${PREF_KEY}_${accountUser.id}` : null;
+  if (!profile && localKey) {
+    try { saved = JSON.parse(localStorage.getItem(localKey)) || {}; } catch (e) {}
+  }
+  const loaded = profile || saved;
+  prefs = { ...prefs, ...loaded };
+  applyToUI();
+}
+
+function renderStudentCode(accountUser) {
+  const codeBig = $('codeBig');
+  const grid = $('codeGrid');
+  const status = $('studentCodeStatus');
+  grid.replaceChildren();
+
+  const rawCode = String(accountUser?.student_code || '').trim();
+  if (!/^\d{5}$/.test(rawCode)) {
+    codeBig.textContent = '—';
+    status.classList.add('unavailable');
+    $('studentCodeStatusText').textContent = 'Cod indisponibil';
+    $('studentCodeUnavailable').hidden = false;
+    return;
+  }
+
+  const code = rawCode;
+  codeBig.textContent = code.split('').join(' ');
+  $('studentCodeGridSection').hidden = false;
+  $('studentCodeWarning').hidden = false;
+
+  for (let col = 0; col < 5; col++) {
+    const digit = Number(code[col]);
+    const column = document.createElement('div');
+    column.className = 'code-col';
+    column.setAttribute('role', 'group');
+    column.setAttribute('aria-label', `Coloana ${col + 1}, cifra ${digit} selectată`);
+
+    const heading = document.createElement('div');
+    heading.className = 'col-head';
+    heading.textContent = String(col + 1);
+    column.append(heading);
+
+    for (let value = 0; value <= 9; value++) {
+      const bubble = document.createElement('div');
+      bubble.className = `dbub${value === digit ? ' on' : ''}`;
+      bubble.textContent = String(value);
+      column.append(bubble);
+    }
+
+    grid.append(column);
+  }
+}
+
+function applyToUI() {
+  setSingle('pCenter', prefs.center);
+  setSingle('pTool', prefs.preferred_tool);
+  setSingle('pGoal', prefs.goal);
+  setMulti('pSubjects', prefs.subjects || []);
+  if (prefs.target_score) $('pTarget').value = prefs.target_score;
+}
+function setSingle(id, val) {
+  $(id).querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.dataset.val === val));
+}
+function setMulti(id, vals) {
+  const set = new Set(vals);
+  $(id).querySelectorAll('.chip').forEach(c => c.classList.toggle('on', set.has(c.dataset.val)));
+}
+
+/* ── interacțiune chips ──────────────────────────────────────── */
+function bindGroup(id) {
+  const g = $(id), single = g.hasAttribute('data-single');
+  g.addEventListener('click', e => {
+    const chip = e.target.closest('.chip'); if (!chip || chip.classList.contains('soon')) return;
+    if (single) { g.querySelectorAll('.chip').forEach(c => c.classList.remove('on')); chip.classList.add('on'); }
+    else chip.classList.toggle('on');
+  });
+}
+['pCenter','pSubjects','pTool','pGoal'].forEach(bindGroup);
+
+function collect() {
+  const single = id => $(id).querySelector('.chip.on')?.dataset.val || null;
+  const multi  = id => [...$(id).querySelectorAll('.chip.on')].map(c => c.dataset.val);
+  return {
+    name: prefs.name || null,
+    center: single('pCenter'),
+    subjects: multi('pSubjects'),
+    preferred_tool: single('pTool'),
+    goal: single('pGoal'),
+    target_score: parseInt($('pTarget').value, 10) || null,
+  };
+}
+
+/* ── salvare: DB + localStorage ──────────────────────────────── */
+$('accSave').addEventListener('click', async () => {
+  banner.className = 'alert-banner';
+  const data = collect();
+  try {
+    await Profiles.savePreferences(data);
+    prefs = { ...prefs, ...data };
+    const user = await Auth.getUser();
+    if (user?.id) localStorage.removeItem(`${PREF_KEY}_${user.id}`);
+  } catch (error) {
+    msg('Nu am putut salva preferințele în cont. Verifică conexiunea și încearcă din nou.');
+    return;
+  }
+  const s = $('accSaved');
+  s.textContent = '✓ Salvat în cont';
+  s.classList.add('show');
+  setTimeout(() => s.classList.remove('show'), 2600);
+});
+
+$('accLogout').addEventListener('click', () => Auth.logout());
+
+load();
+</script>
+
+</body>
+</html>

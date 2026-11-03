@@ -4,30 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lewis Structure Builder</title>
+<script type="module" src="assets/js/guard.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
 
   * { box-sizing: border-box; }
 
   :root {
-    --bg: #0f1419;
-    --surface: #1a2332;
-    --surface2: #243044;
-    --border: #2d3d52;
-    --text: #e6edf3;
-    --muted: #8b9cb3;
-    --accent: #58a6ff;
-    --accent-dim: #388bfd66;
-    --success: #3fb950;
-    --danger: #f85149;
-    --carbon: #6e7681;
-    --hydrogen: #79c0ff;
-    --oxygen: #ff7b72;
-    --nitrogen: #a371f7;
+    --bg: #F4F7FD;
+    --surface: #FFFFFF;
+    --surface2: #F1F6FF;
+    --border: #E6EBF5;
+    --text: #111B33;
+    --muted: #535F79;
+    --accent: #2D6EFF;
+    --accent-dim: #2D6EFF42;
+    --success: #16A46B;
+    --danger: #E5484D;
+    --carbon: #535F79;
+    --hydrogen: #105AFF;
+    --oxygen: #E5484D;
+    --nitrogen: #8250DF;
   }
 
   body {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     background: var(--bg);
     color: var(--text);
     margin: 0;
@@ -39,11 +40,12 @@
   }
 
   h1 {
+    font-family: 'Sora', sans-serif;
     font-weight: 700;
     font-size: 1.75rem;
     letter-spacing: -0.02em;
     margin: 0 0 8px 0;
-    background: linear-gradient(135deg, #58a6ff, #a371f7);
+    background: linear-gradient(135deg, #407BFF, #105AFF);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -132,7 +134,7 @@
   }
 
   #lewisCanvas {
-    background: #0d1117;
+    background: #FFFFFF;
     border-radius: 8px;
     cursor: crosshair;
     display: block;
@@ -154,7 +156,7 @@
   }
 
   .name-section input {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 1.1rem;
     padding: 14px 18px;
     border-radius: 10px;
@@ -326,7 +328,7 @@
           line.setAttribute('y1', b.from.y + perpY * off);
           line.setAttribute('x2', b.to.x + perpX * off);
           line.setAttribute('y2', b.to.y + perpY * off);
-          line.setAttribute('stroke', '#8b9cb3');
+          line.setAttribute('stroke', '#535F79');
           line.setAttribute('stroke-width', 2.5);
           line.setAttribute('stroke-linecap', 'round');
           gBonds.appendChild(line);
@@ -342,8 +344,8 @@
         circle.setAttribute('cx', a.x);
         circle.setAttribute('cy', a.y);
         circle.setAttribute('r', R);
-        circle.setAttribute('fill', '#1a2332');
-        circle.setAttribute('stroke', '#2d3d52');
+        circle.setAttribute('fill', '#E7F0FF');
+        circle.setAttribute('stroke', '#2D6EFF');
         circle.setAttribute('stroke-width', 2);
         g.appendChild(circle);
 
@@ -360,7 +362,7 @@
           dot.setAttribute('cx', a.x + p.x);
           dot.setAttribute('cy', a.y + p.y);
           dot.setAttribute('r', LONE_R);
-          dot.setAttribute('fill', '#79c0ff');
+          dot.setAttribute('fill', '#105AFF');
           g.appendChild(dot);
         });
 
@@ -369,7 +371,7 @@
         text.setAttribute('y', a.y);
         text.setAttribute('text-anchor', 'middle');
         text.setAttribute('dominant-baseline', 'central');
-        text.setAttribute('fill', '#e6edf3');
+        text.setAttribute('fill', '#0B1E4D');
         text.setAttribute('font-size', a.element.length > 1 ? 14 : 18);
         text.setAttribute('font-family', 'JetBrains Mono, monospace');
         text.setAttribute('font-weight', '600');

@@ -7,25 +7,26 @@
 <meta name="description" content="Exersează cu flashcards pentru admiterea la medicină — biologie și chimie organică, toate capitolele.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css?v=mobile-layout-20261002">
 
 <style>
 :root {
   --primary:    #407BFF;
   --primary-bg: rgba(64,123,255,.1);
-  --bg:         #f5f4f0;
+  --bg:         #F4F7FD;
   --card:       #ffffff;
-  --border:     #e2e0d8;
-  --text:       #1a1a18;
-  --muted:      #7a7870;
-  --green:      #16a34a;
-  --green-bg:   #dcfce7;
-  --green-bd:   #86efac;
-  --red:        #dc2626;
-  --red-bg:     #fee2e2;
-  --orange:     #ea580c;
-  --orange-bg:  #ffedd5;
+  --border:     #E6EBF5;
+  --text:       #111B33;
+  --muted:      #535F79;
+  --green:      #16A46B;
+  --green-bg:   #E3F5ED;
+  --green-bd:   #C3E8D6;
+  --red:        #E5484D;
+  --red-bg:     #FBE8E8;
+  --orange:     #9A5A00;
+  --orange-bg:  #FFF2E0;
   --radius:     16px;
   --shadow:     0 2px 14px rgba(0,0,0,.07);
   --shadow-md:  0 4px 24px rgba(0,0,0,.11);
@@ -42,7 +43,7 @@ html { font-size: 15px; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Figtree', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -54,7 +55,7 @@ nav.navbar {
   min-height: var(--navbar-h); height: var(--navbar-h);
   border: none; z-index: 200;
   transition: all 200ms ease-out, background 100ms ease;
-  font-family: 'Figtree', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 nav.navbar.scrolled {
   top: 0; background: var(--bg);
@@ -111,7 +112,7 @@ nav.navbar.scrolled {
   border-radius: 20px;
   border: 1px solid var(--border);
   background: transparent;
-  font-family: 'Figtree', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: .85rem;
   font-weight: 600;
   color: var(--muted);
@@ -164,7 +165,7 @@ nav.navbar.scrolled {
   cursor: pointer;
   transition: all .15s;
   min-width: 52px;
-  font-family: 'Figtree', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 .ch-btn:hover { border-color: var(--primary); background: var(--primary-bg); }
 .ch-btn.selected { border-color: var(--primary); background: var(--primary-bg); }
@@ -296,7 +297,7 @@ nav.navbar.scrolled {
 }
 .empty-state .empty-icon {
   width: 64px; height: 64px; border-radius: 16px;
-  background: #f0efe9; border: 1px solid var(--border);
+  background: #EAF0FA; border: 1px solid var(--border);
   display: flex; align-items: center; justify-content: center;
   margin: 0 auto 20px;
 }
@@ -319,7 +320,7 @@ nav.navbar.scrolled {
   border-radius: 20px;
   border: 1px solid var(--border);
   background: var(--card);
-  font-family: 'Figtree', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: .8rem;
   font-weight: 600;
   color: var(--muted);
@@ -430,18 +431,18 @@ nav.navbar.scrolled {
   flex: 1; height: 46px;
   border-radius: 12px; border: 1px solid var(--border);
   background: var(--card);
-  font-family: 'Figtree', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: .88rem; font-weight: 600; color: var(--muted);
   cursor: pointer; transition: all .15s;
   display: flex; align-items: center; justify-content: center; gap: 7px;
 }
-.btn-nav:hover:not(:disabled) { border-color: #c0bdb4; color: var(--text); }
+.btn-nav:hover:not(:disabled) { border-color: #C6D4EE; color: var(--text); }
 .btn-nav:disabled { opacity: .35; cursor: not-allowed; }
 .btn-nav svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .btn-flip {
   flex: 2; background: var(--text); color: #fff; border-color: var(--text);
 }
-.btn-flip:hover:not(:disabled) { background: #2c2c2a; border-color: #2c2c2a; color: #fff; }
+.btn-flip:hover:not(:disabled) { background: #0F2A63; border-color: #0F2A63; color: #fff; }
 
 /* Know / Don't know buttons */
 .know-btns {
@@ -451,15 +452,15 @@ nav.navbar.scrolled {
 .btn-know {
   flex: 1; height: 44px;
   border-radius: 12px; border: 1.5px solid;
-  font-family: 'Figtree', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: .88rem; font-weight: 700;
   cursor: pointer; transition: all .15s;
   display: flex; align-items: center; justify-content: center; gap: 6px;
 }
 .btn-know.yes { border-color: var(--green-bd); background: var(--green-bg); color: var(--green); }
-.btn-know.yes:hover { background: #bbf7d0; }
-.btn-know.no  { border-color: #fca5a5; background: var(--red-bg); color: var(--red); }
-.btn-know.no:hover  { background: #fecaca; }
+.btn-know.yes:hover { background: #C3E8D6; }
+.btn-know.no  { border-color: #F3B8BA; background: var(--red-bg); color: var(--red); }
+.btn-know.no:hover  { background: #F8D3D4; }
 .btn-know svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
 /* Done state */
@@ -495,11 +496,11 @@ nav.navbar.scrolled {
 .btn-restart {
   width: 100%; height: 50px;
   background: var(--text); color: #fff; border: none;
-  border-radius: 12px; font-family: 'Figtree', sans-serif;
+  border-radius: 12px; font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: .95rem; font-weight: 700; cursor: pointer;
   transition: background .15s; display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.btn-restart:hover { background: #2c2c2a; }
+.btn-restart:hover { background: #0F2A63; }
 
 /* Mobile bottom nav */
 .bottom-nav {
@@ -530,31 +531,9 @@ nav.navbar.scrolled {
 }
 </style>
 </head>
-<body>
+<body data-nav="full">
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg px-lg-5 px-md-4 px-3 fixed-top">
-  <div class="container-fluid fw-medium">
-    <a class="navbar-brand-2 text-decoration-none" href="dashboard.html"><h1>Submed</h1></a>
-    <button class="navbar-toggler ms-auto me-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav align-items-lg-center gap-lg-1 ms-auto">
-        <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Subiecte</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="cluj.html">UMF Cluj</a></li>
-            <li><a class="dropdown-item" href="iasi.html">UMF Iași</a></li>
-          </ul>
-        </li>
-        <li class="nav-item"><a class="nav-link active" href="flashcards.html">Flashcards</a></li>
-        <li class="nav-item"><a class="nav-link" href="desprecontact.html">Contact</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
+<!-- NAVBAR injectat de components.js -->
 
 <!-- SUBJECT BAR -->
 <div class="subject-bar">
@@ -710,13 +689,14 @@ nav.navbar.scrolled {
     <a class="bn-item" href="facultati.html">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>univ.
     </a>
-    <a class="bn-item" href="student_card.html">
+    <a class="bn-item" href="user.html">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>profil
     </a>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="assets/js/components.js?v=mobile-layout-20261002"></script>
 <script>
 /* ═══════════════════════════════════════════════════
    FLASHCARD DATA — Biologie + Chimie Organică
@@ -1050,23 +1030,180 @@ const DATA = {
   }
 };
 
+const LOCAL_DATA = JSON.parse(JSON.stringify(DATA));
+const DB_SUBJECTS = { bio: 'biologie', chim: 'chimie' };
+const flashcardApiReady = import('./assets/js/api.js')
+  .then(module => module.Flashcards)
+  .catch(error => {
+    console.warn('Flashcards DB indisponibil, folosesc fallback local:', error.message);
+    return null;
+  });
+let dbLoadToken = 0;
+
 /* ═══════════════════════════════════════════════════
    APP STATE
 ═══════════════════════════════════════════════════ */
 let currentSubject = 'bio';
 let selectedChapters = new Set();
 let sessionCards = [];
+let dueOnlyMode = false;
+let requestedCardCount = null;
 let currentIdx = 0;
 let isFlipped = false;
 let chapterProgress = {}; // chapterIdx -> { known: Set(cardIdx), seen: Set(cardIdx) }
 let sessionKnown = 0;
 let sessionUnknown = 0;
+let sessionMarks = new Map();
+let pendingCardWrites = [];
+
+function getChapters(subject = currentSubject) {
+  return DATA[subject]?.chapters || [];
+}
+
+function dbSubject(subject = currentSubject) {
+  return DB_SUBJECTS[subject] || 'biologie';
+}
+
+function makeChapterProgress(chapter) {
+  const known = new Set();
+  const seen = new Set();
+  (chapter.cards || []).forEach((card, idx) => {
+    if (card.latestReview) seen.add(idx);
+    if (card.latestReview?.is_known) known.add(idx);
+  });
+  return { known, seen };
+}
+
+function sessionCardKey(card) {
+  return card.id || `${card.chIdx}:${card.cardIdx}`;
+}
+
+function setSessionMark(card, known) {
+  const key = sessionCardKey(card);
+  const previous = sessionMarks.get(key);
+  if (previous === true) sessionKnown--;
+  if (previous === false) sessionUnknown--;
+  sessionMarks.set(key, known);
+  if (known) sessionKnown++;
+  else sessionUnknown++;
+}
+
+function formatDbAnswer(card) {
+  const structure = card.chemical_structures;
+  const parts = [card.back];
+  if (structure?.formula) parts.push(`Formula: ${structure.formula}`);
+  if (structure?.smiles) parts.push(`SMILES: ${structure.smiles}`);
+  return parts.filter(Boolean).join('\n\n');
+}
+
+function mapDbCard(card) {
+  return {
+    id: card.id,
+    deckId: card.deck_id,
+    chapterId: card.chapter_id,
+    q: card.front,
+    a: formatDbAnswer(card),
+    cardType: card.card_type,
+    tags: card.tags || [],
+    difficulty: card.difficulty,
+    source: card.source,
+    chemicalStructure: card.chemical_structures || null,
+    latestReview: card.latest_review || null,
+  };
+}
+
+async function loadDbFlashcards(subject = currentSubject) {
+  const token = ++dbLoadToken;
+  try {
+    const api = await flashcardApiReady;
+    if (!api || token !== dbLoadToken) return false;
+
+    const decks = await api.listDecks(dbSubject(subject));
+    if (token !== dbLoadToken || !decks.length) return false;
+
+    const cards = await api.listCards(decks.map(deck => deck.id), { shuffle: false, withReviews: true });
+    if (token !== dbLoadToken || !cards.length) return false;
+
+    const byDeck = new Map();
+    cards.forEach(card => {
+      if (!byDeck.has(card.deck_id)) byDeck.set(card.deck_id, []);
+      byDeck.get(card.deck_id).push(card);
+    });
+
+    const chapters = decks.map((deck, idx) => ({
+      deckId: deck.id,
+      title: deck.title || deck.chapter_name || `Deck ${idx + 1}`,
+      subject: deck.subject,
+      chapterId: deck.chapter_id,
+      cardCount: deck.card_count,
+      reviewedCount: deck.reviewed_count || 0,
+      knownCount: deck.known_count || 0,
+      dueCount: deck.due_count || 0,
+      masteryPct: deck.mastery_pct || 0,
+      cards: (byDeck.get(deck.id) || []).map(mapDbCard),
+    })).filter(chapter => chapter.cards.length);
+
+    if (!chapters.length) return false;
+    DATA[subject] = { ...(DATA[subject] || LOCAL_DATA[subject]), chapters };
+
+    if (subject === currentSubject) {
+      selectedChapters.clear();
+      sessionCards = [];
+      sessionMarks = new Map();
+      currentIdx = 0;
+      chapterProgress = {};
+      buildRibbon();
+      showEmpty();
+      updateSidebar();
+    }
+    return true;
+  } catch (error) {
+    console.warn('Flashcards DB fallback local:', error.message);
+    return false;
+  }
+}
+
+async function persistCardReview(card, known) {
+  if (!card?.id) return;
+  try {
+    const api = await flashcardApiReady;
+    if (!api) return;
+    card.latestReview = await api.recordReview(card.id, {
+      rating: known ? 'good' : 'again',
+      isKnown: known,
+    });
+  } catch (error) {
+    console.warn('Review flashcard nesalvat:', error.message);
+  }
+}
 
 /* ═══════════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════════ */
-function init() {
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  const requestedSubject = params.get('subject');
+  dueOnlyMode = params.get('due') === '1';
+  const requestedCount = Number.parseInt(params.get('count'), 10);
+  requestedCardCount = Number.isFinite(requestedCount) && requestedCount > 0 ? requestedCount : null;
+  if (requestedSubject === 'chimie') currentSubject = 'chim';
+  if (requestedSubject === 'biologie') currentSubject = 'bio';
+  const subjectButtons = document.querySelectorAll('.subject-btn');
+  subjectButtons.forEach((button, index) => button.classList.toggle('active', index === (currentSubject === 'bio' ? 0 : 1)));
   buildRibbon();
+  const loaded = await loadDbFlashcards(currentSubject);
+  if (!loaded) return;
+  const chapterId = params.get('chapter');
+  if (chapterId) {
+    const chapterIndex = getChapters().findIndex(chapter => chapter.chapterId === chapterId);
+    if (chapterIndex < 0) return;
+    selectedChapters.add(chapterIndex);
+    document.getElementById(`chBtn-${chapterIndex}`)?.classList.add('selected');
+  } else if (dueOnlyMode) {
+    getChapters().forEach((_, chapterIndex) => selectedChapters.add(chapterIndex));
+    getChapters().forEach((_, chapterIndex) => document.getElementById(`chBtn-${chapterIndex}`)?.classList.add('selected'));
+  } else return;
+  rebuildSession();
 }
 
 function switchSubject(sub, btn) {
@@ -1076,8 +1213,10 @@ function switchSubject(sub, btn) {
   selectedChapters.clear();
   chapterProgress = {};
   sessionCards = [];
+  sessionMarks = new Map();
   buildRibbon();
   showEmpty();
+  loadDbFlashcards(sub);
 }
 
 function buildRibbon() {
@@ -1085,7 +1224,7 @@ function buildRibbon() {
   // keep select-all and divider
   while (scroll.children.length > 2) scroll.removeChild(scroll.lastChild);
 
-  const chapters = DATA[currentSubject].chapters;
+  const chapters = getChapters();
   chapters.forEach((ch, i) => {
     const btn = document.createElement('button');
     btn.className = 'ch-btn';
@@ -1097,7 +1236,12 @@ function buildRibbon() {
     `;
     btn.title = ch.title;
     scroll.appendChild(btn);
-    if (!chapterProgress[i]) chapterProgress[i] = { known: new Set(), seen: new Set() };
+    if (!chapterProgress[i]) chapterProgress[i] = makeChapterProgress(ch);
+    const total = ch.cards.length;
+    const pct = total ? Math.round((chapterProgress[i].known.size / total) * 100) : 0;
+    const fill = document.getElementById(`chFill-${i}`);
+    if (fill) fill.style.width = pct + '%';
+    btn.classList.toggle('completed', pct === 100 && total > 0);
   });
 }
 
@@ -1109,7 +1253,7 @@ function toggleChapter(idx) {
 }
 
 function selectAll() {
-  const chapters = DATA[currentSubject].chapters;
+  const chapters = getChapters();
   const all = chapters.map((_, i) => i);
   const allSelected = all.every(i => selectedChapters.has(i));
   if (allSelected) {
@@ -1123,15 +1267,24 @@ function selectAll() {
 
 function rebuildSession() {
   sessionCards = [];
-  const chapters = DATA[currentSubject].chapters;
+  pendingCardWrites = [];
+  const chapters = getChapters();
+  const now = Date.now();
   [...selectedChapters].sort((a,b) => a-b).forEach(ci => {
     chapters[ci].cards.forEach((card, fi) => {
+      if (dueOnlyMode) {
+        const nextReviewAt = card.latestReview?.next_review_at;
+        const reviewTime = nextReviewAt ? Date.parse(nextReviewAt) : NaN;
+        if (!Number.isFinite(reviewTime) || reviewTime > now) return;
+      }
       sessionCards.push({ chIdx: ci, cardIdx: fi, ...card });
     });
   });
+  if (requestedCardCount) sessionCards = sessionCards.slice(0, requestedCardCount);
   currentIdx = 0;
   sessionKnown = 0;
   sessionUnknown = 0;
+  sessionMarks = new Map();
   isFlipped = false;
 
   if (sessionCards.length === 0) { showEmpty(); return; }
@@ -1151,7 +1304,8 @@ function showCard(idx) {
   const card = sessionCards[idx];
   document.getElementById('fcQuestion').textContent = card.q;
   document.getElementById('fcAnswer').textContent = card.a;
-  const chLabel = `Cap. ${card.chIdx + 1} — ${DATA[currentSubject].chapters[card.chIdx].title}`;
+  const chapterTitle = getChapters()[card.chIdx]?.title || 'Flashcards';
+  const chLabel = `Cap. ${card.chIdx + 1} — ${chapterTitle}`;
   document.getElementById('fcChapterFront').textContent = chLabel;
   document.getElementById('fcChapterBack').textContent = chLabel;
 
@@ -1193,11 +1347,11 @@ function markCard(known) {
   const card = sessionCards[currentIdx];
   if (known) {
     chapterProgress[card.chIdx].known.add(card.cardIdx);
-    sessionKnown++;
   } else {
     chapterProgress[card.chIdx].known.delete(card.cardIdx);
-    sessionUnknown++;
   }
+  setSessionMark(card, known);
+  pendingCardWrites.push(persistCardReview(card, known));
   updateUI();
   updateSidebar();
   updateChDot(card.chIdx);
@@ -1207,7 +1361,7 @@ function markCard(known) {
     currentIdx++;
     showCard(currentIdx);
   } else {
-    showDone();
+    Promise.allSettled(pendingCardWrites).then(showDone);
   }
 }
 
@@ -1252,6 +1406,7 @@ function restartSession() {
   currentIdx = 0;
   sessionKnown = 0;
   sessionUnknown = 0;
+  sessionMarks = new Map();
   isFlipped = false;
   document.getElementById('doneState').style.display = 'none';
   document.getElementById('quizArea').style.display = 'flex';
@@ -1275,6 +1430,7 @@ function resetSession() {
   });
   sessionKnown = 0;
   sessionUnknown = 0;
+  sessionMarks = new Map();
   currentIdx = 0;
   if (sessionCards.length) {
     document.getElementById('doneState').style.display = 'none';
@@ -1289,7 +1445,8 @@ function resetSession() {
    SIDEBAR + RIBBON PROGRESS
 ═══════════════════════════════════════════════════ */
 function updateChDot(chIdx) {
-  const ch = DATA[currentSubject].chapters[chIdx];
+  const ch = getChapters()[chIdx];
+  if (!ch) return;
   const prog = chapterProgress[chIdx];
   const total = ch.cards.length;
   const known = prog.known.size;
@@ -1307,7 +1464,8 @@ function updateSidebar() {
   // Overall ring
   let totalCards = 0, totalKnown = 0;
   selectedChapters.forEach(ci => {
-    const ch = DATA[currentSubject].chapters[ci];
+    const ch = getChapters()[ci];
+    if (!ch) return;
     totalCards += ch.cards.length;
     totalKnown += chapterProgress[ci].known.size;
   });
@@ -1321,10 +1479,11 @@ function updateSidebar() {
   const list = document.getElementById('sidebarChList');
   list.innerHTML = '';
   [...selectedChapters].sort((a,b)=>a-b).forEach(ci => {
-    const ch = DATA[currentSubject].chapters[ci];
+    const ch = getChapters()[ci];
+    if (!ch) return;
     const prog = chapterProgress[ci];
     const pct = ch.cards.length ? Math.round((prog.known.size / ch.cards.length) * 100) : 0;
-    const color = pct >= 80 ? '#16a34a' : pct >= 40 ? '#407BFF' : '#e2e0d8';
+    const color = pct >= 80 ? '#16A46B' : pct >= 40 ? '#407BFF' : '#E6EBF5';
     list.innerHTML += `
       <div class="ch-prog-row">
         <div class="ch-prog-header">

@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<meta name="description" content="Coach-ul personal SubMed: program zilnic pe ore, echilibru între învățat și odihnă, plus sfaturi de sport, alimentație și somn pentru admiterea la medicină.">
+<title>Submed · Coach-ul tău personal</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css">
+
+<style>
+  /* ── Coach · previzualizare (date demonstrative) ─────────── */
+  .coach-hero { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:6px; }
+  .coach-hero .lead { color:var(--ink-2); font-size:1rem; max-width:54ch; margin-top:6px; }
+  .preview-flag { display:inline-flex; align-items:center; gap:7px; background:var(--blue-tint); border:1px solid #c9dcff; color:var(--blue-deep); border-radius:100px; padding:5px 13px; font-family:var(--mono); font-size:.68rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-bottom:14px; }
+  .preview-flag .d { width:6px; height:6px; border-radius:50%; background:var(--blue); }
+
+  .coach-count { display:flex; gap:10px; flex-wrap:wrap; }
+  .coach-count .cbx { background:var(--navy); color:#fff; border-radius:14px; padding:12px 16px; min-width:72px; text-align:center; }
+  .coach-count .cbx .n { font-family:var(--mono); font-weight:700; font-size:1.6rem; line-height:1; }
+  .coach-count .cbx .l { font-family:var(--mono); font-size:.58rem; letter-spacing:.12em; text-transform:uppercase; color:var(--spark); margin-top:6px; }
+
+  .ccard { background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:22px 22px 20px; box-shadow:var(--shadow); }
+  .ccard-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+  .ccard-head h3 { font-size:1.02rem; font-weight:700; letter-spacing:-.01em; }
+  .ccard-head .hint { font-family:var(--mono); font-size:.68rem; color:var(--ink-3); text-transform:uppercase; letter-spacing:.08em; }
+
+  .coach-grid { display:grid; grid-template-columns:1.5fr 1fr; gap:14px; align-items:start; }
+  @media (max-width:900px){ .coach-grid { grid-template-columns:1fr; } }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start; }
+  @media (max-width:900px){ .grid2 { grid-template-columns:1fr; } }
+
+  .hidden { display:none !important; }
+  .btn-lite { display:inline-flex; align-items:center; gap:7px; background:var(--surface-2); border:1.5px solid var(--line); border-radius:10px; padding:8px 14px; font-family:var(--font); font-size:.84rem; font-weight:700; color:var(--ink); cursor:pointer; transition:.15s; }
+  .btn-lite:hover { border-color:var(--blue); color:var(--blue-deep); background:var(--blue-tint-2); }
+  .btn-lite.active { border-color:var(--blue); color:var(--blue-deep); background:var(--blue-tint); }
+  .chev-btn { background:none; border:0; cursor:pointer; color:var(--ink-3); padding:6px; border-radius:9px; display:grid; place-items:center; transition:.15s; }
+  .chev-btn:hover { color:var(--blue-deep); background:var(--blue-tint-2); }
+  .chev-btn svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; transition:transform .2s; }
+
+  /* nudge coach */
+  .nudge { background:linear-gradient(135deg,var(--navy),var(--navy-2)); color:#dce6fb; border-radius:var(--r-lg); padding:22px 24px; display:flex; align-items:center; gap:18px; position:relative; overflow:hidden; }
+  .nudge .av { width:48px; height:48px; border-radius:14px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); display:grid; place-items:center; flex:0 0 auto; }
+  .nudge .av svg { width:24px; height:24px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .nudge h4 { color:#fff; font-size:1rem; margin-bottom:4px; }
+  .nudge p { font-size:.88rem; color:#9fb4e4; }
+  .nudge .band-ast { position:absolute; right:-40px; top:-40px; width:170px; height:170px; opacity:.08; color:#fff; pointer-events:none; }
+
+  /* ── program: bandă orizontală (rezumat, când e închis) ──── */
+  .dayh { display:flex; gap:12px; overflow-x:auto; padding:4px 2px 12px; scroll-snap-type:x proximity; }
+  .hslot { flex:0 0 auto; width:190px; scroll-snap-align:start; position:relative;
+           border:1px solid var(--line); border-top:4px solid var(--line); border-radius:12px;
+           background:var(--surface-2); padding:12px 14px; display:flex; flex-direction:column; gap:9px; }
+  .hslot-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .hslot-time { font-family:var(--mono); font-size:.75rem; font-weight:700; color:var(--ink-3); }
+  .hslot-mid { display:flex; align-items:flex-start; gap:10px; flex:1; }
+  .hslot-name { font-weight:700; font-size:.86rem; line-height:1.3; }
+  .hslot-sub { font-size:.75rem; color:var(--ink-2); margin-top:3px; line-height:1.4; }
+  .slot-ic { width:32px; height:32px; border-radius:9px; display:grid; place-items:center; flex:0 0 auto; background:var(--ink-3); }
+  .slot-ic svg { width:17px; height:17px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .slot-min { font-family:var(--mono); font-size:.72rem; color:var(--ink-3); }
+  /* tipuri (comune pentru bandă + calendar) */
+  .hslot.t-study { border-top-color:var(--blue); }   .hslot.t-study .slot-ic { background:var(--blue); }
+  .hslot.t-break { border-top-color:var(--spark); }  .hslot.t-break .slot-ic { background:var(--spark); }
+  .hslot.t-sport { border-top-color:#0f9e63; }       .hslot.t-sport .slot-ic { background:#0f9e63; }
+  .hslot.t-meal  { border-top-color:#e88b1a; }       .hslot.t-meal  .slot-ic { background:#e88b1a; }
+  .hslot.t-rest  { border-top-color:#8250DF; }       .hslot.t-rest  .slot-ic { background:#8250DF; }
+  .hslot.t-cal   { border-top-color:#1596c9; background:#f2fafd; } .hslot.t-cal .slot-ic { background:#1596c9; }
+  .hslot.now { box-shadow:0 0 0 3px var(--blue-tint); border-color:var(--blue); }
+  .badge-now { font-family:var(--mono); font-size:.6rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; background:var(--blue-tint); color:var(--blue-deep); padding:3px 8px; border-radius:100px; }
+
+  /* ── program: calendar gradat pe ore (când e deschis) ────── */
+  #programCard .cal-wrap { display:none; }
+  #programCard.open .cal-wrap { display:block; }
+  #programCard.open .dayh { display:none; }
+  #programCard.open .chev-btn svg { transform:rotate(180deg); }
+  #programCard .ccard-head { cursor:pointer; margin-bottom:10px; }
+  .cal { position:relative; border:1px solid var(--line); border-radius:14px; background:var(--surface-2); overflow:hidden; }
+  .cal-hour { position:absolute; left:0; right:0; border-top:1px dashed #dfe8f7; pointer-events:none; }
+  .cal-hour span { position:absolute; top:-7px; left:10px; font-family:var(--mono); font-size:.62rem; font-weight:600; color:var(--ink-3); background:var(--surface-2); padding:0 5px; }
+  .cal-now { position:absolute; left:0; right:0; border-top:2px solid var(--danger,#E5484D); z-index:5; pointer-events:none; }
+  .cal-now::before { content:''; position:absolute; left:6px; top:-5px; width:8px; height:8px; border-radius:50%; background:var(--danger,#E5484D); }
+  .cal-block { position:absolute; left:66px; right:12px; border-radius:9px; border:1px solid var(--line); border-left:4px solid var(--ink-3); background:#fff; padding:3px 10px; overflow:hidden; display:flex; align-items:center; gap:8px; box-shadow:var(--shadow); }
+  .cal-block .cb-name { font-weight:700; font-size:.76rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .cal-block .cb-time { font-family:var(--mono); font-size:.66rem; color:var(--ink-3); flex:0 0 auto; }
+  .cal-block.t-study { border-left-color:var(--blue); background:var(--blue-tint-2); }
+  .cal-block.t-break { border-left-color:var(--spark); background:#fff; }
+  .cal-block.t-sport { border-left-color:#0f9e63; background:#eefaf4; }
+  .cal-block.t-meal  { border-left-color:#e88b1a; background:#fff8ee; }
+  .cal-block.t-rest  { border-left-color:#8250DF; background:#f7f3fd; }
+  .cal-block.t-cal   { border-left-color:#1596c9; background:#eefafd; }
+  .cal-block.now { box-shadow:0 0 0 2px var(--blue); }
+  .cal-block .ev-del { background:none; border:0; cursor:pointer; color:var(--ink-3); padding:2px 6px; border-radius:6px; line-height:1; font-size:.8rem; flex:0 0 auto; transition:.15s; }
+  .cal-block .ev-del:hover { color:var(--danger); background:var(--wrong-tint,#FBE8E8); }
+  .day-note { display:flex; gap:10px; align-items:center; font-size:.82rem; color:var(--ink-2); background:var(--orange-bg,#fdf3e3); border:1px solid #f4dcb2; border-radius:10px; padding:9px 13px; margin-top:12px; }
+
+  /* formular „adaugă în program” */
+  .evform { display:grid; grid-template-columns:1.6fr .8fr .9fr auto; gap:10px; margin-top:14px; padding-top:16px; border-top:1px dashed var(--line-2); }
+  @media(max-width:700px){ .evform { grid-template-columns:1fr 1fr; } .evform .add, .evform input[type=text] { grid-column:1/-1; } }
+  .evform input, .evform select { height:44px; padding:0 12px; border:1.5px solid var(--line); border-radius:10px; font-family:var(--font); font-size:.9rem; color:var(--ink); background:var(--surface-2); outline:none; transition:border-color .15s, box-shadow .15s; }
+  .evform input:focus, .evform select:focus { border-color:var(--blue); background:#fff; box-shadow:0 0 0 3px rgba(45,110,255,.14); }
+  .evform .add { white-space:nowrap; }
+
+  /* echilibru */
+  .ring { --p:0; position:relative; width:92px; height:92px; border-radius:50%; flex:0 0 auto;
+          background:conic-gradient(var(--blue) calc(var(--p)*1%), var(--blue-tint) 0); display:grid; place-items:center; }
+  .ring::before { content:''; position:absolute; inset:9px; border-radius:50%; background:var(--surface); }
+  .ring b { position:relative; font-family:var(--font-display); font-weight:800; font-size:1.4rem; letter-spacing:-.03em; }
+  .bal-top { display:flex; align-items:center; gap:18px; margin-bottom:18px; }
+  .bal-top .txt small { font-family:var(--mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-3); }
+  .bal-top .txt p { font-size:.86rem; color:var(--ink-2); margin-top:4px; max-width:32ch; }
+  .balbar { margin-bottom:12px; }
+  .balbar:last-child { margin-bottom:0; }
+  .balbar-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
+  .balbar-top span:first-child { font-weight:600; font-size:.86rem; display:inline-flex; align-items:center; gap:7px; }
+  .balbar-top .val { font-family:var(--mono); font-size:.8rem; font-weight:600; color:var(--ink-2); }
+  .bar { height:9px; border-radius:6px; background:var(--blue-tint-2); overflow:hidden; }
+  .bar i { display:block; height:100%; border-radius:6px; }
+  .bar.blue i { background:linear-gradient(90deg,var(--blue-bright),var(--blue-deep)); }
+  .bar.green i { background:linear-gradient(90deg,#2bbf82,#0f9e63); }
+  .bar.violet i { background:linear-gradient(90deg,#a17ce8,#8250DF); }
+  .dotk { width:9px; height:9px; border-radius:50%; display:inline-block; }
+
+  /* ── sfaturi stil de viață (colapsabile) ──────────────────── */
+  .tips { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media (max-width:900px){ .tips { grid-template-columns:1fr; } }
+  .tip { background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:16px 18px; box-shadow:var(--shadow); cursor:pointer; transition:transform .18s var(--fx), box-shadow .18s, border-color .18s; }
+  .tip:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:#d3e0f7; }
+  .tip-head { display:flex; align-items:center; gap:12px; }
+  .tip-head h4 { font-size:.95rem; margin:0; flex:1; }
+  .tip-head .chev { flex:0 0 auto; color:var(--ink-3); transition:transform .2s; }
+  .tip-head .chev svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+  .tip.open .chev { transform:rotate(180deg); }
+  .tip-ic { width:40px; height:40px; border-radius:12px; display:grid; place-items:center; flex:0 0 auto; }
+  .tip-ic svg { width:21px; height:21px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .tip p { display:none; font-size:.88rem; color:var(--ink-2); line-height:1.55; margin-top:12px; }
+  .tip.open p { display:block; }
+  .tip .k { display:inline-flex; align-items:center; gap:6px; margin-top:12px; font-family:var(--mono); font-size:.68rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--blue-deep); background:var(--blue-tint-2); border:1px solid #d8e6ff; border-radius:100px; padding:4px 10px; }
+  .ic-sport { background:linear-gradient(145deg,#2bbf82,#0f9e63); }
+  .ic-food  { background:linear-gradient(145deg,#f7b955,#e88b1a); }
+  .ic-sleep { background:linear-gradient(145deg,#a17ce8,#8250DF); }
+  .ic-break { background:linear-gradient(145deg,#5fa0ff,#2D6EFF); }
+  .ic-water { background:linear-gradient(145deg,#3fc5e8,#1596c9); }
+  .ic-mind  { background:linear-gradient(145deg,#ff8a8f,#e5484d); }
+
+  /* ── obiceiuri (interactive) ──────────────────────────────── */
+  .habit { display:flex; align-items:flex-start; gap:12px; padding:13px 0; border-bottom:1px solid var(--blue-tint-2); }
+  .habit:last-child { border-bottom:0; }
+  .habit-ic { width:36px; height:36px; border-radius:10px; background:var(--blue-tint); display:grid; place-items:center; flex:0 0 auto; }
+  .habit-ic svg { width:18px; height:18px; stroke:var(--blue-deep); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .habit-body { flex:1; min-width:0; }
+  .habit-name { font-weight:700; font-size:.9rem; }
+  .habit-sub { font-size:.78rem; color:var(--ink-2); margin-top:1px; }
+  .habit-week { display:flex; gap:5px; flex:0 0 auto; padding-top:9px; }
+  .habit-week i { width:14px; height:14px; border-radius:5px; background:var(--blue-tint-2); border:1px solid var(--line); }
+  .habit-week i.on { background:var(--blue); border-color:var(--blue); }
+  .habit-week i.today { outline:2px solid var(--blue-bright); outline-offset:1px; }
+  .habit-check { width:36px; height:36px; border-radius:11px; border:2px solid var(--line); background:var(--surface-2); cursor:pointer; display:grid; place-items:center; flex:0 0 auto; transition:.15s; }
+  .habit-check svg { width:18px; height:18px; stroke:transparent; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; }
+  .habit-check:hover { border-color:var(--blue); }
+  .habit-check.on { background:var(--blue); border-color:var(--blue); }
+  .habit-check.on svg { stroke:#fff; }
+  .habit-note { display:none; width:100%; margin-top:8px; border:1.5px solid var(--line); border-radius:9px; padding:7px 11px; font-family:var(--font); font-size:.8rem; color:var(--ink); background:#fff; outline:none; transition:border-color .15s; }
+  .habit-note:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(45,110,255,.12); }
+  .habit.done .habit-note { display:block; }
+
+  /* trio */
+  .mini3 { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .mini { background:var(--surface-2); border:1px solid var(--line); border-radius:13px; padding:14px; text-align:center; }
+  .mini .v { font-family:var(--font-display); font-weight:800; font-size:1.5rem; letter-spacing:-.03em; }
+  .mini .k { font-family:var(--mono); font-size:.6rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-3); margin-top:4px; }
+
+  /* ── simulările mele ──────────────────────────────────────── */
+  .simlist { display:flex; flex-direction:column; }
+  .simrow { display:flex; align-items:center; gap:14px; padding:12px 0; border-bottom:1px solid var(--blue-tint-2); }
+  .simrow:last-child { border-bottom:0; }
+  .sim-badge { width:46px; height:46px; border-radius:12px; display:grid; place-items:center; flex:0 0 auto; font-family:var(--mono); line-height:1.1; }
+  .sim-badge .d { font-size:1.05rem; font-weight:700; } .sim-badge .mo { font-size:.54rem; text-transform:uppercase; letter-spacing:.05em; }
+  .sim-badge.sim { background:var(--blue-tint); color:var(--blue-deep); }
+  .sim-badge.exam { background:var(--navy); color:#fff; }
+  .sim-body { flex:1; min-width:0; }
+  .sim-name { font-weight:700; font-size:.95rem; }
+  .sim-meta { font-size:.78rem; color:var(--ink-2); margin-top:2px; display:flex; gap:7px; flex-wrap:wrap; align-items:center; }
+  .sim-when { font-family:var(--mono); font-size:.7rem; font-weight:700; padding:4px 11px; border-radius:100px; background:var(--surface-2); border:1px solid var(--line); color:var(--ink-2); flex:0 0 auto; }
+  .sim-when.past { color:var(--ink-3); }
+  .sim-when.soon { background:var(--orange-bg); border-color:#f4dcb2; color:var(--orange); }
+  .sim-del { background:none; border:0; cursor:pointer; color:var(--ink-3); padding:7px; border-radius:9px; flex:0 0 auto; transition:.15s; display:none; place-items:center; }
+  .sim-del:hover { color:var(--danger); background:var(--wrong-tint,#FBE8E8); }
+  /* ștergerea apare doar în modul editare (după „Adaugă / Editează”) */
+  #simCard.editing .sim-del { display:grid; }
+
+  /* meniu examene prestabilite */
+  .preset-panel { border:1.5px dashed var(--line-2); border-radius:14px; background:var(--surface-2); padding:6px 16px; margin-bottom:16px; }
+  .preset-item { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--blue-tint-2); }
+  .preset-item:last-child { border-bottom:0; }
+  .preset-item .nm { flex:1; min-width:0; font-weight:600; font-size:.88rem; }
+  .preset-item .dt { font-family:var(--mono); font-size:.72rem; color:var(--ink-3); flex:0 0 auto; }
+  .preset-item .tp { font-family:var(--mono); font-size:.62rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:3px 9px; border-radius:100px; flex:0 0 auto; }
+  .preset-item .tp.exam { background:var(--navy); color:#fff; }
+  .preset-item .tp.sim { background:var(--blue-tint); color:var(--blue-deep); }
+  .preset-item .pick { flex:0 0 auto; background:var(--blue); color:#fff; border:0; border-radius:9px; padding:7px 14px; font-size:.8rem; font-weight:700; cursor:pointer; transition:.15s; }
+  .preset-item .pick:hover { background:var(--blue-deep); }
+  .preset-item .pick:disabled { background:var(--line); color:var(--ink-3); cursor:default; }
+
+  /* formular examen custom */
+  .simform { display:grid; grid-template-columns:1.5fr 1fr 1fr auto; gap:10px; margin-bottom:16px; padding:16px; border:1.5px dashed var(--line-2); border-radius:14px; background:var(--surface-2); }
+  @media(max-width:700px){ .simform { grid-template-columns:1fr 1fr; } }
+  .simform input, .simform select { height:44px; padding:0 12px; border:1.5px solid var(--line); border-radius:10px; font-family:var(--font); font-size:.9rem; color:var(--ink); background:#fff; outline:none; transition:border-color .15s, box-shadow .15s; }
+  .simform input:focus, .simform select:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(45,110,255,.14); }
+  .simform .add { white-space:nowrap; }
+  @media(max-width:700px){ .simform .add, .simform input[type=text] { grid-column:1/-1; } }
+
+  .disclaim { display:flex; gap:12px; align-items:center; background:var(--blue-tint-2); border:1px solid #d8e6ff; border-radius:var(--r); padding:13px 16px; margin-top:26px; }
+  .disclaim .ast { width:20px; height:20px; flex:0 0 auto; }
+  .disclaim p { font-size:.86rem; color:var(--ink-2); }
+  .disclaim b { color:var(--navy); }
+</style>
+</head>
+
+<body data-nav="full">
+
+<main class="dash-shell">
+
+  <!-- Header -->
+  <div class="coach-hero">
+    <div>
+      <span class="preview-flag"><span class="d"></span> Previzualizare · date demonstrative</span>
+      <div class="greeting" style="margin-bottom:0">
+        <h2>Coach-ul tău, <span id="coachName">candidat</span> 🎯</h2>
+        <p class="lead">Nu doar ce înveți, ci și <b>cum</b> îți organizezi ziua: program pe ore, pauze, mișcare, mese și somn — ca să ajungi la examen odihnit, nu epuizat.</p>
+      </div>
+    </div>
+    <div class="coach-count" aria-label="Timp până la admitere">
+      <div class="cbx"><div class="n" id="cc-d">—</div><div class="l">zile</div></div>
+      <div class="cbx"><div class="n" id="cc-h">—</div><div class="l">ore</div></div>
+      <div class="cbx"><div class="n" id="cc-m">—</div><div class="l">min</div></div>
+    </div>
+  </div>
+
+  <!-- 1. Echilibru -->
+  <div class="sec-lbl">Echilibru azi</div>
+  <div class="ccard">
+    <div class="ccard-head"><h3>Echilibru azi</h3><span class="hint">învățat · odihnă</span></div>
+    <div class="bal-top">
+      <div class="ring" style="--p:65"><b>65%</b></div>
+      <div class="txt">
+        <small>echilibru sănătos</small>
+        <p>Ești pe drumul bun. Nu depăși 5 ore de studiu — creierul reține mai puțin după.</p>
+      </div>
+    </div>
+    <div class="balbar">
+      <div class="balbar-top"><span><span class="dotk" style="background:var(--blue)"></span> Studiu</span><span class="val">4 h / 5 h</span></div>
+      <div class="bar blue"><i style="width:80%"></i></div>
+    </div>
+    <div class="balbar">
+      <div class="balbar-top"><span><span class="dotk" style="background:#0f9e63"></span> Mișcare</span><span class="val">30 / 30 min</span></div>
+      <div class="bar green"><i style="width:100%"></i></div>
+    </div>
+    <div class="balbar">
+      <div class="balbar-top"><span><span class="dotk" style="background:#8250DF"></span> Somn (aseară)</span><span class="val">7,3 / 8 h</span></div>
+      <div class="bar violet"><i style="width:91%"></i></div>
+    </div>
+  </div>
+
+  <!-- 2. Cum stai azi -->
+  <div class="sec-lbl">Cum stai azi</div>
+  <div class="mini3">
+    <div class="mini"><div class="v">🔥 12</div><div class="k">zile la rând</div></div>
+    <div class="mini"><div class="v">7 h 20’</div><div class="k">somn azi-noapte</div></div>
+    <div class="mini"><div class="v">2,5 h</div><div class="k">învățat azi</div></div>
+  </div>
+
+  <!-- 3. Program (colapsabil → calendar gradat pe ore) -->
+  <div class="sec-lbl">Programul zilei de azi</div>
+  <div class="ccard" id="programCard">
+    <div class="ccard-head" id="programToggle" role="button" tabindex="0" aria-expanded="false" aria-controls="calWrap">
+      <h3 id="dayTitle">Azi</h3>
+      <span class="hint" id="dayHint">—</span>
+      <button class="chev-btn" type="button" tabindex="-1" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+    </div>
+
+    <!-- închis: banda orizontală (rezumat) -->
+    <div class="dayh" id="dayTrack"></div>
+
+    <!-- deschis: calendarul zilei, gradat pe ore -->
+    <div class="cal-wrap" id="calWrap">
+      <div class="cal" id="calGrid"></div>
+      <div class="day-note hidden" id="dayNote"></div>
+      <form class="evform" id="evForm" autocomplete="off">
+        <input type="text" id="evName" placeholder="Ce mai ai în program? (ex. meditație, antrenament)" required>
+        <input type="time" id="evTime" required>
+        <select id="evMin">
+          <option value="15">15 min</option>
+          <option value="30">30 min</option>
+          <option value="45">45 min</option>
+          <option value="60" selected>1 oră</option>
+          <option value="90">1½ ore</option>
+          <option value="120">2 ore</option>
+          <option value="180">3 ore</option>
+        </select>
+        <button class="btn-primary add" type="submit">➕ Adaugă în program</button>
+      </form>
+      <p style="font-size:.78rem;color:var(--ink-3);margin-top:10px">Planul de învățare se reașază automat în timpul rămas liber după activitățile tale.</p>
+    </div>
+  </div>
+
+  <!-- 4. Obiceiuri -->
+  <div class="sec-lbl">Urmărește-ți obiceiurile</div>
+  <div class="coach-grid">
+    <div class="ccard">
+      <div class="ccard-head"><h3>Urmărește-ți obiceiurile</h3><span class="hint">bifează ce ai făcut azi</span></div>
+      <div id="habitList"></div>
+    </div>
+
+    <div class="ccard">
+      <div class="ccard-head"><h3>Gândul zilei</h3><span class="hint">motivație</span></div>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+        <div class="ring" style="--p:82"><b>82%</b></div>
+        <div>
+          <div style="font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3)">consecvență</div>
+          <p style="font-size:.86rem;color:var(--ink-2);margin-top:4px;max-width:26ch">Ai respectat planul în 82% din zile. Asta contează mai mult decât o zi perfectă.</p>
+        </div>
+      </div>
+      <p style="font-size:.95rem;font-weight:600;color:var(--ink);line-height:1.5;padding:14px 16px;background:var(--blue-tint-2);border:1px solid #d8e6ff;border-radius:12px">
+        „Nu trebuie să fii extraordinar într-o zi. Trebuie să fii constant în multe zile.” 💪
+      </p>
+    </div>
+  </div>
+
+  <!-- 5. Următorul reper -->
+  <div class="sec-lbl">Următorul reper</div>
+  <div class="ccard">
+    <div class="ccard-head"><h3>Următorul reper</h3><span class="hint">în 7 zile</span></div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="tip-ic ic-break" style="margin-bottom:0"><svg viewBox="0 0 24 24" style="stroke:#fff"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+      <div>
+        <div style="font-weight:700;font-size:.95rem">Simulare cronometrată</div>
+        <div style="font-size:.82rem;color:var(--ink-2);margin-top:2px">Sâmbătă, 18 iulie · obiectiv 42/45</div>
+      </div>
+    </div>
+    <p style="font-size:.84rem;color:var(--ink-2);margin-top:14px">Coach: în seara de dinainte, doar recapitulare ușoară și somn devreme — nu materie nouă.</p>
+  </div>
+
+  <!-- 6. Simulările & examenele mele -->
+  <div class="sec-lbl">Simulările &amp; examenele tale</div>
+  <div class="ccard" id="simCard">
+    <div class="ccard-head">
+      <h3>La ce simulări și examene participi</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-lite" type="button" id="btnPresets">➕ Adaugă / Editează</button>
+        <button class="btn-lite" type="button" id="btnCustom">✏️ Examen custom</button>
+      </div>
+    </div>
+
+    <!-- meniu colapsabil: examene prestabilite -->
+    <div class="preset-panel hidden" id="presetPanel"></div>
+
+    <!-- formular colapsabil: examen custom -->
+    <form class="simform hidden" id="simForm" autocomplete="off">
+      <input type="text" id="simName" placeholder="Nume (ex. Simulare Cluj)" required>
+      <input type="date" id="simDate" required>
+      <select id="simType">
+        <option value="sim">Simulare</option>
+        <option value="exam">Examen</option>
+      </select>
+      <button class="btn-primary add" type="submit">➕ Adaugă</button>
+    </form>
+
+    <div class="simlist" id="simList"></div>
+  </div>
+
+  <!-- 7. Sfatul coach-ului -->
+  <div class="sec-lbl">Din partea coach-ului</div>
+  <div class="nudge">
+    <svg class="ast band-ast"><use href="#ast-solid"/></svg>
+    <span class="av"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2z"/><path d="M9 21h6"/></svg></span>
+    <div>
+      <h4>Ai învățat 4 zile la rând — azi ține ritmul, dar nu sări peste mișcare.</h4>
+      <p>O plimbare de 30 de minute după studiu îți fixează mai bine ce ai învățat decât încă o oră la birou obosit.</p>
+    </div>
+  </div>
+
+  <!-- 8. Sfaturi stil de viață (colapsabile) -->
+  <div class="sec-lbl">Învață sănătos · sfaturile coach-ului</div>
+  <div class="tips" id="tipsWrap">
+    <div class="tip">
+      <div class="tip-head">
+        <div class="tip-ic ic-sport"><svg viewBox="0 0 24 24"><path d="M6.5 6.5 17.5 17.5M3 8l2-2M19 16l2-2M8 3l-2 2M16 19l-2 2M6.5 17.5 17.5 6.5"/></svg></div>
+        <h4>Mișcare zilnică</h4>
+        <span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+      </div>
+      <p>30 de minute de mișcare pe zi cresc atenția și memoria. O plimbare sau o alergare ușoară după studiu fixează mai bine ce ai învățat.</p>
+      <span class="k">🎯 30 min / zi</span>
+    </div>
+    <div class="tip">
+      <div class="tip-head">
+        <div class="tip-ic ic-food"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2a2 2 0 0 0 2-2V2M5 2v20M15 2v20M15 8h4a2 2 0 0 1 0 4h-4"/></svg></div>
+        <h4>Alimentație pentru creier</h4>
+        <span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+      </div>
+      <p>Mese regulate, proteine și fructe la micul dejun, mai puțin zahăr rafinat. Evită mesele grele înainte de sesiunile de studiu.</p>
+      <span class="k">🥗 3 mese + 2 gustări</span>
+    </div>
+    <div class="tip">
+      <div class="tip-head">
+        <div class="tip-ic ic-sleep"><svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg></div>
+        <h4>Somn de calitate</h4>
+        <span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+      </div>
+      <p>7–9 ore pe noapte. Somnul consolidează memoria — o noapte nedormită înainte de examen strică mai mult decât o oră de studiu în plus.</p>
+      <span class="k">🌙 8 ore</span>
+    </div>
+    <div class="tip">
+      <div class="tip-head">
+        <div class="tip-ic ic-break"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h4>Pauze inteligente (Pomodoro)</h4>
+        <span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+      </div>
+      <p>50 de minute de studiu, 10 de pauză. Ridică-te, mișcă-te, privește departe. Creierul reține mai mult în sesiuni scurte și focusate.</p>
+      <span class="k">⏱️ 50 / 10</span>
+    </div>
+    <div class="tip">
+      <div class="tip-head">
+        <div class="tip-ic ic-water"><svg viewBox="0 0 24 24"><path d="M12 2.7s6 6.3 6 10.3a6 6 0 0 1-12 0c0-4 6-10.3 6-10.3z"/></svg></div>
+        <h4>Hidratare</h4>
+        <span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+      </div>
+      <p>Chiar și o deshidratare ușoară scade concentrarea. Ține o sticlă de apă pe birou și bea regulat, nu doar când ți-e sete.</p>
+      <span class="k">💧 1,5–2 L / zi</span>
+    </div>
+    <div class="tip">
+      <div class="tip-head">
+        <div class="tip-ic ic-mind"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2z"/><path d="M9 21h6"/></svg></div>
+        <h4>Gestionarea stresului</h4>
+        <span class="chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>
+      </div>
+      <p>2 minute de respirație lentă înainte de o simulare îți calmează emoțiile. Emoțiile mari sunt normale — ai un plan, urmează-l pas cu pas.</p>
+      <span class="k">🧘 respiră 4-7-8</span>
+    </div>
+  </div>
+
+  <div class="disclaim">
+    <svg class="ast"><use href="#ast"/></svg>
+    <p><b>Aceasta este o previzualizare a coach-ului Submed.</b> Programul și sfaturile sunt demonstrative — la lansare, se adaptează după orarul, rezultatele și obiceiurile tale reale.</p>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  (function(){
+    const target = new Date('2026-07-26T09:00:00');
+    const pad = n => String(n).padStart(2,'0');
+    const el = id => document.getElementById(id);
+    function tick(){
+      const diff = Math.max(0, target - new Date());
+      const d = Math.floor(diff/86400000);
+      const h = Math.floor(diff%86400000/3600000);
+      const m = Math.floor(diff%3600000/60000);
+      if(el('cc-d')) el('cc-d').textContent = d;
+      if(el('cc-h')) el('cc-h').textContent = pad(h);
+      if(el('cc-m')) el('cc-m').textContent = pad(m);
+    }
+    tick(); setInterval(tick, 1000);
+  })();
+</script>
+
+<script type="module">
+  import { Auth } from './assets/js/auth.js';
+  import { Coach, Profiles } from './assets/js/api.js';
+
+  const MO = ['ian','feb','mar','apr','mai','iun','iul','aug','sep','oct','nov','dec'];
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const pad = n => String(n).padStart(2, '0');
+  const dstr = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  const todayStr = dstr(new Date());
+  const loadJson = (key, fallback) => { try { const v = JSON.parse(localStorage.getItem(key)); return v ?? fallback; } catch (e) { return fallback; } };
+  const saveJson = (key, val) => { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} };
+
+  /* ── personalizare antet din profil ─────────────────────────── */
+  (async () => {
+    try {
+      const user = await Auth.getUser();
+      if (user?.name) document.getElementById('coachName').textContent = user.name.split(' ')[0];
+    } catch (e) {}
+  })();
+
+  /* ══════════════════════════════════════════════════════════════
+     OBICEIURI — bifezi ce ai făcut azi + notezi cum a mers.
+     DB (user_habits) cu fallback local (preview/offline).
+     ════════════════════════════════════════════════════════════ */
+  (async () => {
+    const HB_KEY = 'submed_habits';
+    const HABITS = [
+      { id: 'studiu',  name: 'Studiu zilnic',          sub: 'obiectiv: min. 2 ore',  seed: [1,1,0,1,1,1],
+        icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>' },
+      { id: 'miscare', name: 'Mișcare',                sub: 'obiectiv: 30 min',      seed: [1,0,1,1,0,1],
+        icon: '<path d="M6.5 6.5 17.5 17.5M6.5 17.5 17.5 6.5"/>' },
+      { id: 'somn',    name: 'Somn înainte de 23:00',  sub: 'obiectiv: 8 ore',       seed: [1,1,0,1,1,0],
+        icon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>' },
+      { id: 'apa',     name: 'Hidratare',              sub: 'obiectiv: 1,5 L',       seed: [1,1,1,1,0,1],
+        icon: '<path d="M12 2.7s6 6.3 6 10.3a6 6 0 0 1-12 0c0-4 6-10.3 6-10.3z"/>' },
+    ];
+    const list = document.getElementById('habitList');
+    if (!list) return;
+
+    const days = [];                         // ultimele 7 zile, azi ultima
+    for (let i = 6; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); days.push(dstr(d)); }
+
+    // { 'YYYY-MM-DD': { habitId: { done, note } } }
+    let useDb = false, week = {};
+    try {
+      const rows = await Coach.listHabits(days[0]);
+      useDb = true;
+      rows.forEach(r => { (week[r.day] = week[r.day] || {})[r.habit_id] = { done: !!r.done, note: r.note || '' }; });
+    } catch (e) { week = loadJson(HB_KEY, {}); }
+
+    const persist = (h) => {
+      if (useDb) {
+        const t = week[todayStr]?.[h.id] || {};
+        Coach.setHabit({ habitId: h.id, day: todayStr, done: !!t.done, note: t.note || null }).catch(() => {});
+      } else saveJson(HB_KEY, week);
+    };
+    const isDone = (h, ds, idx) => {
+      const v = week[ds]?.[h.id]?.done;
+      if (v !== undefined) return !!v;
+      return ds !== todayStr && !!h.seed[idx]; // demo pentru zilele trecute fără date
+    };
+
+    function render() {
+      list.innerHTML = '';
+      HABITS.forEach(h => {
+        const doneToday = isDone(h, todayStr, 6);
+        const note = week[todayStr]?.[h.id]?.note || '';
+        const row = document.createElement('div');
+        row.className = 'habit' + (doneToday ? ' done' : '');
+        row.innerHTML =
+          '<span class="habit-ic"><svg viewBox="0 0 24 24">' + h.icon + '</svg></span>' +
+          '<div class="habit-body">' +
+            '<div class="habit-name">' + esc(h.name) + '</div>' +
+            '<div class="habit-sub">' + esc(h.sub) + '</div>' +
+            '<input class="habit-note" type="text" maxlength="120" placeholder="Cum a mers azi? (ex. 45 min alergare)" value="' + esc(note) + '">' +
+          '</div>' +
+          '<div class="habit-week">' + days.map((ds, i) =>
+            '<i class="' + (isDone(h, ds, i) ? 'on ' : '') + (ds === todayStr ? 'today' : '') + '"></i>').join('') + '</div>' +
+          '<button class="habit-check' + (doneToday ? ' on' : '') + '" type="button" title="Bifează pentru azi" aria-label="Bifează ' + esc(h.name) + ' pentru azi" aria-pressed="' + doneToday + '">' +
+            '<svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button>';
+        row.querySelector('.habit-check').addEventListener('click', () => {
+          week[todayStr] = week[todayStr] || {};
+          week[todayStr][h.id] = week[todayStr][h.id] || {};
+          week[todayStr][h.id].done = !doneToday;
+          persist(h); render();
+        });
+        row.querySelector('.habit-note').addEventListener('change', e => {
+          week[todayStr] = week[todayStr] || {};
+          week[todayStr][h.id] = week[todayStr][h.id] || {};
+          week[todayStr][h.id].note = e.target.value.trim();
+          persist(h);
+        });
+        list.appendChild(row);
+      });
+    }
+    render();
+  })();
+
+  /* ══════════════════════════════════════════════════════════════
+     PROGRAMUL ZILEI — colapsabil: închis = bandă orizontală,
+     deschis = calendar gradat pe ore (somn, studiu, activități).
+     Evenimentele userului: DB (user_day_events) cu fallback local.
+     Studiul se replanifică automat în timpul liber rămas.
+     ════════════════════════════════════════════════════════════ */
+  (async () => {
+    const EV_KEY = 'submed_day_events';
+    const DAY_START = 7 * 60 + 30, DAY_END = 22 * 60 + 30;
+    const CAL_START = 7 * 60, CAL_END = 23 * 60, HPX = 44; // 07:00–23:00, 44px/oră
+
+    const IC = {
+      meal:  '<path d="M3 2v7c0 1.1.9 2 2 2a2 2 0 0 0 2-2V2M5 2v20M15 2v20M15 8h4a2 2 0 0 1 0 4h-4"/>',
+      study: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+      break: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+      sport: '<path d="M6.5 6.5 17.5 17.5M3 8l2-2M19 16l2-2M8 3l-2 2M16 19l-2 2M6.5 17.5 17.5 6.5"/>',
+      rest:  '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>',
+      cal:   '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    };
+
+    // ancore fixe ale zilei (mese, mișcare)
+    const FIXED = [
+      { start: 450,  min: 30, type: 'meal',  name: 'Trezire & mic dejun', sub: 'Proteine + fructe. Fără telefon primele 20 min.' },
+      { start: 780,  min: 60, type: 'meal',  name: 'Prânz & pauză lungă', sub: 'Masă echilibrată. Fără învățat la masă.' },
+      { start: 1020, min: 30, type: 'sport', name: 'Mișcare · alergare ușoară', sub: '30 min cardio — resetează mintea.' },
+    ];
+    // planul de învățare (se așază automat în golurile rămase)
+    const STUDY = [
+      { min: 50, name: 'Biologie · Sistemul nervos', sub: 'Teorie + schemă. Capitol prioritar.' },
+      { min: 25, name: 'Grile · Sistemul nervos',    sub: '20 de întrebări + verificarea greșelilor.' },
+      { min: 50, name: 'Chimie · Legături chimice',  sub: 'Teorie + exerciții de bază.' },
+      { min: 25, name: 'Grile · Chimie',             sub: '15 întrebări cronometrate.' },
+      { min: 50, name: 'Recapitulare & flashcards',  sub: 'Fixezi ce ai greșit azi.' },
+    ];
+
+    const card = document.getElementById('programCard');
+    const toggle = document.getElementById('programToggle');
+    const track = document.getElementById('dayTrack');
+    const calGrid = document.getElementById('calGrid');
+    const form = document.getElementById('evForm');
+    if (!card || !track || !calGrid || !form) return;
+
+    /* colapsare: click pe antet deschide calendarul */
+    function setOpen(open) {
+      card.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open);
+    }
+    toggle.addEventListener('click', () => setOpen(!card.classList.contains('open')));
+    toggle.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle.click(); } });
+    form.addEventListener('click', e => e.stopPropagation());
+
+    /* evenimentele userului — DB cu fallback local, resetate zilnic */
+    let useDb = false, events = [];
+    try {
+      events = (await Coach.listDayEvents(todayStr)).map(r => ({ id: r.id, name: r.name, start: r.start_min, min: r.duration_min }));
+      useDb = true;
+    } catch (e) {
+      let s = loadJson(EV_KEY, null);
+      if (!s || s.date !== todayStr) s = { date: todayStr, events: [] };
+      events = s.events;
+    }
+    const persistLocal = () => { if (!useDb) saveJson(EV_KEY, { date: todayStr, events }); };
+
+    const hhmm = m => pad(Math.floor(m / 60)) + ':' + pad(m % 60);
+
+    function buildSchedule() {
+      const evs = events.map(e => ({ ...e, type: 'cal', sub: 'Activitatea ta', custom: true }));
+      const busy = [...FIXED, ...evs]
+        .map(s => ({ start: s.start, end: s.start + s.min }))
+        .sort((a, b) => a.start - b.start);
+      // unim intervalele ocupate suprapuse
+      const merged = [];
+      busy.forEach(b => {
+        const last = merged[merged.length - 1];
+        if (last && b.start <= last.end) last.end = Math.max(last.end, b.end);
+        else merged.push({ ...b });
+      });
+      // golurile libere din zi
+      const gaps = [];
+      let cur = DAY_START;
+      merged.forEach(b => {
+        if (b.start > cur) gaps.push({ start: Math.max(cur, DAY_START), end: Math.min(b.start, DAY_END) });
+        cur = Math.max(cur, b.end);
+      });
+      if (cur < DAY_END) gaps.push({ start: cur, end: DAY_END });
+
+      // așezăm blocurile de studiu în goluri, cu pauze de 10' între ele
+      const placed = [];
+      let ui = 0, freeLeft = 0;
+      gaps.forEach(g => {
+        let t = g.start;
+        while (ui < STUDY.length && t + STUDY[ui].min <= g.end) {
+          placed.push({ start: t, min: STUDY[ui].min, type: 'study', name: STUDY[ui].name, sub: STUDY[ui].sub });
+          t += STUDY[ui].min; ui++;
+          if (ui < STUDY.length && t + 10 + STUDY[ui].min <= g.end) {
+            placed.push({ start: t, min: 10, type: 'break', name: 'Pauză scurtă', sub: 'Ridică-te, apă, ecran deoparte.' });
+            t += 10;
+          }
+        }
+        freeLeft += g.end - t;
+      });
+
+      const slots = [...FIXED, ...evs, ...placed].sort((a, b) => a.start - b.start);
+      const studyPlaced = placed.filter(s => s.type === 'study').reduce((s, x) => s + x.min, 0);
+      const studyLeft = STUDY.slice(ui).reduce((s, x) => s + x.min, 0);
+      return { slots, studyPlaced, studyLeft, freeLeft };
+    }
+
+    async function removeEvent(ev) {
+      if (useDb) { try { await Coach.deleteDayEvent(ev.id); } catch (e) {} }
+      events = events.filter(x => x.id !== ev.id);
+      persistLocal(); render();
+    }
+
+    /* banda orizontală (starea închisă) */
+    function renderStrip(slots, nowMin) {
+      track.innerHTML = '';
+      const all = [...slots, { start: DAY_END, min: 0, type: 'rest', name: 'Rutină de somn', sub: 'Ecrane oprite. Țintă: 8 ore.' }];
+      all.forEach(s => {
+        const isNow = s.min > 0 ? (nowMin >= s.start && nowMin < s.start + s.min) : nowMin >= s.start;
+        const el = document.createElement('div');
+        el.className = 'hslot t-' + s.type + (isNow ? ' now' : '');
+        el.innerHTML =
+          '<div class="hslot-top"><span class="hslot-time">' + hhmm(s.start) + '</span>' +
+            (isNow ? '<span class="badge-now">acum</span>' : '') +
+            '<span class="slot-min">' + (s.min ? s.min + '’' : '—') + '</span>' +
+          '</div>' +
+          '<div class="hslot-mid">' +
+            '<span class="slot-ic"><svg viewBox="0 0 24 24">' + (IC[s.type] || IC.cal) + '</svg></span>' +
+            '<div><div class="hslot-name">' + esc(s.name) + '</div><div class="hslot-sub">' + esc(s.sub || '') + '</div></div>' +
+          '</div>';
+        track.appendChild(el);
+      });
+    }
+
+    /* calendarul gradat pe ore (starea deschisă) */
+    function renderCal(slots, nowMin) {
+      calGrid.innerHTML = '';
+      calGrid.style.height = ((CAL_END - CAL_START) / 60 * HPX) + 'px';
+      const y = m => (m - CAL_START) / 60 * HPX;
+
+      for (let h = CAL_START; h <= CAL_END; h += 60) {
+        const line = document.createElement('div');
+        line.className = 'cal-hour';
+        line.style.top = y(h) + 'px';
+        line.innerHTML = '<span>' + hhmm(h) + '</span>';
+        calGrid.appendChild(line);
+      }
+
+      // somnul mărginește ziua (cât ai dormit / când te culci)
+      const blocks = [
+        { start: CAL_START, min: DAY_START - CAL_START, type: 'rest', name: 'Somn', sub: '' },
+        ...slots,
+        { start: DAY_END, min: CAL_END - DAY_END, type: 'rest', name: 'Rutină de somn · țintă 8 ore', sub: '' },
+      ];
+      blocks.forEach(s => {
+        if (s.min <= 0) return;
+        const isNow = nowMin >= s.start && nowMin < s.start + s.min;
+        const el = document.createElement('div');
+        el.className = 'cal-block t-' + s.type + (isNow ? ' now' : '');
+        el.style.top = (y(s.start) + 1) + 'px';
+        el.style.height = Math.max(8, s.min / 60 * HPX - 2) + 'px';
+        el.title = s.name + ' · ' + hhmm(s.start) + '–' + hhmm(s.start + s.min);
+        if (s.min >= 20) {
+          el.innerHTML =
+            '<span class="cb-name">' + esc(s.name) + '</span>' +
+            '<span class="cb-time">' + hhmm(s.start) + '–' + hhmm(s.start + s.min) + '</span>' +
+            (s.custom ? '<button class="ev-del" type="button" title="Șterge" aria-label="Șterge">✕</button>' : '');
+          if (s.custom) el.querySelector('.ev-del').addEventListener('click', () => removeEvent(s));
+        }
+        calGrid.appendChild(el);
+      });
+
+      if (nowMin >= CAL_START && nowMin <= CAL_END) {
+        const line = document.createElement('div');
+        line.className = 'cal-now';
+        line.style.top = y(nowMin) + 'px';
+        calGrid.appendChild(line);
+      }
+    }
+
+    function render() {
+      const { slots, studyPlaced, studyLeft, freeLeft } = buildSchedule();
+      const now = new Date();
+      const nowMin = now.getHours() * 60 + now.getMinutes();
+
+      const t = now.toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' });
+      document.getElementById('dayTitle').textContent = t.charAt(0).toUpperCase() + t.slice(1);
+      const fh = Math.floor(freeLeft / 60), fm = freeLeft % 60;
+      document.getElementById('dayHint').textContent =
+        Math.floor(studyPlaced / 60) + ' h ' + (studyPlaced % 60 ? pad(studyPlaced % 60) + '’ ' : '') + 'studiu · liber ' + fh + ' h ' + (fm ? pad(fm) + '’' : '');
+
+      const note = document.getElementById('dayNote');
+      if (studyLeft > 0) {
+        note.classList.remove('hidden');
+        note.innerHTML = '⚠️ <span>Nu a mai încăput tot planul de studiu (<b>' + studyLeft + ' min</b> rămase). Eliberează timp din program sau mută o activitate.</span>';
+      } else note.classList.add('hidden');
+
+      renderStrip(slots, nowMin);
+      renderCal(slots, nowMin);
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = document.getElementById('evName').value.trim();
+      const time = document.getElementById('evTime').value;
+      const min = parseInt(document.getElementById('evMin').value, 10);
+      if (!name || !time) return;
+      const [h, m] = time.split(':').map(Number);
+      let rec = { id: 'ev-' + Date.now(), name, start: h * 60 + m, min };
+      if (useDb) {
+        try {
+          const r = await Coach.addDayEvent({ day: todayStr, name, startMin: rec.start, durationMin: min });
+          rec = { id: r.id, name: r.name, start: r.start_min, min: r.duration_min };
+        } catch (err) { /* păstrăm local */ }
+      }
+      events.push(rec);
+      persistLocal(); render(); form.reset();
+    });
+
+    render();
+    setInterval(render, 60000); // ține linia „acum” la zi
+  })();
+
+  /* ══════════════════════════════════════════════════════════════
+     SFATURILE COACH-ULUI — colapsabile (statistica vizibilă mereu)
+     ════════════════════════════════════════════════════════════ */
+  document.querySelectorAll('#tipsWrap .tip').forEach(tip => {
+    tip.addEventListener('click', () => tip.classList.toggle('open'));
+  });
+
+  /* ══════════════════════════════════════════════════════════════
+     SIMULĂRI & EXAMENE — „Adaugă / Editează” deschide meniul cu
+     examene prestabilite ȘI modul de editare (butoanele de ștergere).
+     ════════════════════════════════════════════════════════════ */
+  const LOCAL_KEY = 'submed_sims';
+  const SEED = [
+    { id: 'seed-1', name: 'Simulare Cluj — Mai 2024', date: '2026-04-15', type: 'sim' },
+    { id: 'seed-2', name: 'Simulare Iași — Mai 2025', date: '2026-05-30', type: 'sim' },
+    { id: 'seed-3', name: 'Simulare programată',      date: '2026-07-18', type: 'sim' },
+    { id: 'seed-4', name: 'Admitere UMF',             date: '2026-07-26', type: 'exam' },
+  ];
+  // examene prestabilite de SubMed (datele se actualizează de noi)
+  const PRESETS = [
+    { name: 'Admitere UMF „Iuliu Hațieganu” Cluj-Napoca', date: '2026-07-26', type: 'exam' },
+    { name: 'Admitere UMF „Grigore T. Popa” Iași',        date: '2026-07-24', type: 'exam' },
+    { name: 'Admitere UMFST „G.E. Palade” Târgu Mureș',   date: '2026-07-23', type: 'exam' },
+    { name: 'Admitere UMF „Carol Davila” București',      date: '2026-07-26', type: 'exam' },
+    { name: 'Simulare SubMed · Biologie',                 date: '2026-07-18', type: 'sim' },
+    { name: 'Simulare SubMed · Chimie',                   date: '2026-07-19', type: 'sim' },
+  ];
+  const loadLocal = () => { const v = loadJson(LOCAL_KEY, null); return Array.isArray(v) ? v : SEED.slice(); };
+  const saveLocal = arr => saveJson(LOCAL_KEY, arr);
+
+  (async () => {
+    const card = document.getElementById('simCard');
+    const list = document.getElementById('simList');
+    const form = document.getElementById('simForm');
+    const presetPanel = document.getElementById('presetPanel');
+    const btnPresets = document.getElementById('btnPresets');
+    const btnCustom = document.getElementById('btnCustom');
+    if (!card || !list || !form) return;
+
+    let useDb = false, sims = [];
+    try { sims = await Coach.listExams(); useDb = true; }      // backend disponibil
+    catch (e) { useDb = false; sims = loadLocal(); }           // preview/offline → local
+
+    function persistLocalIfNeeded() { if (!useDb) saveLocal(sims); }
+
+    async function addSim({ name, date, type }) {
+      let rec = { id: 'local-' + Date.now(), name, date, type };
+      if (useDb) { try { rec = await Coach.addExam({ name, date, type }); } catch (err) { /* păstrăm local */ } }
+      sims.push(rec);
+      persistLocalIfNeeded(); render(); renderPresets();
+    }
+
+    /* meniu colapsabil cu examene prestabilite */
+    function renderPresets() {
+      presetPanel.innerHTML = '';
+      PRESETS.forEach(p => {
+        const d = new Date(p.date + 'T00:00:00');
+        const added = sims.some(s => s.name === p.name);
+        const row = document.createElement('div');
+        row.className = 'preset-item';
+        row.innerHTML =
+          '<span class="tp ' + p.type + '">' + (p.type === 'exam' ? 'Examen' : 'Simulare') + '</span>' +
+          '<span class="nm">' + esc(p.name) + '</span>' +
+          '<span class="dt">' + d.getDate() + ' ' + MO[d.getMonth()] + ' ' + d.getFullYear() + '</span>' +
+          '<button class="pick" type="button"' + (added ? ' disabled' : '') + '>' + (added ? '✓ Adăugat' : 'Alege') + '</button>';
+        if (!added) row.querySelector('.pick').addEventListener('click', () => addSim(p));
+        presetPanel.appendChild(row);
+      });
+    }
+
+    /* „Adaugă / Editează” = meniul de examene + modul editare (ștergere) */
+    btnPresets.addEventListener('click', () => {
+      const hidden = presetPanel.classList.toggle('hidden');
+      btnPresets.classList.toggle('active', !hidden);
+      card.classList.toggle('editing', !hidden);
+      if (!hidden) { form.classList.add('hidden'); btnCustom.classList.remove('active'); }
+    });
+    btnCustom.addEventListener('click', () => {
+      const hidden = form.classList.toggle('hidden');
+      btnCustom.classList.toggle('active', !hidden);
+      if (!hidden) {
+        presetPanel.classList.add('hidden'); btnPresets.classList.remove('active'); card.classList.remove('editing');
+        document.getElementById('simName').focus();
+      }
+    });
+
+    function render() {
+      sims.sort((a, b) => a.date.localeCompare(b.date));
+      if (!sims.length) { list.innerHTML = '<div class="empty-hint" style="padding:14px">Nicio simulare adăugată încă. Apasă „➕ Adaugă / Editează” și alege un examen.</div>'; return; }
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      list.innerHTML = '';
+      sims.forEach(s => {
+        const d = new Date(s.date + 'T00:00:00');
+        const days = Math.round((d - today) / 86400000);
+        let txt, cls;
+        if (days < 0)        { txt = 'trecut';               cls = 'past'; }
+        else if (days === 0) { txt = 'azi';                  cls = 'soon'; }
+        else if (days <= 7)  { txt = 'în ' + days + ' zile'; cls = 'soon'; }
+        else                 { txt = 'în ' + days + ' zile'; cls = ''; }
+        const row = document.createElement('div');
+        row.className = 'simrow';
+        row.innerHTML =
+          '<span class="sim-badge ' + (s.type === 'exam' ? 'exam' : 'sim') + '">' +
+            '<span class="d">' + d.getDate() + '</span><span class="mo">' + MO[d.getMonth()] + '</span></span>' +
+          '<div class="sim-body"><div class="sim-name">' + esc(s.name) + '</div>' +
+            '<div class="sim-meta"><span>' + (s.type === 'exam' ? 'Examen' : 'Simulare') + '</span><span>·</span>' +
+            '<span>' + d.getDate() + ' ' + MO[d.getMonth()] + ' ' + d.getFullYear() + '</span></div></div>' +
+          '<span class="sim-when ' + cls + '">' + txt + '</span>' +
+          '<button class="sim-del" type="button" title="Șterge" aria-label="Șterge">🗑️</button>';
+        row.querySelector('.sim-del').addEventListener('click', async () => {
+          if (useDb && !String(s.id).startsWith('seed-') && !String(s.id).startsWith('local-')) {
+            try { await Coach.deleteExam(s.id); } catch (e) {}
+          }
+          sims = sims.filter(x => x !== s);
+          persistLocalIfNeeded(); render(); renderPresets();
+        });
+        list.appendChild(row);
+      });
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const name = document.getElementById('simName').value.trim();
+      const date = document.getElementById('simDate').value;
+      const type = document.getElementById('simType').value;
+      if (!name || !date) return;
+      await addSim({ name, date, type });
+      form.reset();
+    });
+
+    render();
+    renderPresets();
+  })();
+</script>
+
+</body>
+</html>
