@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900");
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap");
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
 /* 
@@ -114,7 +114,7 @@ hgroup {
 
 html,
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     -ms-text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -130,10 +130,12 @@ h3,
 h4,
 h5,
 h6 {
-    color: #1e1e1e;
+    color: #111B33;
     margin-top: 0px;
     margin-bottom: 0px;
     font-weight: 700;
+    font-family: 'Sora', sans-serif;
+    letter-spacing: -.02em;
 }
 
 ul {
@@ -146,7 +148,7 @@ footer2 {
 p {
     font-size: 14px;
     line-height: 28px;
-    color: #4a4a4a;
+    color: #535F79;
 }
 
 img {
@@ -172,7 +174,7 @@ h1.mt-4 {
 
 html,
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 body {
@@ -187,10 +189,10 @@ body {
 }
 
 :root {
-    --background: #fffffc;
-    --primary: #407BFF;
-    --secondary: #ececec;
-    --text-color: rgb(41, 41, 43);
+    --background: #F4F7FD;
+    --primary: #2D6EFF;
+    --secondary: #E6EBF5;
+    --text-color: #111B33;
     --bs-dropdown-link-active-bg: #d30013;
 }
 
