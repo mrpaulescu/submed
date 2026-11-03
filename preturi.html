@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Planurile SubMed pentru admiterea la medicină: Esențial (30 lei/lună) și Complet (50 lei/lună).">
+<title>Submed · Abonamente</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css">
+
+<style>
+  .price-note { display:inline-flex; align-items:center; gap:8px; background:var(--orange-bg); border:1px solid #F4DCB2; color:var(--orange); border-radius:100px; padding:6px 14px; font-size:.82rem; font-weight:600; margin-top:12px; }
+  .plans { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:stretch; margin-top:6px; }
+  @media (max-width:820px){ .plans { grid-template-columns:1fr; } }
+
+  .plan { display:flex; flex-direction:column; background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:26px; box-shadow:var(--shadow); position:relative; overflow:hidden; }
+  .plan.featured { background:linear-gradient(135deg,var(--navy),var(--navy-2)); border-color:var(--navy); color:#dce6fb; }
+  .plan .ast { position:absolute; right:-45px; top:-45px; width:200px; height:200px; opacity:.07; color:#fff; pointer-events:none; }
+  .plan-head h3 { font-size:1.3rem; font-weight:800; }
+  .plan.featured .plan-head h3 { color:#fff; }
+  .plan-head p { font-size:.88rem; color:var(--ink-2); margin-top:4px; line-height:1.5; }
+  .plan.featured .plan-head p { color:#9fb4e4; }
+  .plan-ribbon { position:absolute; top:18px; right:18px; }
+
+  .price { margin:20px 0 4px; display:flex; align-items:baseline; gap:8px; }
+  .price b { font-family:var(--font-display); font-weight:800; font-size:3rem; letter-spacing:-.03em; line-height:1; }
+  .plan.featured .price b { color:#fff; }
+  .price span { font-size:.95rem; color:var(--ink-3); font-weight:600; }
+  .plan.featured .price span { color:#9fb4e4; }
+  .price-later { font-family:var(--mono); font-size:.74rem; color:var(--ink-3); margin-bottom:18px; }
+  .plan.featured .price-later { color:var(--spark); }
+
+  .plan-cta { width:100%; justify-content:center; text-align:center; }
+  .plan.featured .plan-cta { background:#fff; color:var(--navy); }
+  .plan.featured .plan-cta:hover { background:#eaf1ff; box-shadow:none; }
+  .plan-cta:disabled { opacity:.65; cursor:default; }
+
+  .feat-title { font-family:var(--mono); font-size:.68rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin:24px 0 10px; }
+  .plan.featured .feat-title { color:var(--spark); }
+  .feats { list-style:none; display:flex; flex-direction:column; gap:9px; }
+  .feats li { display:flex; align-items:flex-start; gap:10px; font-size:.9rem; line-height:1.4; color:var(--ink); }
+  .plan.featured .feats li { color:#e6eefc; }
+  .feats svg { flex:0 0 auto; width:18px; height:18px; margin-top:1px; stroke:var(--green); fill:none; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
+  .plan.featured .feats svg { stroke:#6ee7b0; }
+  .feats .frow-badge { margin-left:auto; padding:2px 9px; font-size:.62rem; }
+  .plan.featured .frow-badge-soon { background:rgba(255,255,255,.12); color:#cddcfb; }
+  .feats small { display:block; color:var(--ink-3); font-size:.78rem; margin-top:1px; }
+  .plan.featured .feats small { color:#9fb4e4; }
+  .feats .grp { display:flex; flex-direction:column; flex:1; min-width:0; }
+
+  .fine { text-align:center; color:var(--ink-3); font-size:.82rem; margin-top:22px; line-height:1.6; }
+  .fine a { color:var(--blue); }
+</style>
+</head>
+
+<body data-nav="full">
+
+<main class="dash-shell">
+
+  <div class="greeting">
+    <h2>Alege-ți planul</h2>
+    <p>Aceleași grile și subiecte, cu mai multe instrumente de pregătire dacă ai nevoie de ele.</p>
+    <span class="price-note">⏳ Din ianuarie 2027 prețurile cresc: Esențial 50 lei, Complet 100 lei.</span>
+  </div>
+
+  <div class="alert-banner" id="banner" role="status"></div>
+
+  <div class="plans">
+
+    <!-- Esențial -->
+    <article class="plan" id="plan-basic">
+      <div class="plan-head">
+        <h3>Esențial</h3>
+        <p>Tot ce ai nevoie ca să exersezi zilnic și să te verifici pe subiecte reale.</p>
+      </div>
+      <div class="price"><b>30</b><span>lei / lună</span></div>
+      <div class="price-later">din ianuarie 2027: 50 lei / lună</div>
+      <button class="btn-primary plan-cta" data-tier="basic" type="button">Alege Esențial</button>
+      <div class="feat-title">Ce primești</div>
+      <ul class="feats" id="feats-basic"></ul>
+    </article>
+
+    <!-- Complet -->
+    <article class="plan featured" id="plan-premium">
+      <svg class="ast" aria-hidden="true"><use href="#ast-solid"/></svg>
+      <span class="frow-badge frow-badge-new plan-ribbon">recomandat</span>
+      <div class="plan-head">
+        <h3>Complet</h3>
+        <p>Pregătire ghidată: coach, lecții, notițe și calendare într-un singur loc.</p>
+      </div>
+      <div class="price"><b>50</b><span>lei / lună</span></div>
+      <div class="price-later">din ianuarie 2027: 100 lei / lună</div>
+      <button class="btn-primary plan-cta" data-tier="premium" type="button">Alege Complet</button>
+      <div class="feat-title">Tot ce include Esențial, plus</div>
+      <ul class="feats" id="feats-premium"></ul>
+    </article>
+
+  </div>
+
+  <p class="fine">
+    Funcțiile marcate „în curând” se adaugă în abonament pe măsură ce sunt gata, fără cost în plus.<br>
+    Ai întrebări? <a href="desprecontact.html">Scrie-ne</a>.
+  </p>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="assets/js/components.js?v=supabase-singleton-20261028"></script>
+
+<script type="module">
+import { supabase } from './assets/js/supabase-client.js';
+
+/* ── Conținutul planurilor ────────────────────────────────────────────────
+   soon:true → afișează insigna „în curând”. Scoate-l când funcția e gata.
+   detail → text mic sub titlu. */
+const BASIC = [
+  { t: 'Fun fact zilnic pe panou', d: 'Din Barron’s și Corint', soon: true },
+  { t: 'Grile pe capitole', d: 'Biologie și chimie, culegerea UMF Cluj' },
+  { t: 'Grile din examenele anterioare UMF Cluj' },
+  { t: 'Subiecte anterioare, cu barem', d: 'UMF Cluj și Iași' },
+  { t: 'Flashcards de biologie' },
+  { t: 'Scanare foaie de grilă', d: 'Scor instant, cu greșelile marcate' },
+  { t: 'Quiz IUPAC', d: 'Denumire după formula Lewis, alegere din 4 variante, formulă generală liniară (ex. CH3-CH2-CH3)' },
+  { t: 'Lewis Builder' },
+  { t: 'Tabel periodic', soon: true },
+  { t: 'Contul meu', d: 'Schimbi obiectivele oricând, plus raport de activitate și abonament', soon: false }
+];
+const PREMIUM = [
+  { t: 'Coach personal', d: 'Puncte slabe și puncte forte, pe baza progresului tău' },
+  { t: 'Clasament personal', d: 'Te întreci cu rezultatele tale anterioare', soon: true },
+  { t: 'Mesaje personalizate', soon: true },
+  { t: 'Lecții împărțite pe subcapitole', soon: true },
+  { t: 'Highlight direct pe lecție, cu mouse-ul', soon: true },
+  { t: 'Notițe importante', d: 'Editezi comentariile și le trimiți pe mindmap sau post-it', soon: true },
+  { t: 'Baza ta de date personală', d: 'Tip second brain, cu spațiu de stocare', soon: true },
+  { t: 'Post-it-uri cu lucruri de reținut', d: 'Reminder când parcurgi o grilă sau o lecție, plus bulletin board pe capitol', soon: true },
+  { t: 'Calendare', d: 'Teorie, grile, flashcards și calendar personal', soon: true },
+  { t: 'Animații pentru conceptele de biologie', soon: true },
+  { t: 'Desene explicative și imagini din Netter', soon: true },
+  { t: 'Quiz pe desene și schițe', soon: true },
+  { t: 'Videoclipuri explicative realizate de noi', soon: true }
+];
+
+const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+function renderList(id, items) {
+  const ul = document.getElementById(id);
+  items.forEach(i => {
+    const li = document.createElement('li');
+    li.insertAdjacentHTML('afterbegin', CHECK);
+    const g = document.createElement('span'); g.className = 'grp';
+    const t = document.createElement('span'); t.textContent = i.t; g.append(t);
+    if (i.d) { const s = document.createElement('small'); s.textContent = i.d; g.append(s); }
+    li.append(g);
+    if (i.soon) { const b = document.createElement('span'); b.className = 'frow-badge frow-badge-soon'; b.textContent = 'în curând'; li.append(b); }
+    ul.append(li);
+  });
+}
+renderList('feats-basic', BASIC);
+renderList('feats-premium', PREMIUM);
+
+const banner = document.getElementById('banner');
+const msg = (t, type = 'error') => { banner.textContent = t; banner.className = `alert-banner show ${type}`; window.scrollTo({ top: 0, behavior: 'smooth' }); };
+
+/* ── Planul curent → butoanele se adaptează ── */
+let currentTier = null;
+try {
+  const { data } = await supabase.from('subscriptions').select('tier,status,expires_at')
+    .order('started_at', { ascending: false }).limit(1).maybeSingle();
+  const live = data && ['active', 'trialing', 'past_due'].includes(data.status)
+    && (!data.expires_at || new Date(data.expires_at) > new Date());
+  if (live) currentTier = data.tier;
+} catch (e) { /* butoanele rămân pe starea implicită */ }
+
+document.querySelectorAll('.plan-cta').forEach(btn => {
+  if (btn.dataset.tier === currentTier) {
+    btn.textContent = 'Planul tău curent'; btn.disabled = true;
+  } else if (currentTier) {
+    btn.textContent = 'Schimbă pe acest plan';
+  }
+});
+
+/* ── Checkout: Edge Function `create-checkout` → { url } ── */
+document.querySelectorAll('.plan-cta').forEach(btn => btn.addEventListener('click', async () => {
+  btn.disabled = true; banner.className = 'alert-banner';
+  try {
+    const { data, error } = await supabase.functions.invoke('create-checkout', { body: { tier: btn.dataset.tier } });
+    if (error || !data?.url) throw error || new Error('no url');
+    location.href = data.url;
+  } catch (e) {
+    msg('Plata online nu este disponibilă încă. Scrie-ne și îți activăm planul.');
+    btn.disabled = false;
+  }
+}));
+</script>
+</body>
+</html>
