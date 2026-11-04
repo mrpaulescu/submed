@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="theme-color" content="#087f83">
+	<title>My calendar | Submed</title>
+	<style>
+		:root{--brand:#087f83;--brand-dark:#066568;--mint:#e8f6f4;--ink:#183537;--muted:#75898a;--line:#e6eeee;--paper:#fff;--bg:#f4f8f8;--shadow:0 12px 35px rgba(24,53,55,.07);--radius:18px}
+		*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
+		.topbar{height:74px;background:var(--paper);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 clamp(18px,5vw,72px);gap:44px;position:sticky;top:0;z-index:5}.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:21px;letter-spacing:-.7px;color:var(--brand)}.brand-mark{width:34px;height:34px;border-radius:11px;background:var(--brand);color:white;display:grid;place-items:center;font-size:20px}.navlinks{display:flex;gap:27px;color:#687d7e;font-size:14px}.navlinks a{padding:26px 0}.navlinks .active{color:var(--brand);font-weight:700;border-bottom:2px solid var(--brand)}.top-actions{margin-left:auto;display:flex;align-items:center;gap:15px}.help-link{color:#657b7c;font-size:14px}.avatar{width:37px;height:37px;border-radius:50%;background:#d9eeeb;color:var(--brand-dark);display:grid;place-items:center;font-weight:750}
+		main{max-width:1450px;margin:0 auto;padding:36px clamp(16px,4vw,54px) 60px}.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:26px}.eyebrow{font-size:12px;color:var(--brand);font-weight:800;text-transform:uppercase;letter-spacing:1.15px;margin-bottom:7px}.page-head h1{font-size:clamp(28px,3vw,37px);letter-spacing:-1.3px;line-height:1.12;margin:0 0 8px}.subtitle{color:var(--muted);margin:0}.button{border:0;border-radius:11px;padding:11px 16px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.18s}.button:hover{transform:translateY(-1px)}.primary{background:var(--brand);color:white;box-shadow:0 5px 13px #087f8328}.primary:hover{background:var(--brand-dark)}.outline{background:white;border:1px solid var(--line);color:var(--ink)}.icon-button{width:39px;height:39px;border:1px solid var(--line);border-radius:11px;background:white;color:#526b6c;font-size:20px;display:grid;place-items:center}.calendar-shell{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}.calendar-panel,.side-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.calendar-panel{overflow:hidden}.toolbar{min-height:77px;display:flex;align-items:center;gap:12px;padding:16px 21px;border-bottom:1px solid var(--line)}.date-nav{display:flex;align-items:center;gap:9px}.date-title{font-size:19px;letter-spacing:-.5px;min-width:190px;margin:0 8px;font-weight:750}.today-btn{padding:9px 13px}.view-switch{display:flex;margin-left:auto;padding:4px;background:#f1f6f5;border-radius:11px;gap:2px}.view-switch button{border:0;background:transparent;color:#738485;padding:7px 12px;border-radius:8px;font-size:13px;font-weight:650}.view-switch button.selected{background:white;color:var(--brand-dark);box-shadow:0 1px 5px #18353715}.weekdays,.month-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}.weekdays{padding:12px 12px 7px}.weekday{text-align:center;color:#8a9b9b;font-size:11px;font-weight:750;text-transform:uppercase;letter-spacing:.6px;padding:6px}.month-grid{padding:0 12px 14px;grid-auto-rows:minmax(116px,1fr)}.day-cell{position:relative;padding:8px;border-top:1px solid #edf2f2;border-right:1px solid #edf2f2;min-width:0;cursor:pointer;transition:background .15s}.day-cell:nth-child(7n){border-right:0}.day-cell:hover{background:#f8fbfb}.day-cell.outside{background:#fafcfc;color:#a6b3b3}.day-cell.selected-day{background:#f0f9f8}.day-cell.today .day-number{background:var(--brand);color:white}.day-number{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;font-size:13px;font-weight:650}.cell-events{display:grid;gap:4px;margin-top:5px}.event-chip{min-width:0;border:0;border-left:3px solid var(--event-color,#087f83);background:var(--event-bg,#e8f6f4);color:#36595a;border-radius:4px;padding:3px 5px;text-align:left;font-size:11px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.more-events{font-size:11px;color:var(--muted);padding-left:5px}.side-column{display:grid;gap:16px}.side-card{padding:19px}.side-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.side-heading h2{font-size:16px;margin:0;letter-spacing:-.2px}.text-button{border:0;background:none;color:var(--brand);font-size:12px;font-weight:750;padding:4px}.selected-date{font-size:12px;color:var(--muted);margin:-8px 0 12px}.event-list{display:grid;gap:10px}.event-row{display:flex;gap:11px;padding:10px 0;border-top:1px solid #eef2f2}.event-time{font-size:11px;font-weight:750;color:#617576;min-width:48px;padding-top:1px}.event-stripe{width:3px;border-radius:8px;background:var(--event-color);flex:none}.event-info{min-width:0;flex:1}.event-info strong{display:block;font-size:13px;overflow-wrap:anywhere}.event-info span{font-size:11px;color:var(--muted)}.empty-state{padding:17px 8px;text-align:center;color:var(--muted);font-size:13px}.empty-icon{font-size:24px;margin-bottom:5px}.legend{display:grid;gap:11px}.legend-item{display:flex;align-items:center;gap:9px;color:#5e7475;font-size:13px}.legend-dot{width:9px;height:9px;border-radius:50%;background:var(--dot)}.legend-note{font-size:11px;color:#90a0a0;margin:13px 0 0}.agenda-list{padding:8px 22px 22px}.agenda-day{display:grid;grid-template-columns:90px 1fr;border-top:1px solid var(--line);padding:16px 0;gap:15px}.agenda-day-label{font-size:13px;font-weight:750}.agenda-day-label span{display:block;color:var(--muted);font-size:11px;font-weight:500}.agenda-events{display:grid;gap:7px}.agenda-item{border-left:3px solid var(--event-color);background:var(--event-bg);padding:9px 12px;border-radius:5px;font-size:13px}.agenda-item strong{display:block}.agenda-item small{color:#668082}.week-view{padding:12px 16px 20px;overflow:auto}.week-grid{min-width:660px;display:grid;grid-template-columns:62px repeat(7,minmax(78px,1fr));}.week-head{position:sticky;top:0;background:white;z-index:1;text-align:center;padding:8px 3px 13px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}.week-head strong{display:block;color:var(--ink);font-size:15px}.time-label{height:58px;font-size:10px;color:#8b9b9b;padding:0 7px;transform:translateY(-7px)}.week-column{position:relative;height:928px;border-left:1px solid #edf2f2;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 57px,#edf2f2 57px,#edf2f2 58px)}.week-event{position:absolute;left:4px;right:4px;border-left:3px solid var(--event-color);border-radius:5px;background:var(--event-bg);padding:4px 5px;overflow:hidden;font-size:10px;line-height:1.35}.week-event strong{display:block}.year-grid{padding:20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.mini-month h3{margin:0 0 8px;font-size:14px}.mini-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}.mini-days span{height:26px;display:grid;place-items:center;font-size:10px;color:#687e7f;border-radius:50%}.mini-days .mini-weekday{font-size:9px;color:#a0aeae}.mini-days .mini-out{color:#c5cece}.mini-days .mini-today{background:var(--brand);color:white}.mini-days .mini-has-event{font-weight:800;color:var(--brand-dark);box-shadow:inset 0 -2px 0 var(--brand)}.week-view[hidden],.agenda-list[hidden],.year-grid[hidden],.month-content[hidden]{display:none}
+		footer{border-top:1px solid var(--line);padding:23px clamp(18px,5vw,72px);display:flex;justify-content:space-between;gap:15px;color:#829191;font-size:12px;background:white}footer strong{color:var(--brand)}
+		dialog{border:0;border-radius:19px;padding:0;width:min(520px,calc(100% - 28px));box-shadow:0 25px 80px #102e303d;color:var(--ink)}dialog::backdrop{background:#14333477;backdrop-filter:blur(3px)}.dialog-head{padding:21px 24px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.dialog-head h2{margin:0;font-size:20px}.close-button{border:0;background:#f1f6f5;width:32px;height:32px;border-radius:9px;font-size:19px;color:#627778}.form-body{padding:20px 24px 24px;display:grid;gap:14px}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:750;color:#52696a}.field input,.field select,.field textarea{width:100%;border:1px solid #dfe9e8;border-radius:9px;padding:10px 11px;background:#fff;color:var(--ink);outline:0}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px #087f8319}.field textarea{resize:vertical;min-height:65px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:5px}.delete-button{margin-right:auto;color:#b24a4a;background:#fff;border:1px solid #f0dada;padding:9px 12px;border-radius:9px;font-weight:650}.settings-body{padding:21px 24px 24px;display:grid;gap:16px}.color-options{display:flex;gap:10px}.color-choice{width:30px;height:30px;border-radius:50%;border:3px solid white;box-shadow:0 0 0 1px #dce5e4}.color-choice[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}.check-row{display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:13px}.check-row select{border:1px solid var(--line);border-radius:8px;padding:7px}.check-row input{accent-color:var(--brand);width:17px;height:17px}.toast{position:fixed;right:22px;bottom:22px;background:#183f40;color:white;padding:11px 16px;border-radius:11px;box-shadow:var(--shadow);z-index:10;font-size:13px;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:none}
+		@media(max-width:980px){.calendar-shell{grid-template-columns:minmax(0,1fr) 270px}.month-grid{grid-auto-rows:minmax(100px,1fr)}.toolbar{flex-wrap:wrap}.view-switch{margin-left:auto}}
+		@media(max-width:760px){.topbar{height:62px;padding:0 17px;gap:20px}.navlinks{gap:14px;font-size:12px}.navlinks a{padding:20px 0}.help-link{display:none}main{padding-top:27px}.page-head{align-items:flex-start}.page-head .primary{padding:10px 12px;font-size:13px}.calendar-shell{grid-template-columns:1fr}.side-column{grid-template-columns:1fr 1fr}.month-grid{grid-auto-rows:minmax(82px,1fr);padding:0 5px 9px}.weekdays{padding:10px 5px 5px}.weekday{font-size:9px;padding:5px 1px}.day-cell{padding:5px 3px}.day-number{width:24px;height:24px;font-size:11px}.event-chip{font-size:9px;padding:2px 3px}.more-events{font-size:9px}.toolbar{padding:13px;gap:8px}.date-title{font-size:16px;min-width:0;margin:0 3px}.icon-button{width:34px;height:34px}.today-btn{padding:7px 9px}.view-switch button{padding:6px 8px;font-size:11px}.year-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;padding:15px}.side-card{padding:15px}}
+		@media(max-width:480px){.navlinks a:not(.active){display:none}.page-head{display:block}.page-head .primary{margin-top:15px}.side-column{grid-template-columns:1fr}.calendar-shell{gap:13px}.calendar-panel{border-radius:13px}.view-switch{width:100%;margin-left:0;justify-content:space-between}.toolbar{justify-content:space-between}.date-title{flex:1;text-align:center}.year-grid{gap:13px 9px;padding:12px}.mini-days span{height:23px;font-size:9px}.agenda-day{grid-template-columns:65px 1fr;gap:9px}.form-row{grid-template-columns:1fr 1fr}footer{flex-direction:column}}
+		@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+	</style>
+</head>
+
+<body>
+	<header class="topbar">
+		<a class="brand" href="#" aria-label="Submed home"><span class="brand-mark">+</span><span>submed</span></a>
+		<nav class="navlinks" aria-label="Main navigation"><a href="#">Home</a><a href="#">Services</a><a class="active" href="#" aria-current="page">My calendar</a></nav>
+		<div class="top-actions"><a class="help-link" href="mailto:contact@submed.ro">Need help?</a><div class="avatar" aria-label="Your account">U</div></div>
+	</header>
+	<main>
+		<section class="page-head"><div><div class="eyebrow">Your time, your way</div><h1>My calendar</h1><p class="subtitle">Plan your Submed sessions and everything else in your day.</p></div><button class="button primary" id="addEventTop" type="button"><span aria-hidden="true">＋</span> Add activity</button></section>
+		<section class="calendar-shell" aria-label="Personal calendar">
+			<div class="calendar-panel">
+				<div class="toolbar">
+					<div class="date-nav"><button class="icon-button" id="previous" aria-label="Previous period" type="button">‹</button><button class="icon-button" id="next" aria-label="Next period" type="button">›</button><h2 class="date-title" id="dateTitle"></h2></div>
+					<button class="button outline today-btn" id="todayButton" type="button">Today</button>
+					<div class="view-switch" role="group" aria-label="Calendar view"><button type="button" data-view="month" class="selected">Month</button><button type="button" data-view="week">Week</button><button type="button" data-view="agenda">Agenda</button><button type="button" data-view="year">Year</button></div>
+				</div>
+				<div class="month-content" id="monthContent"><div class="weekdays" id="weekdays"></div><div class="month-grid" id="monthGrid"></div></div>
+				<div class="week-view" id="weekView" hidden></div>
+				<div class="agenda-list" id="agendaList" hidden></div>
+				<div class="year-grid" id="yearGrid" hidden></div>
+			</div>
+			<aside class="side-column">
+				<section class="side-card"><div class="side-heading"><h2 id="selectedHeading">Day plan</h2><button class="text-button" id="addSelected" type="button">＋ Add</button></div><p class="selected-date" id="selectedDate"></p><div class="event-list" id="eventList"></div></section>
+				<section class="side-card"><div class="side-heading"><h2>Activity types</h2><button class="text-button" id="openSettings" type="button">Customize</button></div><div class="legend" id="legend"></div><p class="legend-note">Your calendar is saved on this device.</p></section>
+			</aside>
+		</section>
+	</main>
+	<footer><span><strong>submed</strong> · Care that fits your life</span><span>Calendar data stays in your browser</span></footer>
+	<dialog id="eventDialog" aria-labelledby="eventDialogTitle"><form id="eventForm"><div class="dialog-head"><h2 id="eventDialogTitle">Add activity</h2><button class="close-button" type="button" data-close="eventDialog" aria-label="Close">×</button></div><div class="form-body">
+		<div class="field"><label for="eventTitle">Activity name</label><input id="eventTitle" name="title" maxlength="90" required placeholder="e.g. Submed appointment"></div>
+		<div class="form-row"><div class="field"><label for="eventType">Type</label><select id="eventType" name="type"><option value="submed">Submed</option><option value="personal">Personal</option><option value="work">Work</option><option value="wellness">Wellness</option></select></div><div class="field"><label for="eventDate">Date</label><input id="eventDate" name="date" type="date" required></div></div>
+		<div class="form-row"><div class="field"><label for="eventStart">Start time</label><input id="eventStart" name="start" type="time" required></div><div class="field"><label for="eventEnd">End time</label><input id="eventEnd" name="end" type="time" required></div></div>
+		<div class="field"><label for="eventNotes">Notes <span style="font-weight:400;color:#879797">(optional)</span></label><textarea id="eventNotes" name="notes" maxlength="300" placeholder="Location, reminders, or anything you want to remember"></textarea></div>
+		<div class="form-actions"><button class="delete-button" id="deleteEvent" type="button" hidden>Delete</button><button class="button outline" type="button" data-close="eventDialog">Cancel</button><button class="button primary" type="submit">Save activity</button></div>
+	</div></form></dialog>
+	<dialog id="settingsDialog" aria-labelledby="settingsTitle"><div class="dialog-head"><h2 id="settingsTitle">Make it yours</h2><button class="close-button" type="button" data-close="settingsDialog" aria-label="Close">×</button></div><div class="settings-body">
+		<div class="field"><label>Calendar accent</label><div class="color-options" id="colorOptions"><button type="button" class="color-choice" data-color="#087f83" style="background:#087f83" aria-label="Teal"></button><button type="button" class="color-choice" data-color="#4868b1" style="background:#4868b1" aria-label="Blue"></button><button type="button" class="color-choice" data-color="#a55791" style="background:#a55791" aria-label="Violet"></button><button type="button" class="color-choice" data-color="#c27435" style="background:#c27435" aria-label="Amber"></button></div></div>
+		<label class="check-row"><span>Week starts on</span><select id="weekStart"><option value="1">Monday</option><option value="0">Sunday</option></select></label>
+		<label class="check-row"><span>Use 24-hour time</span><input id="timeFormat" type="checkbox" checked></label>
+		<div class="form-actions"><button class="button primary" id="saveSettings" type="button">Done</button></div>
+	</div></dialog>
+	<div class="toast" id="toast" role="status" aria-live="polite"></div>
+	<script>
+		(()=>{
+			'use strict';
+			const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+			const TYPES={submed:{label:'Submed',color:'#087f83',bg:'#e8f6f4'},personal:{label:'Personal',color:'#8a70bd',bg:'#f1edfa'},work:{label:'Work',color:'#4e7db9',bg:'#edf3fb'},wellness:{label:'Wellness',color:'#d28a43',bg:'#fbf2e7'}};
+			const today=new Date();today.setHours(0,0,0,0);
+			const dateKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+			const parseDate=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+			const dateLabel=(d,opts={weekday:'long',month:'long',day:'numeric',year:'numeric'})=>d.toLocaleDateString(undefined,opts);
+			const safeRead=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}};
+			let events=safeRead('submed-calendar-events',[]).filter(e=>e&&e.id&&e.date&&e.title);
+			let settings={accent:'#087f83',weekStart:1,twelveHour:false,...safeRead('submed-calendar-settings',{})};
+			let current=new Date(today),selected=new Date(today),view='month',editingId=null,toastTimer;
+			const saveEvents=()=>{try{localStorage.setItem('submed-calendar-events',JSON.stringify(events))}catch{notify('Could not save calendar data on this device.')}};
+			const savePrefs=()=>{try{localStorage.setItem('submed-calendar-settings',JSON.stringify(settings))}catch{}};
+			const colorFor=e=>(TYPES[e.type]||TYPES.personal).color,bgFor=e=>(TYPES[e.type]||TYPES.personal).bg;
+			function notify(message){const t=$('#toast');t.textContent=message;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600)}
+			function eventTime(e){const format=t=>{if(!settings.twelveHour)return t;const [h,m]=t.split(':').map(Number);return `${h%12||12}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`};return `${format(e.start)} – ${format(e.end)}`}
+			function eventsOn(key){return events.filter(e=>e.date===key).sort((a,b)=>a.start.localeCompare(b.start))}
+			function eventStyle(e){return `--event-color:${colorFor(e)};--event-bg:${bgFor(e)}`}
+			function render(){document.documentElement.style.setProperty('--brand',settings.accent);document.documentElement.style.setProperty('--brand-dark',settings.accent);$('#monthContent').hidden=view!=='month';$('#weekView').hidden=view!=='week';$('#agendaList').hidden=view!=='agenda';$('#yearGrid').hidden=view!=='year';$$('.view-switch button').forEach(b=>b.classList.toggle('selected',b.dataset.view===view));
+				if(view==='month'){const monthNames=new Intl.DateTimeFormat(undefined,{month:'long',year:'numeric'});$('#dateTitle').textContent=monthNames.format(current);renderMonth()}
+				if(view==='week'){const start=weekStart(selected);const end=new Date(start);end.setDate(end.getDate()+6);$('#dateTitle').textContent=start.getMonth()===end.getMonth()?`${start.toLocaleDateString(undefined,{month:'long'})} ${start.getDate()}–${end.getDate()}, ${end.getFullYear()}`:`${start.toLocaleDateString(undefined,{month:'short',day:'numeric'})} – ${end.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}`;renderWeek()}
+				if(view==='agenda'){const start=new Date(current.getFullYear(),current.getMonth(),1),end=new Date(current.getFullYear(),current.getMonth()+1,0);$('#dateTitle').textContent=new Intl.DateTimeFormat(undefined,{month:'long',year:'numeric'}).format(current);renderAgenda(start,end)}
+				if(view==='year'){ $('#dateTitle').textContent=String(current.getFullYear());renderYear() }
+				renderSelected();renderLegend();$('#weekStart').value=String(settings.weekStart);$('#timeFormat').checked=!!settings.twelveHour;$$('.color-choice').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color===settings.accent)));
+			}
+			function weekStart(d){const x=new Date(d);x.setDate(x.getDate()-((x.getDay()-settings.weekStart+7)%7));x.setHours(0,0,0,0);return x}
+			function renderMonth(){const weekdays=$('#weekdays'),grid=$('#monthGrid');weekdays.replaceChildren();grid.replaceChildren();const names=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];for(let i=0;i<7;i++){const n=(settings.weekStart+i)%7;const el=document.createElement('div');el.className='weekday';el.textContent=names[n];weekdays.append(el)}
+				const first=new Date(current.getFullYear(),current.getMonth(),1),start=weekStart(first);for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const key=dateKey(d),cell=document.createElement('div');cell.className='day-cell';if(d.getMonth()!==current.getMonth())cell.classList.add('outside');if(dateKey(d)===dateKey(today))cell.classList.add('today');if(key===dateKey(selected))cell.classList.add('selected-day');cell.setAttribute('role','button');cell.setAttribute('tabindex','0');cell.setAttribute('aria-label',`${dateLabel(d)}${eventsOn(key).length?`, ${eventsOn(key).length} activities`:''}`);const num=document.createElement('span');num.className='day-number';num.textContent=d.getDate();cell.append(num);const box=document.createElement('div');box.className='cell-events';eventsOn(key).slice(0,3).forEach(e=>{const chip=document.createElement('button');chip.className='event-chip';chip.type='button';chip.style.cssText=eventStyle(e);chip.textContent=`${e.start} ${e.title}`;chip.title=`${eventTime(e)} · ${e.title}`;chip.addEventListener('click',ev=>{ev.stopPropagation();openEvent(e)});box.append(chip)});if(eventsOn(key).length>3){const more=document.createElement('div');more.className='more-events';more.textContent=`+${eventsOn(key).length-3} more`;box.append(more)}cell.append(box);const choose=()=>{selected=new Date(d);if(d.getMonth()!==current.getMonth())current=new Date(d);render()};cell.addEventListener('click',choose);cell.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose()}});grid.append(cell)} }
+			function renderSelected(){const key=dateKey(selected),items=eventsOn(key);$('#selectedHeading').textContent=selected.toDateString()===today.toDateString()?'Today’s plan':'Day plan';$('#selectedDate').textContent=dateLabel(selected);const list=$('#eventList');list.replaceChildren();if(!items.length){const empty=document.createElement('div');empty.className='empty-state';empty.innerHTML='<div class="empty-icon">☀</div>Your day is open.<br>Add an activity to get started.';list.append(empty);return}items.forEach(e=>{const row=document.createElement('div');row.className='event-row';row.style.setProperty('--event-color',colorFor(e));const time=document.createElement('div');time.className='event-time';time.textContent=eventTime(e);const stripe=document.createElement('div');stripe.className='event-stripe';const info=document.createElement('div');info.className='event-info';const title=document.createElement('strong');title.textContent=e.title;info.append(title);const detail=document.createElement('span');detail.textContent=(TYPES[e.type]||TYPES.personal).label+(e.notes?` · ${e.notes}`:'');info.append(detail);row.append(time,stripe,info);row.tabIndex=0;row.setAttribute('role','button');row.setAttribute('aria-label',`Edit ${e.title}`);row.addEventListener('click',()=>openEvent(e));row.addEventListener('keydown',ev=>{if(ev.key==='Enter')openEvent(e)});list.append(row)})}
+			function renderLegend(){const root=$('#legend');root.replaceChildren();Object.entries(TYPES).forEach(([key,t])=>{const item=document.createElement('div');item.className='legend-item';const dot=document.createElement('i');dot.className='legend-dot';dot.style.setProperty('--dot',t.color);const text=document.createElement('span');text.textContent=t.label;item.append(dot,text);root.append(item)})}
+			function renderAgenda(start,end){const root=$('#agendaList');root.replaceChildren();const days=[];for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1))days.push(new Date(d));const has=days.some(d=>eventsOn(dateKey(d)).length);if(!has){const e=document.createElement('div');e.className='empty-state';e.style.padding='38px';e.textContent='Nothing planned this month yet. Add an activity to start filling your calendar.';root.append(e);return}days.forEach(d=>{const items=eventsOn(dateKey(d));if(!items.length)return;const row=document.createElement('div');row.className='agenda-day';const label=document.createElement('div');label.className='agenda-day-label';label.textContent=d.toLocaleDateString(undefined,{weekday:'short',day:'numeric'});const sub=document.createElement('span');sub.textContent=d.toLocaleDateString(undefined,{month:'long'});label.append(sub);const list=document.createElement('div');list.className='agenda-events';items.forEach(e=>{const item=document.createElement('div');item.className='agenda-item';item.style.cssText=eventStyle(e);const strong=document.createElement('strong');strong.textContent=e.title;const small=document.createElement('small');small.textContent=`${eventTime(e)} · ${(TYPES[e.type]||TYPES.personal).label}`;item.append(strong,small);item.addEventListener('click',()=>openEvent(e));item.style.cursor='pointer';list.append(item)});row.append(label,list);root.append(row)})}
+			function renderWeek(){const root=$('#weekView');root.replaceChildren();const grid=document.createElement('div');grid.className='week-grid';const blank=document.createElement('div');blank.className='week-head';grid.append(blank);const start=weekStart(selected),days=[];for(let i=0;i<7;i++){const d=new Date(start);d.setDate(start.getDate()+i);days.push(d);const head=document.createElement('div');head.className='week-head';head.innerHTML=`${d.toLocaleDateString(undefined,{weekday:'short'})}<strong>${d.getDate()}</strong>`;grid.append(head)}const timeCol=document.createElement('div');for(let h=0;h<24;h++){const t=document.createElement('div');t.className='time-label';const hour=settings.twelveHour?`${h%12||12}${h<12?'am':'pm'}`:`${String(h).padStart(2,'0')}:00`;t.textContent=hour;timeCol.append(t)}grid.append(timeCol);days.forEach(d=>{const col=document.createElement('div');col.className='week-column';eventsOn(dateKey(d)).forEach(e=>{const [sh,sm]=e.start.split(':').map(Number),[eh,em]=e.end.split(':').map(Number);const top=(sh*60+sm)/60*58,height=Math.max(26,((eh*60+em)-(sh*60+sm))/60*58);const item=document.createElement('div');item.className='week-event';item.style.cssText=`${eventStyle(e)};top:${top}px;height:${Math.min(height,928-top)}px`;const strong=document.createElement('strong');strong.textContent=e.title;const small=document.createElement('span');small.textContent=eventTime(e);item.append(strong,small);item.title=`${e.title} · ${eventTime(e)}`;item.addEventListener('click',()=>openEvent(e));col.append(item)});col.addEventListener('dblclick',ev=>{const rect=col.getBoundingClientRect(),minute=Math.floor(Math.max(0,Math.min(927,ev.clientY-rect.top))/58*60/15)*15,h=Math.floor(minute/60),m=minute%60;selected=new Date(d);openEvent(null,`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`)});grid.append(col)});root.append(grid)}
+			function renderYear(){const root=$('#yearGrid');root.replaceChildren();for(let m=0;m<12;m++){const box=document.createElement('section');box.className='mini-month';const h=document.createElement('h3');h.textContent=new Date(current.getFullYear(),m,1).toLocaleDateString(undefined,{month:'long'});box.append(h);const days=document.createElement('div');days.className='mini-days';const offset=new Date(current.getFullYear(),m,1).getDay();const shifted=(offset-settings.weekStart+7)%7;for(let i=0;i<7;i++){const el=document.createElement('span');el.className='mini-weekday';el.textContent=['S','M','T','W','T','F','S'][(settings.weekStart+i)%7];days.append(el)}const count=new Date(current.getFullYear(),m+1,0).getDate();for(let i=0;i<shifted;i++){const blank=document.createElement('span');blank.className='mini-out';days.append(blank)}for(let n=1;n<=count;n++){const d=new Date(current.getFullYear(),m,n),key=dateKey(d),el=document.createElement('span');el.textContent=n;if(dateKey(d)===dateKey(today))el.classList.add('mini-today');if(eventsOn(key).length)el.classList.add('mini-has-event');el.title=`${dateLabel(d)}${eventsOn(key).length?` · ${eventsOn(key).length} activities`:''}`;el.tabIndex=0;el.setAttribute('role','button');el.addEventListener('click',()=>{selected=new Date(d);current=new Date(d);view='month';render()});el.addEventListener('keydown',ev=>{if(ev.key==='Enter')el.click()});days.append(el)}box.append(days);root.append(box)}}
+			function shiftPeriod(delta){if(view==='month'||view==='agenda')current.setMonth(current.getMonth()+delta);else if(view==='year')current.setFullYear(current.getFullYear()+delta);else{selected.setDate(selected.getDate()+delta*7);current=new Date(selected)}render()}
+			function openEvent(event=null,time=null){editingId=event?.id||null;const form=$('#eventForm');form.reset();$('#eventDialogTitle').textContent=event?'Edit activity':'Add activity';$('#deleteEvent').hidden=!event;form.elements.title.value=event?.title||'';form.elements.type.value=event?.type||'submed';form.elements.date.value=event?.date||dateKey(selected);form.elements.start.value=event?.start||time||'09:00';form.elements.end.value=event?.end|| (time?`${String(Math.min(23,Number(time.slice(0,2))+1)).padStart(2,'0')}:${time.slice(3)}`:'10:00');form.elements.notes.value=event?.notes||'';$('#eventDialog').showModal();setTimeout(()=>$('#eventTitle').focus(),50)}
+			$('#eventForm').addEventListener('submit',e=>{e.preventDefault();const f=e.currentTarget.elements;if(f.end.value<=f.start.value){notify('End time must be after start time.');f.end.focus();return}const item={id:editingId||`${Date.now()}-${Math.random().toString(36).slice(2,8)}`,title:f.title.value.trim(),type:f.type.value,date:f.date.value,start:f.start.value,end:f.end.value,notes:f.notes.value.trim()};if(editingId)events=events.map(x=>x.id===editingId?item:x);else events.push(item);selected=parseDate(item.date);current=new Date(selected);saveEvents();$('#eventDialog').close();render();notify(editingId?'Activity updated.':'Activity added.')});
+			$('#deleteEvent').addEventListener('click',()=>{if(!editingId)return;events=events.filter(e=>e.id!==editingId);saveEvents();$('#eventDialog').close();render();notify('Activity deleted.')});
+			$('#addEventTop').addEventListener('click',()=>openEvent());$('#addSelected').addEventListener('click',()=>openEvent());$('#previous').addEventListener('click',()=>shiftPeriod(-1));$('#next').addEventListener('click',()=>shiftPeriod(1));$('#todayButton').addEventListener('click',()=>{current=new Date(today);selected=new Date(today);render()});$$('.view-switch button').forEach(b=>b.addEventListener('click',()=>{view=b.dataset.view;render()}));$('#openSettings').addEventListener('click',()=>$('#settingsDialog').showModal());
+			$$('[data-close]').forEach(b=>b.addEventListener('click',()=>$( `#${b.dataset.close}`).close()));$$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));$('#colorOptions').addEventListener('click',e=>{const b=e.target.closest('[data-color]');if(!b)return;settings.accent=b.dataset.color;savePrefs();render()});$('#weekStart').addEventListener('change',e=>{settings.weekStart=Number(e.target.value);savePrefs();render()});$('#timeFormat').addEventListener('change',e=>{settings.twelveHour=e.target.checked;savePrefs();render()});$('#saveSettings').addEventListener('click',()=>{$('#settingsDialog').close();notify('Calendar preferences saved.')});
+			document.addEventListener('keydown',e=>{if(e.key==='Escape')return;if(e.target.matches('input,textarea,select,button,[role=button]'))return;if(e.key==='ArrowLeft')shiftPeriod(-1);if(e.key==='ArrowRight')shiftPeriod(1);if(e.key.toLowerCase()==='t'){$('#todayButton').click()}});
+			render();
+		})();
+	</script>
+</body>
+</html>
+import React, { useState, useEffect } from 'react';
+<!-- The calendar is implemented above in the page's native HTML and JavaScript.
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  BookOpen, 
+  FileText, 
+  Award, 
+  Coffee, 
+  Calendar, 
+  Clock, 
+  Plus, 
+  Check, 
+  X, 
+  Trash2, 
+  LayoutGrid, 
+  ListFilter,
+  CheckCircle2,
+  Circle,
+  Sparkles
+} from 'lucide-react';
+
+// --- SUBMED BRAND COLOR SYSTEM & CATEGORIES ---
+const CATEGORII_SUBMED = {
+  teorie: {
+    id: 'teorie',
+    name: 'Teorie & Materie',
+    icon: BookOpen,
+    badge: 'bg-blue-50 text-blue-700 border-blue-200',
+    accent: 'bg-blue-600',
+    barBg: 'bg-blue-500',
+    border: 'border-blue-200'
+  },
+  grile: {
+    id: 'grile',
+    name: 'Grile & Culegere',
+    icon: FileText,
+    badge: 'bg-teal-50 text-teal-700 border-teal-200',
+    accent: 'bg-teal-600',
+    barBg: 'bg-teal-500',
+    border: 'border-teal-200'
+  },
+  simulare: {
+    id: 'simulare',
+    name: 'Simulare Cronometrată',
+    icon: Award,
+    badge: 'bg-amber-50 text-amber-700 border-amber-200',
+    accent: 'bg-amber-500',
+    barBg: 'bg-amber-500',
+    border: 'border-amber-200'
+  },
+  pauza: {
+    id: 'pauza',
+    name: 'Pauză & Recuperare',
+    icon: Coffee,
+    badge: 'bg-slate-100 text-slate-600 border-slate-200',
+    accent: 'bg-slate-400',
+    barBg: 'bg-slate-400',
+    border: 'border-slate-200'
+  }
+};
+
+const ZILE = ['Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă', 'Duminică'];
+const ORE = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
+
+export default function SubmedPlanner() {
+  const [viewMode, setViewMode] = useState('day'); // 'day' | 'week'
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [tasks, setTasks] = useState([]);
+  
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+  const [formData, setFormData] = useState({
+    title: '',
+    category: 'teorie',
+    date: '',
+    startTime: '08:00',
+    endTime: '10:00',
+    completed: false
+  });
+
+  // Load Demo Initial Tasks
+  useEffect(() => {
+    const todayStr = formatDate(new Date());
+    setTasks([
+      { id: '1', title: 'Anatomie: Sistemul Nervos Central', category: 'teorie', date: todayStr, startTime: '08:00', endTime: '10:30', completed: true },
+      { id: '2', title: 'Pauză de cafea / Plimbare', category: 'pauza', date: todayStr, startTime: '10:30', endTime: '11:00', completed: true },
+      { id: '3', title: 'Rezolvare Grile - 100 intrebari', category: 'grile', date: todayStr, startTime: '11:00', endTime: '13:00', completed: false },
+      { id: '4', title: 'Simulare Grilă Trecută (2h)', category: 'simulare', date: todayStr, startTime: '15:00', endTime: '17:00', completed: false }
+    ]);
+  }, []);
+
+  // --- HELPERS ---
+  function formatDate(d) {
+    const date = new Date(d);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  }
+
+  function getStartOfWeek(d) {
+    const date = new Date(d);
+    const day = date.getDay();
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(date.setDate(diff));
+  }
+
+  function getWeekDays(d) {
+    const start = getStartOfWeek(d);
+    return Array.from({ length: 7 }, (_, i) => {
+      const day = new Date(start);
+      day.setDate(day.getDate() + i);
+      return day;
+    });
+  }
+
+  const weekDays = getWeekDays(selectedDate);
+  const selectedDateStr = formatDate(selectedDate);
+
+  const navigateDate = (dir) => {
+    const newDate = new Date(selectedDate);
+    newDate.setDate(newDate.getDate() + (viewMode === 'week' ? dir * 7 : dir));
+    setSelectedDate(newDate);
+  };
+
+  const openModal = (dateStr = selectedDateStr, startTime = '08:00', taskToEdit = null) => {
+    if (taskToEdit) {
+      setEditingTask(taskToEdit);
+      setFormData({ ...taskToEdit });
+    } else {
+      setEditingTask(null);
+      const startH = parseInt(startTime.split(':')[0], 10);
+      const endH = Math.min(startH + 2, 23);
+      setFormData({
+        title: '',
+        category: 'teorie',
+        date: dateStr,
+        startTime: startTime,
+        endTime: `${String(endH).padStart(2, '0')}:00`,
+        completed: false
+      });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleSaveTask = (e) => {
+    e.preventDefault();
+    if (!formData.title.trim()) return;
+
+    if (editingTask) {
+      setTasks(tasks.map(t => t.id === editingTask.id ? { ...formData } : t));
+    } else {
+      setTasks([...tasks, { ...formData, id: Date.now().toString() }]);
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteTask = (id) => {
+    setTasks(tasks.filter(t => t.id !== id));
+    setIsModalOpen(false);
+  };
+
+  const toggleTask = (e, id) => {
+    e.stopPropagation();
+    setTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+  };
+
+  // --- STATS CALCULATIONS ---
+  const filteredTasks = tasks.filter(t => {
+    if (viewMode === 'day') return t.date === selectedDateStr;
+    return weekDays.some(wd => formatDate(wd) === t.date);
+  });
+
+  const completedCount = filteredTasks.filter(t => t.completed).length;
+  const progress = filteredTasks.length > 0 ? Math.round((completedCount / filteredTasks.length) * 100) : 0;
+  
+  const totalStudyMinutes = filteredTasks.reduce((acc, t) => {
+    if (t.category === 'pauza') return acc;
+    const [sh, sm] = t.startTime.split(':').map(Number);
+    const [eh, em] = t.endTime.split(':').map(Number);
+    return acc + Math.max(0, (eh * 60 + em) - (sh * 60 + sm));
+  }, 0);
+
+  const totalStudyHours = (totalStudyMinutes / 60).toFixed(1);
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col">
+      
+      {/* BRAND TOP HEADER */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 md:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-sm">
+        
+        {/* Brand Logo & Tagline */}
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 font-bold text-lg tracking-tight">
+            S
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-slate-900 text-lg tracking-tight">Submed</span>
+              <span className="text-xs bg-blue-50 text-blue-700 border border-blue-100 font-semibold px-2 py-0.5 rounded-full">
+                Planner Studiu
+              </span>
+            </div>
+            <p className="text-xs text-slate-500">Organizează-ți orele de pregătire medicală</p>
+          </div>
+        </div>
+
+        {/* View Mode & Date Switchers */}
+        <div className="flex items-center gap-3">
+          <div className="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200/80">
+            <button
+              onClick={() => setViewMode('day')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                viewMode === 'day' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Clock size={14} />
+              Ziua (24h)
+            </button>
+            <button
+              onClick={() => setViewMode('week')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                viewMode === 'week' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <LayoutGrid size={14} />
+              Săptămână
+            </button>
+          </div>
+
+          <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
+            <button onClick={() => navigateDate(-1)} className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition">
+              <ChevronLeft size={16} />
+            </button>
+            <button onClick={() => setSelectedDate(new Date())} className="px-2.5 py-1 text-xs font-semibold text-slate-700 hover:text-blue-600 transition">
+              Azi
+            </button>
+            <button onClick={() => navigateDate(1)} className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition">
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Action Button */}
+        <button
+          onClick={() => openModal()}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-2 shadow-sm transition active:scale-95"
+        >
+          <Plus size={16} />
+          <span>Sarcină Nouă</span>
+        </button>
+      </header>
+
+      {/* SUBTITLE STATS BAR */}
+      <div className="bg-white border-b border-slate-200 px-4 md:px-8 py-2.5 flex flex-wrap items-center justify-between gap-4 text-xs">
+        <div className="flex items-center gap-6">
+          <span className="font-semibold text-slate-900 flex items-center gap-1.5">
+            <Calendar size={14} className="text-blue-600" />
+            {viewMode === 'day' 
+              ? selectedDate.toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+              : `Săptămâna ${weekDays[0].getDate()} - ${weekDays[6].getDate()} ${weekDays[6].toLocaleDateString('ro-RO', { month: 'long' })}`
+            }
+          </span>
+
+          {/* Progress Pill */}
+          <div className="flex items-center gap-2">
+            <span className="text-slate-500">Progres:</span>
+            <div className="w-24 bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+              <div className="bg-emerald-500 h-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
+            </div>
+            <span className="font-bold text-emerald-600">{progress}%</span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 text-slate-600 font-medium">
+          <div>Timp studiu alocat: <span className="font-bold text-slate-900">{totalStudyHours} ore</span></div>
+          <span>•</span>
+          <div>Finalizate: <span className="font-bold text-emerald-600">{completedCount}/{filteredTasks.length}</span></div>
+        </div>
+      </div>
+
+      {/* CATEGORY LEGEND */}
+      <div className="bg-slate-100/70 border-b border-slate-200/80 px-4 md:px-8 py-2 flex items-center gap-2 overflow-x-auto text-xs">
+        <span className="text-slate-400 font-semibold text-[10px] uppercase tracking-wider mr-2">Categorii:</span>
+        {Object.values(CATEGORII_SUBMED).map(cat => {
+          const Icon = cat.icon;
+          return (
+            <div key={cat.id} className="flex items-center gap-1.5 bg-white border border-slate-200/80 px-2.5 py-1 rounded-lg text-slate-700 shadow-2xs">
+              <span className={`w-2 h-2 rounded-full ${cat.accent}`}></span>
+              <span className="font-medium text-[11px]">{cat.name}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* MAIN VIEW CONTENT */}
+      <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto">
+        
+        {/* 1. DAILY 24-HOUR TIMELINE VIEW */}
+        {viewMode === 'day' && (
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="divide-y divide-slate-100 relative">
+              {ORE.map((hourStr, idx) => {
+                const hourNum = idx;
+                const isCurrentHour = new Date().getHours() === hourNum && selectedDateStr === formatDate(new Date());
+
+                // Filter tasks starting at this hour
+                const hourTasks = tasks.filter(t => {
+                  if (t.date !== selectedDateStr) return false;
+                  return parseInt(t.startTime.split(':')[0], 10) === hourNum;
+                });
+
+                return (
+                  <div
+                    key={hourStr}
+                    onClick={() => openModal(selectedDateStr, hourStr)}
+                    className={`flex min-h-[60px] group hover:bg-blue-50/30 transition-colors cursor-pointer relative ${
+                      isCurrentHour ? 'bg-blue-50/20' : ''
+                    }`}
+                  >
+                    {/* Time Label Column */}
+                    <div className="w-16 md:w-20 p-3 border-r border-slate-100 text-xs font-semibold text-slate-400 shrink-0 text-right select-none">
+                      <span className={isCurrentHour ? 'text-blue-600 font-bold' : ''}>{hourStr}</span>
+                    </div>
+
+                    {/* Current Time Indicator Line */}
+                    {isCurrentHour && (
+                      <div className="absolute left-16 md:left-20 right-0 top-1/2 border-t-2 border-blue-500 z-10 pointer-events-none flex items-center">
+                        <div className="w-2.5 h-2.5 rounded-full bg-blue-600 -ml-1 shadow-sm"></div>
+                      </div>
+                    )}
+
+                    {/* Tasks Container */}
+                    <div className="flex-1 p-2 flex flex-col gap-2 justify-center">
+                      {hourTasks.length > 0 ? (
+                        hourTasks.map(task => {
+                          const cat = CATEGORII_SUBMED[task.category] || CATEGORII_SUBMED.teorie;
+                          const Icon = cat.icon;
+
+                          return (
+                            <div
+                              key={task.id}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openModal(selectedDateStr, hourStr, task);
+                              }}
+                              className={`p-3 rounded-xl border flex items-center justify-between gap-3 transition-all hover:shadow-md ${cat.badge} ${
+                                task.completed ? 'opacity-60 bg-slate-50 border-slate-200' : ''
+                              }`}
+                            >
+                              <div className="flex items-center gap-3 truncate">
+                                <div className={`p-1.5 rounded-lg ${cat.accent} text-white shrink-0`}>
+                                  <Icon size={14} />
+                                </div>
+                                <div className="truncate">
+                                  <h4 className={`font-semibold text-xs text-slate-900 ${task.completed ? 'line-through text-slate-500' : ''}`}>
+                                    {task.title}
+                                  </h4>
+                                  <span className="text-[10px] text-slate-500 font-medium">
+                                    {task.startTime} - {task.endTime}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <button
+                                onClick={(e) => toggleTask(e, task.id)}
+                                className="p-1 hover:bg-white/80 rounded-lg transition shrink-0"
+                              >
+                                {task.completed ? (
+                                  <CheckCircle2 size={18} className="text-emerald-600" />
+                                ) : (
+                                  <Circle size={18} className="text-slate-300 hover:text-slate-500" />
+                                )}
+                              </button>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <div className="opacity-0 group-hover:opacity-100 text-[11px] text-slate-400 pl-2 transition flex items-center gap-1 font-medium">
+                          <Plus size={12} /> Adaugă în intervalul {hourStr}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* 2. WEEKLY GRID VIEW */}
+        {viewMode === 'week' && (
+          <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
+            {weekDays.map((day, idx) => {
+              const dateStr = formatDate(day);
+              const isToday = dateStr === formatDate(new Date());
+              const dayTasks = tasks
+                .filter(t => t.date === dateStr)
+                .sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+              return (
+                <div
+                  key={idx}
+                  className={`bg-white rounded-2xl border transition-all flex flex-col overflow-hidden ${
+                    isToday ? 'border-blue-500 ring-2 ring-blue-500/10 shadow-sm' : 'border-slate-200'
+                  }`}
+                >
+                  {/* Day Header */}
+                  <div className={`p-3 text-center border-b border-slate-100 ${isToday ? 'bg-blue-50/50' : 'bg-slate-50/50'}`}>
+                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+                      {ZILE[idx]}
+                    </span>
+                    <span className={`text-base font-bold ${isToday ? 'text-blue-600' : 'text-slate-800'}`}>
+                      {day.getDate()}
+                    </span>
+                  </div>
+
+                  {/* Tasks Column */}
+                  <div className="p-2 flex-1 flex flex-col gap-2 min-h-[380px]">
+                    {dayTasks.map(task => {
+                      const cat = CATEGORII_SUBMED[task.category] || CATEGORII_SUBMED.teorie;
+                      
+                      return (
+                        <div
+                          key={task.id}
+                          onClick={() => openModal(dateStr, task.startTime, task)}
+                          className={`p-2.5 rounded-xl border text-xs cursor-pointer transition-all hover:shadow-sm ${cat.badge} ${
+                            task.completed ? 'opacity-60 bg-slate-50 border-slate-200' : ''
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-1 mb-1">
+                            <span className="text-[10px] font-semibold text-slate-500">
+                              {task.startTime} - {task.endTime}
+                            </span>
+                            <button onClick={(e) => toggleTask(e, task.id)} className="text-slate-400 hover:text-emerald-600 transition">
+                              {task.completed ? <CheckCircle2 size={13} className="text-emerald-600" /> : <Circle size={13} />}
+                            </button>
+                          </div>
+                          <h5 className={`font-semibold text-slate-900 leading-tight ${task.completed ? 'line-through text-slate-500' : ''}`}>
+                            {task.title}
+                          </h5>
+                        </div>
+                      );
+                    })}
+
+                    {/* Quick Add Button per Day */}
+                    <button
+                      onClick={() => openModal(dateStr)}
+                      className="mt-auto py-2 border border-dashed border-slate-200 hover:border-blue-400 text-slate-400 hover:text-blue-600 rounded-xl text-xs flex items-center justify-center gap-1 transition font-medium"
+                    >
+                      <Plus size={12} /> Adaugă
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+      </main>
+
+      {/* STREAMLINED TASK ADD/EDIT MODAL */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex justify-center items-center p-4 z-50 animate-in fade-in duration-150">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            
+            {/* Modal Header */}
+            <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-blue-600"></div>
+                {editingTask ? 'Editare Sarcină' : 'Adaugă Sarcină Nouă'}
+              </h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition">
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSaveTask} className="p-5 space-y-4 text-xs">
+              
+              {/* Category selector */}
+              <div>
+                <label className="block text-slate-600 font-semibold mb-1.5">Categorie Submed</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {Object.values(CATEGORII_SUBMED).map(cat => {
+                    const Icon = cat.icon;
+                    const isSelected = formData.category === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, category: cat.id })}
+                        className={`p-2 rounded-xl border flex items-center gap-2 font-medium transition ${
+                          isSelected
+                            ? 'border-blue-600 bg-blue-50 text-blue-900 ring-1 ring-blue-600'
+                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        <Icon size={14} className={isSelected ? 'text-blue-600' : 'text-slate-400'} />
+                        <span className="truncate">{cat.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Title Input */}
+              <div>
+                <label className="block text-slate-600 font-semibold mb-1">Titlu Capitole / Activitate</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="Ex: Anatomie - Sistemul Digestiv & Grile"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900 outline-none focus:border-blue-600 focus:bg-white transition"
+                />
+              </div>
+
+              {/* Date & Time Selectors */}
+              <div className="grid grid-cols-3 gap-2">
+                <div className="col-span-1">
+                  <label className="block text-slate-600 font-semibold mb-1">Data</label>
+                  <input
+                    type="date"
+                    required
+                    value={formData.date}
+                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-slate-900 outline-none focus:border-blue-600 focus:bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-600 font-semibold mb-1">Start</label>
+                  <select
+                    value={formData.startTime}
+                    onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-slate-900 outline-none focus:border-blue-600 focus:bg-white"
+                  >
+                    {ORE.map(h => <option key={h} value={h}>{h}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-slate-600 font-semibold mb-1">Sfârșit</label>
+                  <select
+                    value={formData.endTime}
+                    onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-slate-900 outline-none focus:border-blue-600 focus:bg-white"
+                  >
+                    {ORE.map(h => <option key={h} value={h}>{h}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              {/* Status Checkbox */}
+              <div className="flex items-center gap-2 pt-1">
+                <input
+                  type="checkbox"
+                  id="completed"
+                  checked={formData.completed}
+                  onChange={(e) => setFormData({ ...formData, completed: e.target.checked })}
+                  className="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500"
+                />
+                <label htmlFor="completed" className="text-slate-700 font-medium cursor-pointer">
+                  Marchează ca finalizată
+                </label>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                {editingTask ? (
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteTask(editingTask.id)}
+                    className="p-2 text-rose-600 hover:bg-rose-50 rounded-xl transition flex items-center gap-1 font-semibold"
+                  >
+                    <Trash2 size={15} /> Șterge
+                  </button>
+                ) : <div></div>}
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="px-4 py-2 text-slate-600 hover:bg-slate-100 font-semibold rounded-xl transition"
+                  >
+                    Anulează
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition shadow-sm"
+                  >
+                    Salvează
+                  </button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
+-->
