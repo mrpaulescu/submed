@@ -424,7 +424,8 @@ function renderStudySession() {
     const accuracy = result.sessionAccuracy == null ? 'fără răspunsuri noi la grile' : `${result.addedCorrect}/${result.addedAttempts} corecte (${result.sessionAccuracy}%)`;
     const change = result.accuracyChange == null ? '' : ` Acuratețea capitolului s-a schimbat cu ${result.accuracyChange > 0 ? '+' : ''}${result.accuracyChange} puncte procentuale.`;
     const cards = result.reviewedFlashcards ? ` Ai repetat ${result.reviewedFlashcards} flashcarduri, dintre care ${result.newlyKnownFlashcards} au fost marcate ca știute.` : '';
-    outcome.textContent = `Ultima sesiune: ${accuracy}.${change}${cards}`;
+    const duration = latestCompleted.actual_minutes ? ` Ai studiat ${latestCompleted.actual_minutes} minute în sesiunea respectivă.` : '';
+    outcome.textContent = `Ultima sesiune: ${accuracy}.${change}${cards}${duration}`;
   } else $('coachSessionOutcome').hidden = true;
 }
 
@@ -465,6 +466,10 @@ async function finishStudySession(session) {
     const finalStats = refreshed.performance[session.chapter_id] || { attempts: 0, correct: 0 };
     const finalDeck = refreshed.decks.find(deck => deck.id === session.deck_id) || { due_count: 0, known_count: 0 };
     session.completed_at = new Date().toISOString();
+    const startedAt = new Date(session.started_at).getTime();
+    session.actual_minutes = Number.isFinite(startedAt)
+      ? Math.max(1, Math.round((Date.now() - startedAt) / 60000))
+      : Number(session.planned_minutes) || 1;
     session.result = compareSessionProgress({
       baselineAttempts: session.baseline_attempts,
       baselineCorrect: session.baseline_correct,
@@ -504,8 +509,10 @@ function renderWeeklyPlan() {
   const host = $('weeklyPlanList');
   host.replaceChildren();
   const weekly = plan.weeklyPlan || { days: [], daysToExam: null, exam: null };
-  $('weeklyPlanIntro').textContent = weekly.daysToExam == null
-    ? 'Nu ai încă un examen planificat; iată următoarele șapte zile de lucru.'
+  $('weeklyPlanIntro').textContent = weekly.averageActualMinutes != null
+    ? `În ultimele sesiuni ai petrecut în medie ${Math.round(weekly.averageActualMinutes)} minute. Am ajustat recomandările la un ritm sustenabil.`
+    : weekly.daysToExam == null
+      ? 'Nu ai încă un examen planificat; iată următoarele șapte zile de lucru.'
     : weekly.daysToExam === 0
       ? `${weekly.exam?.name || 'Examenul tău'} este astăzi. Planul pune accent pe recapitulare.`
       : `Mai sunt ${weekly.daysToExam} zile până la ${weekly.exam?.name || 'examenul tău'}; planul se reface după fiecare sesiune încheiată.`;
@@ -530,7 +537,33 @@ function renderWeeklyPlan() {
     link.className = 'coach-date';
     link.href = day.href;
     link.textContent = 'Deschide →';
-    item.append(date, copy, link);
+    const addToCalendar = document.createElement('button');
+    addToCalendar.type = 'button';
+    addToCalendar.className = 'coach-step-done';
+    addToCalendar.textContent = '＋ Calendar';
+    addToCalendar.addEventListener('click', async () => {
+      addToCalendar.disabled = true;
+      const dateKey = `${day.date.getFullYear()}-${String(day.date.getMonth() + 1).padStart(2, '0')}-${String(day.date.getDate()).padStart(2, '0')}`;
+      try {
+        const existing = await Coach.listDayEvents(dateKey);
+        if (existing.some(event => event.name === day.focus)) {
+          addToCalendar.textContent = 'Deja adăugat';
+          return;
+        }
+        await Coach.addDayEvent({
+          day: dateKey,
+          name: day.focus,
+          startMin: 9 * 60,
+          durationMin: Math.max(5, Math.min(720, Number(day.minutes) || 60)),
+        });
+        addToCalendar.textContent = '✓ Adăugat';
+        $('pageStatus').textContent = 'Activitatea a fost adăugată în calendar la 09:00. Poți modifica ora din calendar.';
+      } catch (error) {
+        addToCalendar.disabled = false;
+        $('pageStatus').textContent = 'Nu am putut adăuga activitatea în calendar. Verifică autentificarea și încearcă din nou.';
+      }
+    });
+    item.append(date, copy, link, addToCalendar);
     host.append(item);
   });
 }

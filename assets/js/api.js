@@ -786,12 +786,16 @@ export const Coach = {
 
   // ── evenimentele personale din programul zilei (user_day_events)
   async listDayEvents(day) {
+    return this.listDayEventsBetween(day, day);
+  },
+
+  async listDayEventsBetween(fromDay, toDay) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Neautentificat');
     const { data, error } = await supabase.from('user_day_events')
-      .select('id, name, start_min, duration_min')
-      .eq('day', day)
-      .order('start_min');
+      .select('id, day, name, start_min, duration_min')
+      .gte('day', fromDay).lte('day', toDay)
+      .order('day').order('start_min');
     if (error) throw error;
     return data || [];
   },
@@ -801,7 +805,18 @@ export const Coach = {
     if (!user) throw new Error('Neautentificat');
     const { data, error } = await supabase.from('user_day_events')
       .insert({ user_id: user.id, day, name, start_min: startMin, duration_min: durationMin })
-      .select('id, name, start_min, duration_min').single();
+      .select('id, day, name, start_min, duration_min').single();
+    if (error) throw error;
+    return data;
+  },
+
+  async updateDayEvent({ id, day, name, startMin, durationMin }) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Neautentificat');
+    const { data, error } = await supabase.from('user_day_events')
+      .update({ day, name, start_min: startMin, duration_min: durationMin })
+      .eq('id', id)
+      .select('id, day, name, start_min, duration_min').single();
     if (error) throw error;
     return data;
   },
