@@ -85,6 +85,19 @@ export function buildWeeklyStudyPlan({
     const completed = new Date(session.completed_at);
     return Number.isFinite(completed.getTime()) && completed >= start;
   });
+  // Use measured session duration (not just the configured target) to keep
+  // future plans realistic. Older sessions without duration remain valid.
+  const measuredSessions = completedSessions
+    .filter(session => session.completed_at && Number(session.actual_minutes) > 0)
+    .slice(0, 7);
+  const averageActualMinutes = measuredSessions.length
+    ? measuredSessions.reduce((sum, session) => sum + Number(session.actual_minutes), 0) / measuredSessions.length
+    : null;
+  const effectiveDailyMinutes = averageActualMinutes == null
+    ? boundedMinutes(dailyMinutes)
+    : averageActualMinutes < boundedMinutes(dailyMinutes) * 0.75
+      ? Math.max(30, Math.min(boundedMinutes(dailyMinutes), Math.round(averageActualMinutes * 1.1 / 5) * 5))
+      : boundedMinutes(dailyMinutes);
   const recencyByChapter = new Map();
   weeklySessions.forEach((session, index) => {
     if (!session.chapter_id) return;
@@ -123,14 +136,14 @@ export function buildWeeklyStudyPlan({
     days.push({
       date,
       chapter,
-      minutes: boundedMinutes(dailyMinutes),
+      minutes: effectiveDailyMinutes,
       focus: isExamEve ? 'Recapitulare ușoară înainte de examen' : chapter.wrong
         ? `Consolidează ${chapter.name} · ${chapter.wrong} răspunsuri greșite`
         : chapter.attempts ? `Continuă cu ${chapter.name}` : `Începe ${chapter.name}`,
       href: `grile.html?chapter=${encodeURIComponent(chapter.id)}&subject=${encodeURIComponent(chapter.subject)}&mode=practice&count=10`,
     });
   }
-  return { days, daysToExam, exam: nextExam };
+  return { days, daysToExam, exam: nextExam, averageActualMinutes, effectiveDailyMinutes };
 }
 
 export function compareSessionProgress({
