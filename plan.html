@@ -537,7 +537,33 @@ function renderWeeklyPlan() {
     link.className = 'coach-date';
     link.href = day.href;
     link.textContent = 'Deschide →';
-    item.append(date, copy, link);
+    const addToCalendar = document.createElement('button');
+    addToCalendar.type = 'button';
+    addToCalendar.className = 'coach-step-done';
+    addToCalendar.textContent = '＋ Calendar';
+    addToCalendar.addEventListener('click', async () => {
+      addToCalendar.disabled = true;
+      const dateKey = `${day.date.getFullYear()}-${String(day.date.getMonth() + 1).padStart(2, '0')}-${String(day.date.getDate()).padStart(2, '0')}`;
+      try {
+        const existing = await Coach.listDayEvents(dateKey);
+        if (existing.some(event => event.name === day.focus)) {
+          addToCalendar.textContent = 'Deja adăugat';
+          return;
+        }
+        await Coach.addDayEvent({
+          day: dateKey,
+          name: day.focus,
+          startMin: 9 * 60,
+          durationMin: Math.max(5, Math.min(720, Number(day.minutes) || 60)),
+        });
+        addToCalendar.textContent = '✓ Adăugat';
+        $('pageStatus').textContent = 'Activitatea a fost adăugată în calendar la 09:00. Poți modifica ora din calendar.';
+      } catch (error) {
+        addToCalendar.disabled = false;
+        $('pageStatus').textContent = 'Nu am putut adăuga activitatea în calendar. Verifică autentificarea și încearcă din nou.';
+      }
+    });
+    item.append(date, copy, link, addToCalendar);
     host.append(item);
   });
 }
