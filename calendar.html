@@ -97,14 +97,79 @@
 			function renderYear(){const root=$('#yearGrid');root.replaceChildren();for(let m=0;m<12;m++){const box=document.createElement('section');box.className='mini-month';const h=document.createElement('h3');h.textContent=new Date(current.getFullYear(),m,1).toLocaleDateString(undefined,{month:'long'});box.append(h);const days=document.createElement('div');days.className='mini-days';const offset=new Date(current.getFullYear(),m,1).getDay();const shifted=(offset-settings.weekStart+7)%7;for(let i=0;i<7;i++){const el=document.createElement('span');el.className='mini-weekday';el.textContent=['S','M','T','W','T','F','S'][(settings.weekStart+i)%7];days.append(el)}const count=new Date(current.getFullYear(),m+1,0).getDate();for(let i=0;i<shifted;i++){const blank=document.createElement('span');blank.className='mini-out';days.append(blank)}for(let n=1;n<=count;n++){const d=new Date(current.getFullYear(),m,n),key=dateKey(d),el=document.createElement('span');el.textContent=n;if(dateKey(d)===dateKey(today))el.classList.add('mini-today');if(eventsOn(key).length)el.classList.add('mini-has-event');el.title=`${dateLabel(d)}${eventsOn(key).length?` · ${eventsOn(key).length} activities`:''}`;el.tabIndex=0;el.setAttribute('role','button');el.addEventListener('click',()=>{selected=new Date(d);current=new Date(d);view='month';render()});el.addEventListener('keydown',ev=>{if(ev.key==='Enter')el.click()});days.append(el)}box.append(days);root.append(box)}}
 			function shiftPeriod(delta){if(view==='month'||view==='agenda')current.setMonth(current.getMonth()+delta);else if(view==='year')current.setFullYear(current.getFullYear()+delta);else{selected.setDate(selected.getDate()+delta*7);current=new Date(selected)}render()}
 			function openEvent(event=null,time=null){editingId=event?.id||null;const form=$('#eventForm');form.reset();$('#eventDialogTitle').textContent=event?'Edit activity':'Add activity';$('#deleteEvent').hidden=!event;form.elements.title.value=event?.title||'';form.elements.type.value=event?.type||'submed';form.elements.date.value=event?.date||dateKey(selected);form.elements.start.value=event?.start||time||'09:00';form.elements.end.value=event?.end|| (time?`${String(Math.min(23,Number(time.slice(0,2))+1)).padStart(2,'0')}:${time.slice(3)}`:'10:00');form.elements.notes.value=event?.notes||'';$('#eventDialog').showModal();setTimeout(()=>$('#eventTitle').focus(),50)}
-			$('#eventForm').addEventListener('submit',e=>{e.preventDefault();const f=e.currentTarget.elements;if(f.end.value<=f.start.value){notify('End time must be after start time.');f.end.focus();return}const item={id:editingId||`${Date.now()}-${Math.random().toString(36).slice(2,8)}`,title:f.title.value.trim(),type:f.type.value,date:f.date.value,start:f.start.value,end:f.end.value,notes:f.notes.value.trim()};if(editingId)events=events.map(x=>x.id===editingId?item:x);else events.push(item);selected=parseDate(item.date);current=new Date(selected);saveEvents();$('#eventDialog').close();render();notify(editingId?'Activity updated.':'Activity added.')});
-			$('#deleteEvent').addEventListener('click',()=>{if(!editingId)return;events=events.filter(e=>e.id!==editingId);saveEvents();$('#eventDialog').close();render();notify('Activity deleted.')});
+			$('#eventForm').addEventListener('submit',async e=>{e.preventDefault();const f=e.currentTarget.elements;if(f.end.value<=f.start.value){notify('End time must be after start time.');f.end.focus();return}const item={id:editingId||`${Date.now()}-${Math.random().toString(36).slice(2,8)}`,title:f.title.value.trim(),type:f.type.value,date:f.date.value,start:f.start.value,end:f.end.value,notes:f.notes.value.trim()};const button=e.currentTarget.querySelector('[type="submit"]');button.disabled=true;try{if(window.SubmedCalendarBridge?.save){const saved=await window.SubmedCalendarBridge.save(item,editingId);item.id=saved.id;}if(editingId)events=events.map(x=>x.id===editingId?item:x);else events.push(item);selected=parseDate(item.date);current=new Date(selected);saveEvents();$('#eventDialog').close();render();notify(editingId?'Activity updated.':'Activity added.')}catch(error){notify('Could not save activity. Check your connection and try again.')}finally{button.disabled=false}});
+			$('#deleteEvent').addEventListener('click',async()=>{if(!editingId)return;const id=editingId;try{if(window.SubmedCalendarBridge?.remove)await window.SubmedCalendarBridge.remove(id);events=events.filter(e=>e.id!==id);saveEvents();$('#eventDialog').close();render();notify('Activity deleted.')}catch(error){notify('Could not delete activity. Try again.')}});
 			$('#addEventTop').addEventListener('click',()=>openEvent());$('#addSelected').addEventListener('click',()=>openEvent());$('#previous').addEventListener('click',()=>shiftPeriod(-1));$('#next').addEventListener('click',()=>shiftPeriod(1));$('#todayButton').addEventListener('click',()=>{current=new Date(today);selected=new Date(today);render()});$$('.view-switch button').forEach(b=>b.addEventListener('click',()=>{view=b.dataset.view;render()}));$('#openSettings').addEventListener('click',()=>$('#settingsDialog').showModal());
 			$$('[data-close]').forEach(b=>b.addEventListener('click',()=>$( `#${b.dataset.close}`).close()));$$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));$('#colorOptions').addEventListener('click',e=>{const b=e.target.closest('[data-color]');if(!b)return;settings.accent=b.dataset.color;savePrefs();render()});$('#weekStart').addEventListener('change',e=>{settings.weekStart=Number(e.target.value);savePrefs();render()});$('#timeFormat').addEventListener('change',e=>{settings.twelveHour=e.target.checked;savePrefs();render()});$('#saveSettings').addEventListener('click',()=>{$('#settingsDialog').close();notify('Calendar preferences saved.')});
 			document.addEventListener('keydown',e=>{if(e.key==='Escape')return;if(e.target.matches('input,textarea,select,button,[role=button]'))return;if(e.key==='ArrowLeft')shiftPeriod(-1);if(e.key==='ArrowRight')shiftPeriod(1);if(e.key.toLowerCase()==='t'){$('#todayButton').click()}});
+      window.SubmedCalendarUI = {
+        replaceEvents(nextEvents) {
+          events = Array.isArray(nextEvents) ? nextEvents.filter(e => e && e.id && e.date && e.title) : [];
+          render();
+        },
+        refresh() { render(); },
+      };
 			render();
 		})();
 	</script>
+
+  <script type="module">
+    import { Auth } from './assets/js/auth.js';
+    import { Coach } from './assets/js/api.js';
+
+    const pad = value => String(value).padStart(2, '0');
+    const dateKey = date => `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
+    const toClock = minutes => `${pad(Math.floor(minutes / 60))}:${pad(minutes % 60)}`;
+    const mapEvent = row => {
+      const start = Number(row.start_min) || 0;
+      const end = Math.min(1440, start + (Number(row.duration_min) || 30));
+      return { id: row.id, title: row.name, type: 'submed', date: row.day, start: toClock(start), end: toClock(end === 1440 ? 1439 : end), notes: 'Sincronizat cu contul SubMed' };
+    };
+    const rangeForCurrentView = () => {
+      const now = new Date();
+      const view = document.querySelector('.view-switch button.selected')?.dataset.view || 'month';
+      const title = document.getElementById('dateTitle')?.textContent || '';
+      // Month and agenda are the default; reload a generous date window so
+      // switching views and navigating stays within the same authenticated feed.
+      const selected = document.querySelector('.day-cell.selected-day');
+      const base = selected ? new Date(now.getFullYear(), now.getMonth(), Number(selected.querySelector('.day-number')?.textContent || now.getDate())) : now;
+      if (view === 'year') return [`${base.getFullYear()}-01-01`, `${base.getFullYear()}-12-31`];
+      const start = new Date(base.getFullYear(), base.getMonth() - 1, 1);
+      const end = new Date(base.getFullYear(), base.getMonth() + 2, 0);
+      return [dateKey(start), dateKey(end)];
+    };
+
+    try {
+      await Auth.requireLogin();
+      window.SubmedCalendarBridge = {
+        async save(item, existingId) {
+          const [hours, minutes] = item.start.split(':').map(Number);
+          const [endHours, endMinutes] = item.end.split(':').map(Number);
+          const startMin = hours * 60 + minutes;
+          const durationMin = Math.max(5, endHours * 60 + endMinutes - startMin);
+          const payload = { day: item.date, name: item.title, startMin, durationMin };
+          return existingId
+            ? Coach.updateDayEvent({ id: existingId, ...payload })
+            : Coach.addDayEvent(payload);
+        },
+        remove(id) { return Coach.deleteDayEvent(id); },
+      };
+      const load = async () => {
+        const [fromDay, toDay] = rangeForCurrentView();
+        const rows = await Coach.listDayEventsBetween(fromDay, toDay);
+        const mapped = rows.map(mapEvent);
+        window.SubmedCalendarUI?.replaceEvents(mapped);
+        try { localStorage.setItem('submed-calendar-events', JSON.stringify(mapped)); } catch {}
+      };
+      window.addEventListener('submed:calendar-range-change', load);
+      await load();
+      document.querySelector('.legend-note').textContent = 'Calendar activities are synced to your SubMed account.';
+      document.querySelector('footer span:last-child').textContent = 'Synced securely to your SubMed account';
+    } catch (error) {
+      document.querySelector('.legend-note').textContent = 'Sign in to sync calendar activities across your devices.';
+    }
+  </script>
+
 </body>
 </html>
 import React, { useState, useEffect } from 'react';
