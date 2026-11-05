@@ -85,7 +85,7 @@
 				if(view==='week'){const start=weekStart(selected);const end=new Date(start);end.setDate(end.getDate()+6);$('#dateTitle').textContent=start.getMonth()===end.getMonth()?`${start.toLocaleDateString(undefined,{month:'long'})} ${start.getDate()}–${end.getDate()}, ${end.getFullYear()}`:`${start.toLocaleDateString(undefined,{month:'short',day:'numeric'})} – ${end.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}`;renderWeek()}
 				if(view==='agenda'){const start=new Date(current.getFullYear(),current.getMonth(),1),end=new Date(current.getFullYear(),current.getMonth()+1,0);$('#dateTitle').textContent=new Intl.DateTimeFormat(undefined,{month:'long',year:'numeric'}).format(current);renderAgenda(start,end)}
 				if(view==='year'){ $('#dateTitle').textContent=String(current.getFullYear());renderYear() }
-				renderSelected();renderLegend();$('#weekStart').value=String(settings.weekStart);$('#timeFormat').checked=!!settings.twelveHour;$$('.color-choice').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color===settings.accent)));
+				renderSelected();renderLegend();$('#weekStart').value=String(settings.weekStart);$('#timeFormat').checked=!!settings.twelveHour;$('.color-choice').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color===settings.accent)));window.dispatchEvent(new Event('submed:calendar-range-change'));
 			}
 			function weekStart(d){const x=new Date(d);x.setDate(x.getDate()-((x.getDay()-settings.weekStart+7)%7));x.setHours(0,0,0,0);return x}
 			function renderMonth(){const weekdays=$('#weekdays'),grid=$('#monthGrid');weekdays.replaceChildren();grid.replaceChildren();const names=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];for(let i=0;i<7;i++){const n=(settings.weekStart+i)%7;const el=document.createElement('div');el.className='weekday';el.textContent=names[n];weekdays.append(el)}
@@ -108,6 +108,18 @@
           render();
         },
         refresh() { render(); },
+        getRange() {
+          if (view === 'year') return [new Date(current.getFullYear(), 0, 1), new Date(current.getFullYear(), 11, 31)];
+          if (view === 'week') {
+            const start = weekStart(selected), end = new Date(start);
+            end.setDate(end.getDate() + 6);
+            return [start, end];
+          }
+          if (view === 'agenda') return [new Date(current.getFullYear(), current.getMonth(), 1), new Date(current.getFullYear(), current.getMonth() + 1, 0)];
+          const start = weekStart(new Date(current.getFullYear(), current.getMonth(), 1));
+          const end = new Date(start); end.setDate(end.getDate() + 41);
+          return [start, end];
+        },
       };
 			render();
 		})();
@@ -125,19 +137,7 @@
       const end = Math.min(1440, start + (Number(row.duration_min) || 30));
       return { id: row.id, title: row.name, type: 'submed', date: row.day, start: toClock(start), end: toClock(end === 1440 ? 1439 : end), notes: 'Sincronizat cu contul SubMed' };
     };
-    const rangeForCurrentView = () => {
-      const now = new Date();
-      const view = document.querySelector('.view-switch button.selected')?.dataset.view || 'month';
-      const title = document.getElementById('dateTitle')?.textContent || '';
-      // Month and agenda are the default; reload a generous date window so
-      // switching views and navigating stays within the same authenticated feed.
-      const selected = document.querySelector('.day-cell.selected-day');
-      const base = selected ? new Date(now.getFullYear(), now.getMonth(), Number(selected.querySelector('.day-number')?.textContent || now.getDate())) : now;
-      if (view === 'year') return [`${base.getFullYear()}-01-01`, `${base.getFullYear()}-12-31`];
-      const start = new Date(base.getFullYear(), base.getMonth() - 1, 1);
-      const end = new Date(base.getFullYear(), base.getMonth() + 2, 0);
-      return [dateKey(start), dateKey(end)];
-    };
+
 
     try {
       await Auth.requireLogin();
@@ -155,8 +155,8 @@
         remove(id) { return Coach.deleteDayEvent(id); },
       };
       const load = async () => {
-        const [fromDay, toDay] = rangeForCurrentView();
-        const rows = await Coach.listDayEventsBetween(fromDay, toDay);
+        const [from, to] = window.SubmedCalendarUI.getRange();
+        const rows = await Coach.listDayEventsBetween(dateKey(from), dateKey(to));
         const mapped = rows.map(mapEvent);
         window.SubmedCalendarUI?.replaceEvents(mapped);
         try { localStorage.setItem('submed-calendar-events', JSON.stringify(mapped)); } catch {}
