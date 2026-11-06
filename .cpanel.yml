@@ -1,6 +1,0 @@
----
-deployment:
-  tasks:
-    - export DEPLOYPATH=/home/submed/public_html/
-    - /bin/cp -f admin-content.html admin-grile.html admin.html chimie.html cluj.html compounds.js confidentialitate.html cookies.html config.public.js dashboard.html desprecontact.html facultati.html flashcards.html formule.html googled8920cf7335f6799.html grile.html iasi.html index.html iupac-quiz.html lewis-structure.html login.html plan.html register.html reset-password.html robots.txt sitemap.xml student_card.html termeni.html user.html wizard.html umfih-07.jpg "$DEPLOYPATH"
-    - /bin/cp -a assets "$DEPLOYPATH"
