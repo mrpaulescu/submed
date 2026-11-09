@@ -69,62 +69,33 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script type="module" src="assets/js/components.js?v=supabase-singleton-20261028"></script>
-<script type="module">
-import { Auth } from './assets/js/auth.js?v=supabase-singleton-20261028';
-
-const $ = id => document.getElementById(id);
-const banner = $('alertBanner');
-
-/* dacă ești deja autentificat, sări direct la dashboard */
-Auth.redirectIfLoggedIn();
-
-function showAlert(msg, type='error') { banner.textContent = msg; banner.className = `alert-banner show ${type}`; }
-function hideAlert() { banner.className = 'alert-banner'; }
-function setLoading(on) {
-  $('submitBtn').disabled = on;
-  $('btnText').style.display   = on ? 'none' : 'inline';
-  $('btnSpinner').style.display= on ? 'block' : 'none';
-  $('btnArrow').style.display  = on ? 'none' : 'block';
-}
-
-let pwVisible = false;
-$('pwToggle').addEventListener('click', () => {
-  pwVisible = !pwVisible;
-  $('password').type = pwVisible ? 'text' : 'password';
-  $('eyeIcon').innerHTML = pwVisible
-    ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
-    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-});
-
-$('registerForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  hideAlert();
-  const name = $('name').value.trim(), email = $('email').value.trim(), password = $('password').value;
-  if (!name || !email || !password) { showAlert('Completează toate câmpurile.'); return; }
-  if (password.length < 6) { showAlert('Parola trebuie să aibă minim 6 caractere.'); return; }
-  setLoading(true);
-  try {
-    const result = await Auth.register(name, email, password);
-    if (result?.session) {
-      showAlert('Cont creat! Te redirecționăm către contul tău.', 'success');
-      setTimeout(() => location.href = Auth.getPostLoginRedirect(), 700);
-    } else {
-      showAlert('Cont creat! Verifică-ți emailul pentru confirmare.', 'success');
-      setTimeout(() => location.href = 'login.html', 2000);
+<script>
+(function () {
+  var shown = false;
+  function showAuthLoadError(message) {
+    if (shown) return;
+    shown = true;
+    var banner = document.getElementById('alertBanner');
+    if (banner) {
+      banner.textContent = message || 'Autentificarea nu s-a putut încărca. Verifică conexiunea și reîncarcă pagina.';
+      banner.className = 'alert-banner show error';
     }
-  } catch (err) {
-    showAlert(err.message || 'Nu am putut crea contul.');
-  } finally { setLoading(false); }
-});
-
-$('googleBtn').addEventListener('click', async e => {
-  e.preventDefault();
-  try { await Auth.loginWithGoogle(); }
-  catch (err) { showAlert('Google Sign-In indisponibil: ' + err.message); }
-});
-
-['name','email','password'].forEach(id =>
-  $(id).addEventListener('input', function() { this.classList.remove('input-error'); hideAlert(); }));
+  }
+  window.addEventListener('error', function (event) {
+    if (event.target && event.target.id === 'authPageModule') {
+      showAuthLoadError('Modulul de autentificare nu s-a putut descărca. Verifică conexiunea și reîncarcă pagina.');
+    }
+  }, true);
+  window.addEventListener('unhandledrejection', function (event) {
+    console.error('Eroare la inițializarea autentificării:', event.reason);
+  });
+  window.setTimeout(function () {
+    if (document.documentElement.dataset.authPageReady !== 'true') {
+      showAuthLoadError('Autentificarea nu a pornit. Reîncarcă pagina; dacă problema persistă, contactează suportul SubMed.');
+    }
+  }, 8000);
+})();
 </script>
+<script type="module" id="authPageModule" src="assets/js/register-page.js?v=20261109"></script>
 </body>
 </html>
