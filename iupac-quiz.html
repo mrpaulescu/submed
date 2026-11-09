@@ -15,17 +15,12 @@
 </head>
 <body data-nav="full">
 <main class="iq-shell">
-  <header class="iq-hero">
-    <div class="iq-eyebrow">⚗ CHIMIE ORGANICĂ · EXERCIȚII</div>
-    <h1>Recunoaște compusul.<br><span>Învață denumirea.</span></h1>
-    <p>Exersează nomenclatura IUPAC în română și denumirile uzuale. O literă greșită este tolerată, fără a confunda compușii între ei.</p>
-    <div class="iq-hero-meta"><span>Structuri chimice</span><span>Răspunsuri explicate</span><span>Repetă greșelile</span></div>
-  </header>
+  <header class="iq-hero"><h1>Quiz IUPAC</h1></header>
   <div class="iq-layout">
     <aside class="iq-side">
       <div class="iq-side-top"><strong>Alege o clasă</strong><small id="categoryCount">— compuși</small></div>
       <div id="categoryGrid" class="iq-categories" role="group" aria-label="Clasa de compuși"></div>
-      <div class="iq-side-note"><b>✳ Cum se punctează?</b><p>Se acceptă denumirea sistematică sau cea uzuală în română. O singură literă poate fi inserată, omisă sau înlocuită. Cifrele și pozițiile funcționale trebuie să fie corecte.</p></div>
+
     </aside>
     <section class="iq-workspace" aria-label="Exercițiu de nomenclatură">
       <div class="iq-toolbar">
@@ -37,11 +32,11 @@
       <div class="iq-molecule">
         <div class="iq-molecule-head"><span>STRUCTURĂ MOLECULARĂ</span><span id="moleculeHint">Identifică denumirea</span></div>
         <div class="iq-canvas-area"><canvas id="moleculeCanvas" width="560" height="320" role="img" aria-label="Structura chimică de identificat"></canvas></div>
-        <div class="iq-canvas-caption">Reprezentare structurală 2D · nu este la scară</div>
+
       </div>
       <form id="answerForm" class="iq-answer" novalidate>
         <label for="answerInput">Cum se numește acest compus?</label>
-        <div class="iq-answer-sub">Introdu denumirea IUPAC sau denumirea uzuală, în română.</div>
+
         <input id="answerInput" type="text" autocomplete="off" spellcheck="false" placeholder="Ex.: acid etanoic, acid acetic…" required>
         <div id="feedback" class="iq-feedback" role="status" aria-live="polite"></div>
         <div class="iq-actions">
@@ -56,7 +51,7 @@
       </div>
     </section>
   </div>
-  <div class="iq-bottom"><a href="lewis-structure.html">← Constructor structuri Lewis</a><span>Quiz de antrenament · nu înlocuiește bibliografia oficială</span></div>
+
 </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script type="module" src="assets/js/components.js?v=20261109"></script>
