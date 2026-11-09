@@ -102,6 +102,39 @@ dialog::backdrop { background: #0b1e4d80; backdrop-filter: blur(3px); }
   .dialog-actions #cancelDialog { grid-column: 1; grid-row: 1; }
   .dialog-actions #saveEvent { grid-column: 2; grid-row: 1; }
 }
+
+    /* Calendar day view and responsive controls */
+    .day-view{display:grid;grid-template-columns:62px minmax(0,1fr);padding:0 12px 14px}
+    .day-time-rail,.day-track{position:relative;height:1020px;background:repeating-linear-gradient(to bottom,transparent 0,transparent 59px,var(--line) 59px,var(--line) 60px)}
+    .day-time{height:60px;transform:translateY(-7px);padding-right:9px;text-align:right;color:var(--ink-3);font:.66rem var(--mono)}
+    .day-track{border-left:1px solid var(--line);cursor:pointer}
+    .day-hour-hit{position:absolute;left:0;right:0;height:60px}
+    .day-event{position:absolute;left:7px;right:7px;z-index:1;border:1px solid var(--event-border);border-left:4px solid var(--event-color);border-radius:9px;background:var(--event-bg);color:var(--event-ink);padding:7px 9px;overflow:hidden;text-align:left;font:700 .75rem var(--font);line-height:1.3;cursor:pointer}
+    .day-event small{display:block;font:500 .65rem var(--mono);margin-top:3px}
+    .today-active{background:var(--blue-tint-2)!important;color:var(--blue-deep)!important;border-color:var(--blue)!important}
+    dialog{position:fixed;inset:0;margin:auto;max-height:min(88dvh,760px);overflow-y:auto;overscroll-behavior:contain}
+    dialog form{display:flex;flex-direction:column}
+    .dialog-actions{flex-wrap:wrap}
+    @media(max-width:620px){
+      .calendar-head{gap:12px;margin-bottom:16px}
+      .calendar-head>div:first-child{width:100%}
+      .calendar-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}
+      .calendar-actions button{min-height:44px}
+      .calendar-toolbar{padding:12px 10px;gap:10px}
+      .day-view{grid-template-columns:48px minmax(0,1fr);padding:0 7px 12px}
+      .day-time{font-size:.59rem;padding-right:6px}
+      .day-event{left:4px;right:4px;padding:5px 6px;font-size:.68rem}
+      .day-event small{font-size:.57rem}
+      dialog{width:calc(100% - 20px);max-width:calc(100% - 20px);max-height:88dvh;border-radius:16px}
+      .dialog-head,.dialog-body{padding:14px}
+      .dialog-actions{padding:12px 14px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+      .dialog-actions .spacer{display:none}
+      .dialog-actions #cancelDialog{grid-column:1;grid-row:1}
+      .dialog-actions #saveEvent{grid-column:2;grid-row:1}
+      .dialog-actions #deleteEvent{grid-column:1/-1;grid-row:2;justify-self:start}
+      .field input,.field select,.field textarea{font-size:16px}
+    }
+
   </style>
 </head>
 <body data-nav="full">
@@ -118,30 +151,52 @@ dialog::backdrop { background: #0b1e4d80; backdrop-filter: blur(3px); }
     import { CalendarBackend } from './assets/js/calendar-backend.js';
     const $=id=>document.getElementById(id),TYPES={study:{label:'Studiu',color:'#246BCE',bg:'#EAF2FF',border:'#C8DCFF',ink:'#173D75'},personal:{label:'Personal',color:'#7A5CC7',bg:'#F2EEFF',border:'#DED2FF',ink:'#4B357F'},exam:{label:'Simulare / examen',color:'#E0812B',bg:'#FFF2E5',border:'#FFD8B0',ink:'#88420A'},appointment:{label:'Programare',color:'#159E83',bg:'#E7F8F3',border:'#BCEADD',ink:'#0B5F4E'},work:{label:'Muncă',color:'#667085',bg:'#F1F3F5',border:'#DCE1E7',ink:'#374151'},other:{label:'Altceva',color:'#A45770',bg:'#FAEDF2',border:'#F2CDDC',ink:'#703247'}},weekdays=['Lu','Ma','Mi','Jo','Vi','Sâ','Du'],pad=v=>String(v).padStart(2,'0'),dayKey=v=>v.getFullYear()+'-'+pad(v.getMonth()+1)+'-'+pad(v.getDate()),fromKey=v=>{const[y,m,d]=v.split('-').map(Number);return new Date(y,m-1,d)},clone=v=>new Date(v.getFullYear(),v.getMonth(),v.getDate()),addDays=(v,n)=>{const x=clone(v);x.setDate(x.getDate()+n);return x},weekStart=v=>addDays(v,-((v.getDay()+6)%7)),atStart=v=>{const x=clone(v);x.setHours(0,0,0,0);return x},sameDay=(a,b)=>dayKey(a)===dayKey(b),time=m=>pad(Math.floor(m/60))+':'+pad(m%60),typeOf=e=>TYPES[e.event_type]||TYPES.personal,minutes=(v,f=540)=>/^\d{2}:\d{2}$/.test(v||'')?v.split(':').map(Number).reduce((h,m)=>h*60+m):f,formatDate=v=>v.toLocaleDateString('ro-RO',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
     let selected=atStart(new Date()),view='month',events=[],editing=null,viewBeforeDay='month',selectedBeforeDay=null;
-    function status(text='',kind=''){const n=$('status');n.hidden=!text;n.textContent=text;n.className='notice'+(kind?' '+kind:'')}function el(tag,klass,text){const n=document.createElement(tag);if(klass)n.className=klass;if(text!==undefined)n.textContent=text;return n}function paint(n,e){const t=typeOf(e);for(const[k,v]of Object.entries({color:t.color,bg:t.bg,border:t.border,ink:t.ink}))n.style.setProperty('--event-'+k,v);return n}function range(){  if(view==='day') return [selected, selected];
-  if(view==='month'){
-    const f=new Date(selected.getFullYear(),selected.getMonth(),1),
-          l=new Date(selected.getFullYear(),selected.getMonth()+1,0);
-    return [weekStart(f),addDays(weekStart(l),6)];
-  }
-  const s=weekStart(selected);
-  return [s,addDays(s,view==='agenda'?13:6)];function days(){const[a,b]=range(),out=[];for(let d=a;d<=b;d=addDays(d,1))out.push(d);return out}function forDay(day){return events.filter(e=>e.day===dayKey(day)).sort((a,b)=>a.start_min-b.start_min)}function period(){function period(){
-  if(view==='day') return (sameDay(selected,new Date())?'Astăzi · ':'')+formatDate(selected);
-  if(view==='month') return selected.toLocaleDateString('ro-RO',{month:'long',year:'numeric'});
-  const [a,b]=range();
-  return a.getMonth()===b.getMonth()
-    ? a.toLocaleDateString('ro-RO',{month:'long',year:'numeric'})
-    : a.toLocaleDateString('ro-RO',{day:'numeric',month:'short'})+' – '+
-      b.toLocaleDateString('ro-RO',{day:'numeric',month:'short',year:'numeric'});
-}
-    function render(){ $('periodTitle').textContent=period();document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.view===view)));if(view==='month')renderMonth();else if(view==='week')renderWeek();else renderAgenda();renderSide()}function choose(day){selected=atStart(day);render()}
+    function status(text='',kind=''){const n=$('status');n.hidden=!text;n.textContent=text;n.className='notice'+(kind?' '+kind:'')}function el(tag,klass,text){const n=document.createElement(tag);if(klass)n.className=klass;if(text!==undefined)n.textContent=text;return n}function paint(n,e){const t=typeOf(e);for(const[k,v]of Object.entries({color:t.color,bg:t.bg,border:t.border,ink:t.ink}))n.style.setProperty('--event-'+k,v);return n}function range(){
+      if(view==='day') return [selected,selected];
+      if(view==='month'){
+        const first=new Date(selected.getFullYear(),selected.getMonth(),1);
+        const last=new Date(selected.getFullYear(),selected.getMonth()+1,0);
+        return [weekStart(first),addDays(weekStart(last),6)];
+      }
+      const start=weekStart(selected);
+      return [start,addDays(start,view==='agenda'?13:6)];
+    }
+    function days(){const[a,b]=range(),out=[];for(let d=a;d<=b;d=addDays(d,1))out.push(d);return out}
+    function forDay(day){return events.filter(e=>e.day===dayKey(day)).sort((a,b)=>a.start_min-b.start_min)}
+    function period(){
+      if(view==='day') return (sameDay(selected,new Date())?'Astăzi · ':'')+formatDate(selected);
+      if(view==='month') return selected.toLocaleDateString('ro-RO',{month:'long',year:'numeric'});
+      const [a,b]=range();
+      return a.getMonth()===b.getMonth()
+        ? a.toLocaleDateString('ro-RO',{month:'long',year:'numeric'})
+        : a.toLocaleDateString('ro-RO',{day:'numeric',month:'short'})+' – '+b.toLocaleDateString('ro-RO',{day:'numeric',month:'short',year:'numeric'});
+    }
+    function render(){ $('periodTitle').textContent=period();document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.view===view)));$('today').textContent=view==='day'?'Tot calendarul':'Astăzi';$('today').classList.toggle('today-active',view==='day');if(view==='month')renderMonth();else if(view==='week')renderWeek();else if(view==='day')renderDay();else renderAgenda();renderSide()}function choose(day){selected=atStart(day);render()}
     function renderMonth(){const host=$('calendar');host.replaceChildren();const head=el('div','weekdays');weekdays.forEach(x=>head.append(el('span','',x)));const grid=el('div','month-days');days().forEach(day=>{const cell=el('button','month-day');cell.type='button';if(day.getMonth()!==selected.getMonth())cell.classList.add('outside');if(sameDay(day,selected))cell.classList.add('selected');if(sameDay(day,new Date()))cell.classList.add('today');cell.append(el('span','day-number',day.getDate()));const rows=forDay(day);rows.slice(0,2).forEach(event=>{const chip=paint(el('button','month-event',time(event.start_min)+' '+event.name),event);chip.type='button';chip.onclick=e=>{e.stopPropagation();open(event)};cell.append(chip)});if(rows.length>2)cell.append(el('div','month-more','+'+(rows.length-2)+' activități'));cell.onclick=()=>choose(day);cell.ondblclick=()=>open(null,day);grid.append(cell)});host.append(head,grid)}
     function renderWeek(){const host=$('calendar');host.replaceChildren();const scroll=el('div','week-scroll'),grid=el('div','week-view');grid.append(document.createElement('div'));days().forEach(day=>{const h=el('div','week-title',day.toLocaleDateString('ro-RO',{weekday:'short'}));h.append(el('b','',day.getDate()));if(sameDay(day,new Date()))h.classList.add('today');grid.append(h)});const times=el('div','time-column');for(let h=7;h<22;h++)times.append(el('div','time-label',pad(h)+':00'));grid.append(times);days().forEach(day=>{const col=el('div','week-column');col.onclick=e=>{if(e.target===col)open(null,day,Math.max(420,Math.min(1290,420+Math.round(e.offsetY/15)*15)))};forDay(day).forEach(event=>{const b=paint(el('button','week-event'),event),top=Math.max(0,event.start_min-420);b.type='button';b.style.top=top+'px';b.style.height=Math.max(28,Math.min(event.duration_min,900-top))+'px';b.append(el('span','',event.name),el('small','',time(event.start_min)+' – '+time(event.start_min+event.duration_min)));b.onclick=e=>{e.stopPropagation();open(event)};col.append(b)});grid.append(col)});scroll.append(grid);host.append(scroll)}
+    function renderDay(){
+      const host=$('calendar');host.replaceChildren();
+      const wrap=el('div','day-view'),rail=el('div','day-time-rail'),track=el('div','day-track');
+      for(let hour=6;hour<23;hour++)rail.append(el('div','day-time',pad(hour)+':00'));
+      for(let hour=6;hour<23;hour++){
+        const hit=el('div','day-hour-hit');hit.style.top=((hour-6)*60)+'px';
+        hit.onclick=()=>open(null,selected,hour*60);track.append(hit);
+      }
+      track.onclick=e=>{if(e.target===track){const mins=6*60+Math.round(e.offsetY/15)*15;open(null,selected,Math.min(22*60,mins));}};
+      forDay(selected).forEach(event=>{
+        const top=event.start_min-360;if(top<0||top>=1020)return;
+        const item=paint(el('button','day-event'),event);item.type='button';
+        item.style.top=top+'px';item.style.height=Math.max(30,Math.min(event.duration_min,1020-top))+'px';
+        item.append(el('strong','',event.name),el('small','',time(event.start_min)+' – '+time(event.start_min+event.duration_min)+' · '+typeOf(event).label));
+        item.onclick=e=>{e.stopPropagation();open(event)};track.append(item);
+      });
+      wrap.append(rail,track);host.append(wrap);
+    }
     function renderAgenda(){const host=$('calendar');host.replaceChildren();const list=el('div','agenda');days().forEach(day=>{const row=el('section','agenda-day'),date=el('div','agenda-date',day.toLocaleDateString('ro-RO',{weekday:'short',day:'numeric',month:'short'})),entries=el('div','agenda-events'),rows=forDay(day);date.append(el('span','',sameDay(day,new Date())?'Astăzi':day.toLocaleDateString('ro-RO',{year:'numeric'})));if(!rows.length)entries.append(el('p','empty','Nimic programat.'));rows.forEach(event=>{const item=paint(el('button','agenda-event'),event);item.type='button';item.append(el('strong','',event.name),el('small','',time(event.start_min)+' – '+time(event.start_min+event.duration_min)+' · '+typeOf(event).label));item.onclick=()=>open(event);entries.append(item)});row.append(date,entries);row.ondblclick=()=>open(null,day);list.append(row)});host.append(list)}
     function renderSide(){$('selectedDate').textContent=formatDate(selected);const host=$('selectedEvents');host.replaceChildren();const rows=forDay(selected);if(!rows.length){host.append(el('p','empty','Ai ziua liberă. Adaugă o activitate când ai ceva de planificat.'));return}rows.forEach(event=>{const row=paint(el('button','side-event'),event),copy=el('span');row.type='button';copy.append(el('b','',event.name),el('span','',typeOf(event).label+' · '+event.duration_min+' min'));row.append(el('time','',time(event.start_min)),el('i'),copy);row.onclick=()=>open(event);host.append(row)})}
     function open(event=null,day=selected,start=540){editing=event;$('eventForm').reset();$('dialogTitle').textContent=event?'Editează activitatea':'Activitate nouă';$('eventName').value=event?.name||'';$('eventType').value=event?.event_type||'personal';$('eventDay').value=event?.day||dayKey(day);$('eventStart').value=time(event?.start_min??start);$('eventEnd').value=time((event?.start_min??start)+(event?.duration_min??60));$('eventNotes').value=event?.notes||'';$('deleteEvent').hidden=!event;$('eventDialog').showModal();$('eventName').focus()}
     async function load(){const[a,b]=range();try{status('Se încarcă calendarul…');events=await CalendarBackend.listEvents(dayKey(a),dayKey(b));status('');render()}catch(error){status('Calendarul nu a putut fi încărcat. Verifică autentificarea, conexiunea și migrarea bazei de date.','error')}}async function save(event){event.preventDefault();const start=minutes($('eventStart').value),duration=minutes($('eventEnd').value)-start;if(duration<5||duration>720){status('Ora de sfârșit trebuie să fie după ora de început, iar durata poate avea cel mult 12 ore.','error');return}const payload={day:$('eventDay').value,name:$('eventName').value,startMin:start,durationMin:duration,eventType:$('eventType').value,notes:$('eventNotes').value},button=$('saveEvent');button.disabled=true;try{if(editing)await CalendarBackend.updateEvent(editing.id,payload);else await CalendarBackend.createEvent(payload);$('eventDialog').close();selected=fromKey(payload.day);status('Activitatea a fost salvată.','success');await load()}catch(error){status(error.message||'Nu am putut salva activitatea.','error')}finally{button.disabled=false}}async function remove(){if(!editing||!window.confirm('Ștergi această activitate?'))return;try{await CalendarBackend.deleteEvent(editing.id);$('eventDialog').close();status('Activitatea a fost ștearsă.','success');await load()}catch(error){status(error.message||'Nu am putut șterge activitatea.','error')}}
-    $('eventForm').onsubmit=save;$('deleteEvent').onclick=remove;$('closeDialog').onclick=$('cancelDialog').onclick=()=>$('eventDialog').close();$('add').onclick=()=>open();$('addSelected').onclick=()=>open(null,selected);$('today').onclick=()=>{selected=atStart(new Date());load()};$('previous').onclick=()=>{selected=view==='month'?new Date(selected.getFullYear(),selected.getMonth()-1,1):addDays(selected,view==='agenda'?-14:-7);load()};$('next').onclick=()=>{selected=view==='month'?new Date(selected.getFullYear(),selected.getMonth()+1,1):addDays(selected,view==='agenda'?14:7);load()};document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{view=b.dataset.view;load()});try{await Auth.requireLogin();await load()}catch(error){status('Autentificarea este necesară pentru a vedea calendarul.','error')}
+    $('eventForm').onsubmit=save;$('deleteEvent').onclick=remove;$('closeDialog').onclick=$('cancelDialog').onclick=()=>$('eventDialog').close();$('add').onclick=()=>open();$('addSelected').onclick=()=>open(null,selected);$('today').onclick=()=>{if(view==='day'){view=viewBeforeDay;selected=selectedBeforeDay||atStart(new Date());}else{viewBeforeDay=view;selectedBeforeDay=clone(selected);selected=atStart(new Date());view='day';}load()};$('previous').onclick=()=>{selected=view==='month'?new Date(selected.getFullYear(),selected.getMonth()-1,1):addDays(selected,view==='day'?-1:view==='agenda'?-14:-7);load()};$('next').onclick=()=>{selected=view==='month'?new Date(selected.getFullYear(),selected.getMonth()+1,1):addDays(selected,view==='day'?1:view==='agenda'?14:7);load()};document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{view=b.dataset.view;load()});try{await Auth.requireLogin();await load()}catch(error){status('Autentificarea este necesară pentru a vedea calendarul.','error')}
   </script>
 </body>
 </html>
