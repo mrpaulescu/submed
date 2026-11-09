@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tur interactiv SubMed: descoperă instrumentele de pregătire și cum le folosești.">
+  <title>Ghid interactiv · SubMed</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="assets/css/walkthrough.css?v=20261109">
+</head>
+<body data-nav="full">
+  <main class="wt-shell">
+    <section class="wt-hero">
+      <div class="wt-eyebrow"><span class="wt-eyebrow-dot"></span> GHID INTERACTIV SUBMED</div>
+      <div class="wt-hero-row">
+        <div>
+          <h1>Un tur scurt prin <span>SubMed</span>.</h1>
+          <p>Descoperă unde găsești instrumentele, cum îți organizezi pregătirea și cum urmărești progresul. Poți reveni la acest ghid oricând.</p>
+        </div>
+        <div class="wt-hero-mark" aria-hidden="true"><span>✳</span><small>ÎNCEPE<br>DE AICI</small></div>
+      </div>
+      <div class="wt-hero-meta"><span>9 opriri</span><i></i><span>aprox. 3 minute</span><i></i><span>poți sări la orice secțiune</span></div>
+    </section>
+
+    <section class="wt-tour" aria-label="Turul platformei">
+      <aside class="wt-sidebar">
+        <div class="wt-side-head"><span>PARCURSUL TĂU</span><strong id="wtCount">01 / 09</strong></div>
+        <div class="wt-progress"><span id="wtProgress"></span></div>
+        <nav class="wt-steps" id="wtSteps" aria-label="Etapele ghidului">
+          <button class="wt-step is-active" type="button" data-step="0"><span>01</span><b>Primii pași</b><small>Configurarea contului</small></button>
+          <button class="wt-step" type="button" data-step="1"><span>02</span><b>Dashboard</b><small>Privirea de ansamblu</small></button>
+          <button class="wt-step" type="button" data-step="2"><span>03</span><b>Grile</b><small>Exersează și verifică</small></button>
+          <button class="wt-step" type="button" data-step="3"><span>04</span><b>Subiecte</b><small>Examene anterioare</small></button>
+          <button class="wt-step" type="button" data-step="4"><span>05</span><b>Scanare</b><small>Corectarea foii</small></button>
+          <button class="wt-step" type="button" data-step="5"><span>06</span><b>Flashcards</b><small>Repetiție activă</small></button>
+          <button class="wt-step" type="button" data-step="6"><span>07</span><b>Coach & plan</b><small>Organizarea învățării</small></button>
+          <button class="wt-step" type="button" data-step="7"><span>08</span><b>Calendar</b><small>Programul tău</small></button>
+          <button class="wt-step" type="button" data-step="8"><span>09</span><b>Profil & abonament</b><small>Setările contului</small></button>
+        </nav>
+        <a class="wt-side-link" href="dashboard.html">Mergi la dashboard <span>↗</span></a>
+      </aside>
+
+      <div class="wt-content">
+        <article class="wt-panel is-active" data-panel="0">
+          <div class="wt-kicker">01 · PORNEȘTE CU BINE</div>
+          <h2>Configurează-ți spațiul de pregătire.</h2>
+          <p class="wt-lead">La prima accesare, wizard-ul te ajută să alegi centrul universitar, materiile și obiectivul. Astfel, paginile și recomandările pornesc de la contextul tău.</p>
+          <div class="wt-preview wt-preview-setup">
+            <div class="wt-preview-top"><span>CONFIGURARE INIȚIALĂ</span><span>1 — 4</span></div>
+            <div class="wt-choice-label">Centrul universitar</div>
+            <div class="wt-choice-grid"><div class="wt-choice selected"><b>UMF</b><span>Cluj-Napoca</span><i>✓</i></div><div class="wt-choice"><b>UMF</b><span>Iași</span></div></div>
+            <div class="wt-choice-label">Materiile pregătite</div>
+            <div class="wt-chip-row"><span class="selected">🧬 Biologie</span><span>⚗️ Chimie</span></div>
+            <div class="wt-preview-note">Preferințele pot fi ajustate ulterior din cont.</div>
+          </div>
+          <div class="wt-tip"><b>De reținut</b><span>Poți explora ghidul și fără să parcurgi acum configurarea. Pentru a salva progresul și preferințele, folosește un cont autentificat.</span></div>
+          <a class="wt-inline-link" href="wizard.html">Vezi configurarea inițială <span>→</span></a>
+        </article>
+
+        <article class="wt-panel" data-panel="1">
+          <div class="wt-kicker">02 · PUNCTUL TĂU DE PLECARE</div>
+          <h2>Dashboard-ul îți adună activitatea într-un singur loc.</h2>
+          <p class="wt-lead">Aici găsești indicatorii de progres, recomandarea Coach-ului și scurtături către instrumentele folosite cel mai des.</p>
+          <div class="wt-preview wt-preview-dashboard">
+            <div class="wt-dash-head"><div><small>PANOU PERSONAL</small><b>Bună! 👋</b><span>Continuă de unde ai rămas.</span></div><div class="wt-dash-avatar">S</div></div>
+            <div class="wt-stat-row"><div><b>—</b><small>Examene</small></div><div><b>—</b><small>Medie</small></div><div><b>—</b><small>Răspunsuri</small></div></div>
+            <div class="wt-reco"><span>✳ COACH · RECOMANDARE</span><b>Următorul pas pentru pregătirea ta</b><small>Recomandarea se bazează pe progresul tău la capitole.</small></div>
+            <div class="wt-mini-tools"><span>▦ Grile</span><span>▤ Subiecte</span><span>◉ Flashcards</span><span>▣ Scanare</span></div>
+          </div>
+          <div class="wt-tip"><b>Un flux simplu</b><span>Începe din dashboard, alege un instrument, apoi revino pentru a urmări rezultatele și recomandările.</span></div>
+          <a class="wt-inline-link" href="dashboard.html">Deschide dashboard-ul <span>→</span></a>
+        </article>
+
+        <article class="wt-panel" data-panel="2">
+          <div class="wt-kicker">03 · EXERSEAZĂ ACTIV</div>
+          <h2>Construiește sesiuni de grile potrivite obiectivului tău.</h2>
+          <p class="wt-lead">Alege Biologie sau Chimie, centrul universitar, dificultatea și numărul de întrebări. Poți activa feedback-ul instant și cronometrul.</p>
+          <div class="wt-preview wt-preview-quiz">
+            <div class="wt-preview-top"><span>CONFIGURARE SESIUNE</span><span>GRILE</span></div>
+            <div class="wt-field-grid"><div><small>MATERIE</small><b>🧬 Biologie</b></div><div><small>DIFICULTATE</small><b>Toate nivelurile</b></div><div><small>CENTRU</small><b>UMF Cluj</b></div><div><small>ÎNTREBĂRI</small><b>20</b></div></div>
+            <div class="wt-toggle-line"><span>Feedback instant</span><i class="on"></i></div>
+            <div class="wt-toggle-line"><span>Cronometru</span><i></i></div>
+            <div class="wt-question"><small>EXEMPLU DE ÎNTREBARE</small><b>Care este rolul membranei celulare?</b><span>A · Protecție și schimb de substanțe</span><span>B · Producerea ADN-ului</span></div>
+          </div>
+          <div class="wt-tip"><b>Învață din greșeli</b><span>La final poți revizui răspunsurile și relua doar întrebările greșite.</span></div>
+          <a class="wt-inline-link" href="grile.html">Încearcă grilele <span>→</span></a>
+        </article>
+
+        <article class="wt-panel" data-panel="3">
+          <div class="wt-kicker">04 · ÎNVAȚĂ DIN EXAMENE REALE</div>
+          <h2>Găsește subiecte și bareme după centrul universitar.</h2>
+          <p class="wt-lead">Din zona Subiecte alegi centrul disponibil și parcurgi materialele organizate pe ani și sesiuni. Poți previzualiza sau descărca PDF-urile.</p>
+          <div class="wt-preview wt-preview-files">
+            <div class="wt-file-row"><div class="wt-file-icon">PDF</div><div><b>Subiect admitere · 2025</b><small>UMF Cluj · variantă oficială</small></div><span>Preview ↗</span></div>
+            <div class="wt-file-row"><div class="wt-file-icon wt-file-key">✓</div><div><b>Barem · 2025</b><small>Grila corectă · PDF</small></div><span>Descarcă ↓</span></div>
+            <div class="wt-file-row"><div class="wt-file-icon">PDF</div><div><b>Simulare · 2026</b><small>UMF Cluj · material disponibil</small></div><span>Preview ↗</span></div>
+            <div class="wt-file-foot">Exemple ilustrative · materialele disponibile diferă în funcție de centru și an.</div>
+          </div>
+          <div class="wt-tip"><b>Recomandare</b><span>Rezolvă subiectul în condiții cât mai apropiate de examen, apoi verifică răspunsurile cu baremul.</span></div>
+          <a class="wt-inline-link" href="facultati.html">Explorează subiectele <span>→</span></a>
+        </article>
+
+        <article class="wt-panel" data-panel="4">
+          <div class="wt-kicker">05 · CORECTEAZĂ MAI RAPID</div>
+          <h2>Scanează foaia completată și verifică rezultatul.</h2>
+          <p class="wt-lead">Alege facultatea și examenul, apoi încarcă o fotografie, o imagine sau un PDF. Pe dispozitive compatibile poți folosi și camera.</p>
+          <div class="wt-preview wt-preview-scan">
+            <div class="wt-scan-paper"><div class="wt-paper-title">FOAIE DE RĂSPUNSURI</div><div class="wt-bubble-grid"><div class="wt-bubble-col"><small>A</small><i class="filled"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div><div class="wt-bubble-col"><small>B</small><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="filled"></i></div><div class="wt-bubble-col"><small>C</small><i class=""></i><i class=""></i><i class=""></i><i class="filled"></i><i class=""></i></div><div class="wt-bubble-col"><small>D</small><i class=""></i><i class=""></i><i class="filled"></i><i class=""></i><i class=""></i></div><div class="wt-bubble-col"><small>E</small><i class=""></i><i class="filled"></i><i class=""></i><i class=""></i><i class=""></i></div></div><div class="wt-paper-line"></div><div class="wt-paper-line short"></div></div>
+            <div class="wt-scan-result"><small>PREVIZUALIZARE REZULTAT</small><b>— / —</b><span>Scorul apare după procesarea foii.</span><em>Confirmă și salvează</em></div>
+          </div>
+          <div class="wt-tip"><b>Înainte de încărcare</b><span>Fotografiază toată foaia, pe o suprafață plană și bine luminată. Verifică rezultatul înainte să îl confirmi.</span></div>
+          <a class="wt-inline-link" href="scan.html">Deschide scanarea <span>→</span></a>
+        </article>
+
+        <article class="wt-panel" data-panel="5">
+          <div class="wt-kicker">06 · FIXEAZĂ INFORMAȚIA</div>
+          <h2>Folosește flashcards pentru repetare activă.</h2>
+          <p class="wt-lead">Selectează Biologie sau Chimie organică, apoi capitolele pe care vrei să le repeți. Întoarce cardul, evaluează-ți răspunsul și urmărește progresul sesiunii.</p>
+          <div class="wt-preview wt-preview-flash">
+            <div class="wt-flash-meta"><span>🧬 BIOLOGIE</span><span>12 / 30</span></div>
+            <div class="wt-flash-card"><small>ÎNTREBARE</small><b>Care este unitatea structurală și funcțională a organismului?</b><span>Apasă „Întoarce” pentru răspuns</span></div>
+            <div class="wt-flash-actions"><span>↺ Nu știu</span><span>✓ Știu!</span></div>
+            <div class="wt-flash-progress"><i></i></div>
+          </div>
+          <div class="wt-tip"><b>Repetă consecvent</b><span>La final vezi câte carduri ai știut și câte trebuie revizuite. Poți relua cardurile neînvățate.</span></div>
+          <a class="wt-inline-link" href="flashcards.html">Deschide flashcards <span>→</span></a>
+        </article>
+
+        <article class="wt-panel" data-panel="6">
+          <div class="wt-kicker">07 · PLANIFICĂ ȘI PRIMEȘTE DIRECȚIE</div>
+          <h2>Coach-ul conectează progresul cu următorii pași.</h2>
+          <p class="wt-lead">În Plan găsești capitolele și subcapitolele, statisticile și obiectivele. Coach-ul te ajută să structurezi învățarea în funcție de progres și de timpul disponibil.</p>
+          <div class="wt-preview wt-preview-coach">
+            <div class="wt-roadmap"><div class="wt-road-item done"><i>✓</i><span><b>Capitol parcurs</b><small>Biologie · recapitulare</small></span></div><div class="wt-road-item current"><i>2</i><span><b>Capitol în lucru</b><small>Chimie · următorul obiectiv</small></span></div><div class="wt-road-item"><i>3</i><span><b>Capitol următor</b><small>Neînceput</small></span></div></div>
+            <div class="wt-coach-card"><small>✳ COACH · PLAN DE ÎNVĂȚARE</small><b>Organizează următoarea săptămână</b><span>Ține cont de capitole, rezultate și timpul disponibil.</span><div class="wt-coach-days"><i>L</i><i>M</i><i>M</i><i>J</i><i>V</i><i>S</i><i>D</i></div></div>
+          </div>
+          <div class="wt-tip"><b>Planul se actualizează cu tine</b><span>Bifează subcapitolele și menține rezultatele la zi pentru ca recomandările să fie mai utile.</span></div>
+          <a class="wt-inline-link" href="plan.html">Vezi Planul și Coach-ul <span>→</span></a>
+        </article>
+
+        <article class="wt-panel" data-panel="7">
+          <div class="wt-kicker">08 · PĂSTREAZĂ-ȚI PROGRAMUL CLAR</div>
+          <h2>Calendarul este și planner-ul tău personal.</h2>
+          <p class="wt-lead">Adaugă sesiuni de studiu, simulări, programări și activități personale. Schimbă între vizualizarea lunară, săptămânală și agenda zilei.</p>
+          <div class="wt-preview wt-preview-calendar">
+            <div class="wt-calendar-head"><b>Săptămâna mea</b><span>‹ &nbsp; ›</span></div>
+            <div class="wt-calendar-grid"><div class="wt-day"><small>LUN</small><b>12</b><i class="study"></i><i class="personal"></i></div><div class="wt-day"><small>MAR</small><b>13</b><i class="study"></i></div><div class="wt-day active"><small>MIE</small><b>14</b><i class="exam"></i><i class="study"></i></div><div class="wt-day"><small>JOI</small><b>15</b><i class="study"></i></div><div class="wt-day"><small>VIN</small><b>16</b><i class="personal"></i></div><div class="wt-day"><small>SÂM</small><b>17</b><i class="study"></i></div><div class="wt-day"><small>DUM</small><b>18</b></div></div>
+            <div class="wt-calendar-legend"><span><i class="study"></i> Studiu</span><span><i class="exam"></i> Simulare</span><span><i class="personal"></i> Personal</span></div>
+          </div>
+          <div class="wt-tip"><b>Un singur program</b><span>Adaugă și activitățile care nu țin de învățat, ca să vezi realist cât timp ai la dispoziție.</span></div>
+          <a class="wt-inline-link" href="calendar.html">Deschide calendarul <span>→</span></a>
+        </article>
+
+        <article class="wt-panel" data-panel="8">
+          <div class="wt-kicker">09 · CONTUL TĂU, SETĂRILE TALE</div>
+          <h2>Gestionează profilul și abonamentul dintr-un singur loc.</h2>
+          <p class="wt-lead">În Contul meu poți actualiza datele personale, preferințele de studiu și informațiile de securitate. Secțiunea de abonament afișează planul și istoricul disponibil.</p>
+          <div class="wt-preview wt-preview-account">
+            <div class="wt-account-head"><div class="wt-account-avatar">S</div><div><b>Contul meu</b><small>Profil · Preferințe · Abonament · Securitate</small></div></div>
+            <div class="wt-account-row"><span>Date personale</span><b>Editează →</b></div>
+            <div class="wt-account-row"><span>Preferințe de studiu</span><b>Actualizează →</b></div>
+            <div class="wt-account-row"><span>Abonament și plăți</span><b>Vezi detalii →</b></div>
+            <div class="wt-account-row"><span>Securitate</span><b>Gestionează →</b></div>
+          </div>
+          <div class="wt-tip"><b>Ai nevoie de ajutor?</b><span>Poți reveni oricând la acest tur din butonul „Ghid” sau din linkul din footer.</span></div>
+          <a class="wt-inline-link" href="user.html">Deschide Contul meu <span>→</span></a>
+        </article>
+
+        <div class="wt-controls">
+          <button class="wt-btn wt-btn-quiet" id="wtPrev" type="button" disabled>← Înapoi</button>
+          <div class="wt-control-note" id="wtHint">Pasul 1 din 9</div>
+          <button class="wt-btn wt-btn-primary" id="wtNext" type="button">Următorul pas <span>→</span></button>
+        </div>
+        <div class="wt-complete" id="wtComplete" hidden>
+          <div class="wt-complete-mark">✓</div><div><b>Ai parcurs turul SubMed.</b><span>Poți reveni la ghid oricând pentru o recapitulare.</span></div><a href="dashboard.html">Mergi la dashboard →</a>
+        </div>
+      </div>
+    </section>
+    <section class="wt-bottom-cta"><div><span>✳ SUBMED · GHID RAPID</span><h2>Acum știi unde găsești fiecare instrument.</h2><p>Alege un punct de pornire și construiește-ți ritmul de pregătire.</p></div><a href="dashboard.html" class="wt-btn wt-btn-primary">Începe din dashboard <span>→</span></a></section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="assets/js/components.js?v=walkthrough-20261109"></script>
+  <script src="assets/js/walkthrough.js?v=20261109" defer></script>
+</body>
+</html>
