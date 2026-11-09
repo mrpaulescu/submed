@@ -27,7 +27,7 @@
   .avatar-actions { display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
   .avatar-actions button { min-height:40px; }
   .avatar-preview { width:84px; height:84px; border-radius:50%; overflow:hidden; display:grid; place-items:center; background:linear-gradient(145deg,var(--blue-bright),var(--blue-deep)); color:#fff; font:800 2rem var(--font-display); box-shadow:0 0 0 4px var(--blue-tint-2); }
-  .avatar-preview img { width:100%; height:100%; object-fit:cover; }
+  .avatar-preview img, .acc-av img { width:100%; height:100%; object-fit:cover; display:block; }
   .avatar-status { min-height:1.2em; font-size:.82rem; color:var(--ink-2); }
   .avatar-status.error { color:#b4232c; }
   .avatar-status.success { color:var(--green); }
@@ -431,6 +431,7 @@ function renderAvatar(url = authUser?.avatar_url || null) {
       const img = new Image();
       img.alt = '';
       img.loading = 'lazy';
+      img.onerror = () => { node.textContent = avatarFallback(); };
       img.src = url;
       node.appendChild(img);
     } else {
@@ -500,9 +501,10 @@ $('uploadAvatar').addEventListener('click', async event => {
     const { data: publicData } = supabase.storage.from(AVATAR_BUCKET).getPublicUrl(uploadedPath);
     const avatarUrl = publicData?.publicUrl;
     if (!avatarUrl) throw new Error('Nu am putut obține adresa fotografiei.');
-    const { error: profileError } = await supabase.from('profiles')
-      .update({ avatar_url: avatarUrl }).eq('id', user.id);
+    const { data: updatedProfile, error: profileError } = await supabase.from('profiles')
+      .update({ avatar_url: avatarUrl }).eq('id', user.id).select('id').maybeSingle();
     if (profileError) throw profileError;
+    if (!updatedProfile) throw new Error('Profilul nu a fost găsit. Reîncarcă pagina și încearcă din nou.');
     const previousPath = authUser.avatar_url
       ? authUser.avatar_url.split('/storage/v1/object/public/avatars/')[1]?.split('?')[0]
       : null;
@@ -536,8 +538,10 @@ $('removeAvatar').addEventListener('click', async event => {
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError) throw userError;
     if (!user || user.id !== authUser.id) throw new Error('Sesiunea a expirat. Autentifică-te din nou.');
-    const { error } = await supabase.from('profiles').update({ avatar_url: null }).eq('id', user.id);
+    const { data: updatedProfile, error } = await supabase.from('profiles')
+      .update({ avatar_url: null }).eq('id', user.id).select('id').maybeSingle();
     if (error) throw error;
+    if (!updatedProfile) throw new Error('Profilul nu a fost găsit. Reîncarcă pagina și încearcă din nou.');
     const path = authUser.avatar_url.split('/storage/v1/object/public/avatars/')[1]?.split('?')[0];
     authUser.avatar_url = null;
     renderAvatar(null);
