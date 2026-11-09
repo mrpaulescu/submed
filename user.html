@@ -21,6 +21,18 @@
   .acc-id .em { font-family:var(--mono); font-size:.82rem; color:var(--ink-3); margin-top:2px; overflow-wrap:anywhere; }
   .acc-head .logout { margin-left:auto; }
 
+  /* ── fotografie de profil ── */
+  .avatar-tools { display:flex; flex-direction:column; align-items:flex-start; gap:7px; min-width:0; }
+  .avatar-tools .hint { color:var(--ink-3); font-size:.78rem; line-height:1.45; }
+  .avatar-actions { display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
+  .avatar-actions button { min-height:40px; }
+  .avatar-preview { width:84px; height:84px; border-radius:50%; overflow:hidden; display:grid; place-items:center; background:linear-gradient(145deg,var(--blue-bright),var(--blue-deep)); color:#fff; font:800 2rem var(--font-display); box-shadow:0 0 0 4px var(--blue-tint-2); }
+  .avatar-preview img { width:100%; height:100%; object-fit:cover; }
+  .avatar-status { min-height:1.2em; font-size:.82rem; color:var(--ink-2); }
+  .avatar-status.error { color:#b4232c; }
+  .avatar-status.success { color:var(--green); }
+  @media(max-width:560px) { .avatar-actions { width:100%; } .avatar-actions button { flex:1 1 auto; } }
+
   /* ── tab-uri ────────────────────────────────── */
   .tabs { display:flex; gap:8px; overflow-x:auto; padding:2px 2px 12px; margin-bottom:6px; scrollbar-width:none; }
   .tabs::-webkit-scrollbar { display:none; }
@@ -176,6 +188,24 @@
 
   <!-- ═════════ PROFIL ═════════ -->
   <section class="pane on" id="pane-profil" role="tabpanel">
+    <div class="card-form">
+      <h3>Fotografie de profil</h3>
+      <p class="sub">Alege o fotografie care va apărea în contul tău și în bara de navigare SubMed.</p>
+      <div class="row-actions" style="align-items:center;gap:18px">
+        <div class="avatar-preview" id="avatarPreview" aria-label="Previzualizare fotografie">?</div>
+        <div class="avatar-tools">
+          <div class="avatar-actions">
+            <input id="avatarFile" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+            <button class="btn-primary" id="chooseAvatar" type="button">Alege fotografia</button>
+            <button class="btn-secondary" id="uploadAvatar" type="button" disabled>Salvează fotografia</button>
+            <button class="btn-secondary" id="removeAvatar" type="button" hidden>Elimină fotografia</button>
+          </div>
+          <span class="hint">JPG, PNG sau WebP · maximum 3 MB. Imaginea este decupată automat în format rotund.</span>
+          <span class="avatar-status" id="avatarStatus" role="status" aria-live="polite"></span>
+        </div>
+      </div>
+    </div>
+
     <div class="card-form">
       <h3>Date personale</h3>
       <p class="sub">Numele apare în panou și în salutul de bun venit.</p>
@@ -384,6 +414,146 @@ const banner = $('banner');
 const msg = (t, type = 'error') => { banner.textContent = t; banner.className = `alert-banner show ${type}`; window.scrollTo({ top: 0, behavior: 'smooth' }); };
 const clearMsg = () => { banner.className = 'alert-banner'; };
 const flash = el => { el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2600); };
+const AVATAR_BUCKET = 'avatars';
+const AVATAR_MAX_BYTES = 3 * 1024 * 1024;
+const AVATAR_MIME = new Set(['image/jpeg', 'image/png', 'image/webp']);
+let pendingAvatarFile = null;
+let pendingAvatarUrl = null;
+
+function avatarFallback() {
+  return (authUser?.name || authUser?.email || '?').trim().charAt(0).toUpperCase() || '?';
+}
+function renderAvatar(url = authUser?.avatar_url || null) {
+  const targets = [$('accAvatar'), $('avatarPreview'), document.getElementById('navAvatar')].filter(Boolean);
+  targets.forEach(node => {
+    node.replaceChildren();
+    if (url) {
+      const img = new Image();
+      img.alt = '';
+      img.loading = 'lazy';
+      img.src = url;
+      node.appendChild(img);
+    } else {
+      node.textContent = avatarFallback();
+    }
+  });
+  $('removeAvatar').hidden = !url;
+}
+function avatarMessage(message = '', type = '') {
+  const status = $('avatarStatus');
+  status.textContent = message;
+  status.className = 'avatar-status' + (type ? ' ' + type : '');
+}
+function clearAvatarPreview() {
+  if (pendingAvatarUrl) URL.revokeObjectURL(pendingAvatarUrl);
+  pendingAvatarUrl = null;
+  pendingAvatarFile = null;
+  $('avatarFile').value = '';
+  $('uploadAvatar').disabled = true;
+  renderAvatar();
+}
+$('chooseAvatar').addEventListener('click', () => $('avatarFile').click());
+$('avatarFile').addEventListener('change', event => {
+  const file = event.currentTarget.files?.[0];
+  if (!file) return;
+  if (!AVATAR_MIME.has(file.type)) {
+    clearAvatarPreview();
+    avatarMessage('Format neacceptat. Alege JPG, PNG sau WebP.', 'error');
+    return;
+  }
+  if (file.size > AVATAR_MAX_BYTES) {
+    clearAvatarPreview();
+    avatarMessage('Fotografia depășește limita de 3 MB.', 'error');
+    return;
+  }
+  if (pendingAvatarUrl) URL.revokeObjectURL(pendingAvatarUrl);
+  pendingAvatarFile = file;
+  pendingAvatarUrl = URL.createObjectURL(file);
+  const preview = $('avatarPreview');
+  const img = new Image();
+  img.alt = 'Previzualizare fotografie selectată';
+  img.src = pendingAvatarUrl;
+  preview.replaceChildren(img);
+  $('uploadAvatar').disabled = false;
+  avatarMessage('Previzualizare pregătită. Apasă „Salvează fotografia”.', 'success');
+});
+$('uploadAvatar').addEventListener('click', async event => {
+  if (!pendingAvatarFile || !authUser?.id) return avatarMessage('Autentifică-te din nou și selectează fotografia.', 'error');
+  const button = event.currentTarget;
+  button.disabled = true;
+  $('chooseAvatar').disabled = true;
+  avatarMessage('Se încarcă fotografia…');
+  let uploadedPath = null;
+  try {
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError) throw userError;
+    if (!user || user.id !== authUser.id) throw new Error('Sesiunea a expirat. Autentifică-te din nou.');
+    const extension = pendingAvatarFile.type === 'image/png' ? 'png'
+      : pendingAvatarFile.type === 'image/webp' ? 'webp' : 'jpg';
+    uploadedPath = user.id + '/' + Date.now() + '.' + extension;
+    const { error: uploadError } = await supabase.storage.from(AVATAR_BUCKET).upload(uploadedPath, pendingAvatarFile, {
+      cacheControl: '3600',
+      contentType: pendingAvatarFile.type,
+      upsert: false
+    });
+    if (uploadError) throw uploadError;
+    const { data: publicData } = supabase.storage.from(AVATAR_BUCKET).getPublicUrl(uploadedPath);
+    const avatarUrl = publicData?.publicUrl;
+    if (!avatarUrl) throw new Error('Nu am putut obține adresa fotografiei.');
+    const { error: profileError } = await supabase.from('profiles')
+      .update({ avatar_url: avatarUrl }).eq('id', user.id);
+    if (profileError) throw profileError;
+    const previousPath = authUser.avatar_url
+      ? authUser.avatar_url.split('/storage/v1/object/public/avatars/')[1]?.split('?')[0]
+      : null;
+    authUser.avatar_url = avatarUrl;
+    renderAvatar(avatarUrl);
+    if (previousPath && previousPath.startsWith(user.id + '/')) {
+      await supabase.storage.from(AVATAR_BUCKET).remove([decodeURIComponent(previousPath)]).catch(() => {});
+    }
+    if (pendingAvatarUrl) URL.revokeObjectURL(pendingAvatarUrl);
+    pendingAvatarUrl = null;
+    pendingAvatarFile = null;
+    $('avatarFile').value = '';
+    avatarMessage('Fotografia de profil a fost actualizată.', 'success');
+  } catch (error) {
+    if (uploadedPath) await supabase.storage.from(AVATAR_BUCKET).remove([uploadedPath]).catch(() => {});
+    console.error('Avatar upload failed:', error);
+    avatarMessage(error.message || 'Nu am putut salva fotografia. Verifică setările Storage și încearcă din nou.', 'error');
+    button.disabled = false;
+  } finally {
+    $('chooseAvatar').disabled = false;
+    button.disabled = !pendingAvatarFile;
+  }
+});
+$('removeAvatar').addEventListener('click', async event => {
+  if (!authUser?.id || !authUser.avatar_url) return;
+  const button = event.currentTarget;
+  button.disabled = true;
+  $('chooseAvatar').disabled = true;
+  avatarMessage('Se elimină fotografia…');
+  try {
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError) throw userError;
+    if (!user || user.id !== authUser.id) throw new Error('Sesiunea a expirat. Autentifică-te din nou.');
+    const { error } = await supabase.from('profiles').update({ avatar_url: null }).eq('id', user.id);
+    if (error) throw error;
+    const path = authUser.avatar_url.split('/storage/v1/object/public/avatars/')[1]?.split('?')[0];
+    authUser.avatar_url = null;
+    renderAvatar(null);
+    if (path && decodeURIComponent(path).startsWith(user.id + '/')) {
+      await supabase.storage.from(AVATAR_BUCKET).remove([decodeURIComponent(path)]).catch(() => {});
+    }
+    avatarMessage('Fotografia de profil a fost eliminată.', 'success');
+  } catch (error) {
+    console.error('Avatar removal failed:', error);
+    avatarMessage(error.message || 'Nu am putut elimina fotografia.', 'error');
+  } finally {
+    button.disabled = false;
+    $('chooseAvatar').disabled = false;
+  }
+});
+
 const PREF_KEY = 'submed_prefs';
 
 /* tier / status — adaptează etichetele dacă folosești alte valori în DB */
@@ -427,8 +597,7 @@ async function load() {
     $('fName').value = authUser.name || '';
     $('fEmail').value = authUser.email || '';
     const av = $('accAvatar');
-    if (authUser.avatar_url) { const img = new Image(); img.alt = ''; img.src = authUser.avatar_url; av.replaceChildren(img); }
-    else av.textContent = (authUser.name || authUser.email || '?')[0].toUpperCase();
+    renderAvatar(authUser.avatar_url || null);
   }
   renderStudentCode(authUser);
 
@@ -458,7 +627,7 @@ $('saveName').addEventListener('click', async e => {
   try {
     await Profiles.savePreferences({ name });
     prefs.name = name; $('accName').textContent = name;
-    $('accAvatar').querySelector('img') || ($('accAvatar').textContent = name[0].toUpperCase());
+    if (!authUser?.avatar_url) renderAvatar(null);
     flash($('nameSaved'));
   } catch (err) { msg('Nu am putut salva numele. Încearcă din nou.'); }
   b.disabled = false;
