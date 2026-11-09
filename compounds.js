@@ -1,131 +1,162 @@
 /*
- * SubMed · IUPAC Quiz
- * Set de studiu organizat pe clase din tematicile de admitere la medicină.
- * Denumirile sunt în română; aliasurile includ nume uzuale și sinonime.
- * Lista este o selecție didactică de compuși reprezentativi, nu o listă oficială exhaustivă.
+ * SubMed shared organic chemistry library.
+ * The same records power the IUPAC quiz and Lewis Builder.
+ * SMILES are canonicalized only for display/graph exercises; review this teaching
+ * dataset against the current faculty bibliography before treating it as exhaustive.
  */
-const ORGANIC_COMPOUNDS = [
-  // Hidrocarburi saturate
-  {smiles:"C",iupacRo:"metan",commonRo:"metan",aliasesRo:["gaz de baltă"],category:"alcani"},
-  {smiles:"CC",iupacRo:"etan",commonRo:"etan",aliasesRo:[],category:"alcani"},
-  {smiles:"CCC",iupacRo:"propan",commonRo:"propan",aliasesRo:[],category:"alcani"},
-  {smiles:"CCCC",iupacRo:"butan",commonRo:"butan",aliasesRo:[],category:"alcani"},
-  {smiles:"CCCCC",iupacRo:"pentan",commonRo:"pentan",aliasesRo:[],category:"alcani"},
-  {smiles:"CCCCCC",iupacRo:"hexan",commonRo:"hexan",aliasesRo:[],category:"alcani"},
-  {smiles:"CCCCCCC",iupacRo:"heptan",commonRo:"heptan",aliasesRo:[],category:"alcani"},
-  {smiles:"CCCCCCCC",iupacRo:"octan",commonRo:"octan",aliasesRo:[],category:"alcani"},
-  {smiles:"CC(C)C",iupacRo:"2-metilpropan",commonRo:"izobutan",aliasesRo:["2-metilpropan","izobutan"],category:"alcani"},
-  {smiles:"CC(C)CC",iupacRo:"2-metilbutan",commonRo:"izopentan",aliasesRo:["2-metilbutan","izopentan"],category:"alcani"},
-  {smiles:"CC(C)(C)C",iupacRo:"2,2-dimetilpropan",commonRo:"neopentan",aliasesRo:["2,2-dimetilpropan","neopentan"],category:"alcani"},
-  {smiles:"C1CCCCC1",iupacRo:"ciclohexan",commonRo:"ciclohexan",aliasesRo:[],category:"alcani"},
+(() => {
+  const compounds = [];
+  const seen = new Set();
+  const roots = ["","met","et","prop","but","pent","hex","hept","oct","non","dec","undec","dodec","tridec","tetradec","pentadec","hexadec","heptadec","octadec","nonadec","eicos","henicos","docos","tricos","tetracos","pentacos","hexacos","heptacos","octacos","nonacos","triacont","hentriacont","dotriacont","tritriacont"];
+  const root = n => roots[n] || ("C"+n);
+  const add = (smiles,iupacRo,commonRo,category,aliasesRo=[]) => {
+    if (seen.has(category+"|"+smiles)) return;
+    seen.add(category+"|"+smiles);
+    compounds.push({smiles,iupacRo,commonRo:commonRo||iupacRo,aliasesRo,category});
+  };
+  const alkaneName = n => root(n)+"an";
+  const alkeneName = (n,p=1) => root(n)+"-"+p+"-enă";
+  const alkyneName = (n,p=1) => root(n)+"-"+p+"-ină";
+  const acidName = n => "acid "+root(n)+"anoic";
+  const prefixes = ["","metil","etil","propil","butil","pentil","hexil","heptil","octil","nonil","decil","undecil","dodecil","tridecil","tetradecil","pentadecil","hexadecil","heptadecil","octadecil","nonadecil","eicosil","henicosil","docosil","tricosil","tetracosil","pentacosil","hexacosil","heptacosil","octacosil","nonacosil","triacontil"];
 
-  // Alchene și alcadiene
-  {smiles:"C=C",iupacRo:"etenă",commonRo:"etilenă",aliasesRo:["etenă","etilenă"],category:"alchene"},
-  {smiles:"CC=C",iupacRo:"propenă",commonRo:"propilenă",aliasesRo:["propenă","propilenă"],category:"alchene"},
-  {smiles:"C=CCC",iupacRo:"but-1-enă",commonRo:"1-butenă",aliasesRo:["but-1-enă","1-butenă"],category:"alchene"},
-  {smiles:"CC=CC",iupacRo:"but-2-enă",commonRo:"2-butenă",aliasesRo:["but-2-enă","2-butenă"],category:"alchene"},
-  {smiles:"C=CC(C)C",iupacRo:"3-metilbut-1-enă",commonRo:"3-metil-1-butenă",aliasesRo:["3-metil-1-butenă"],category:"alchene"},
-  {smiles:"CC(C)=C",iupacRo:"2-metilprop-1-enă",commonRo:"izobutenă",aliasesRo:["2-metilpropenă","izobutenă"],category:"alchene"},
-  {smiles:"C=CC=C",iupacRo:"buta-1,3-dienă",commonRo:"butadienă",aliasesRo:["1,3-butadienă","butadienă"],category:"alchene"},
-  {smiles:"C=C(C)C=C",iupacRo:"2-metilbuta-1,3-dienă",commonRo:"izoprenă",aliasesRo:["izoprenă"],category:"alchene"},
+  // 1. Alcani: 20 membri liniari + 10 izomeri ramificați.
+  for(let n=1;n<=20;n++) add("C".repeat(n),alkaneName(n),null,"alcani");
+  [
+    ["CC(C)C","2-metilpropan","izobutan"],
+    ["CC(C)CC","2-metilbutan","izopentan"],
+    ["CC(C)(C)C","2,2-dimetilpropan","neopentan"],
+    ["CC(C)CCC","2-metilpentan",null],
+    ["CCC(C)CC","3-metilpentan",null],
+    ["CC(C)(C)CC","2,2-dimetilbutan",null],
+    ["CC(C)C(C)C","2,3-dimetilbutan",null],
+    ["CCC(C)(C)CC","3,3-dimetilpentan",null],
+    ["CC(C)(C)C(C)C","2,2,3-trimetilbutan",null],
+    ["CC(C)CCCC","2-metilhexan",null]
+  ].forEach(x=>add(x[0],x[1],x[2],"alcani"));
 
-  // Alchine
-  {smiles:"C#C",iupacRo:"etină",commonRo:"acetilenă",aliasesRo:["etină","acetilenă"],category:"alchine"},
-  {smiles:"CC#C",iupacRo:"propină",commonRo:"metilacetilenă",aliasesRo:["propină","metilacetilenă"],category:"alchine"},
-  {smiles:"C#CCC",iupacRo:"but-1-ină",commonRo:"1-butină",aliasesRo:["1-butină"],category:"alchine"},
-  {smiles:"CC#CC",iupacRo:"but-2-ină",commonRo:"2-butină",aliasesRo:["2-butină"],category:"alchine"},
+  // 2. Alchene: alchene terminale și 2-alchene.
+  for(let n=2;n<=20;n++) add("C="+"C".repeat(n-1),alkeneName(n,1),null,"alchene");
+  for(let n=4;n<=14;n++) add("C".repeat(2)+"="+"C".repeat(n-2),alkeneName(n,2),null,"alchene");
 
-  // Hidrocarburi aromatice
-  {smiles:"c1ccccc1",iupacRo:"benzen",commonRo:"benzen",aliasesRo:[],category:"aromatici"},
-  {smiles:"Cc1ccccc1",iupacRo:"metilbenzen",commonRo:"toluen",aliasesRo:["toluen"],category:"aromatici"},
-  {smiles:"CCc1ccccc1",iupacRo:"etilbenzen",commonRo:"etilbenzen",aliasesRo:[],category:"aromatici"},
-  {smiles:"Cc1ccccc1C",iupacRo:"1,2-dimetilbenzen",commonRo:"o-xilen",aliasesRo:["ortoxilen","o xilen"],category:"aromatici"},
-  {smiles:"Cc1ccc(C)cc1",iupacRo:"1,4-dimetilbenzen",commonRo:"p-xilen",aliasesRo:["paraxilen","p xilen"],category:"aromatici"},
-  {smiles:"Cc1cccc(C)c1",iupacRo:"1,3-dimetilbenzen",commonRo:"m-xilen",aliasesRo:["metaxilen","m xilen"],category:"aromatici"},
-  {smiles:"c1ccc2ccccc2c1",iupacRo:"naftalen",commonRo:"naftalină",aliasesRo:["naftalină"],category:"aromatici"},
+  // 3. Alchine: alchine terminale și 2-alchine.
+  for(let n=2;n<=20;n++) add("C#"+"C".repeat(n-1),alkyneName(n,1),null,"alchine");
+  for(let n=4;n<=14;n++) add("C".repeat(2)+"#"+"C".repeat(n-2),alkyneName(n,2),null,"alchine");
 
-  // Derivați halogenați
-  {smiles:"CCl",iupacRo:"clorometan",commonRo:"clorură de metil",aliasesRo:["clorura de metil"],category:"halogenati"},
-  {smiles:"CCCl",iupacRo:"cloroetan",commonRo:"clorură de etil",aliasesRo:["clorura de etil"],category:"halogenati"},
-  {smiles:"ClCCCl",iupacRo:"1,2-dicloroetan",commonRo:"clorură de etilenă",aliasesRo:["dicloroetan"],category:"halogenati"},
-  {smiles:"ClC(Cl)Cl",iupacRo:"triclorometan",commonRo:"cloroform",aliasesRo:["cloroform"],category:"halogenati"},
-  {smiles:"ClC(Cl)(Cl)Cl",iupacRo:"tetraclorometan",commonRo:"tetraclorură de carbon",aliasesRo:["tetraclorura de carbon"],category:"halogenati"},
-  {smiles:"Clc1ccccc1",iupacRo:"clorobenzen",commonRo:"clorobenzen",aliasesRo:[],category:"halogenati"},
+  // 4. Arene: benzen și omologi alchilbenzenici.
+  add("c1ccccc1","benzen","benzen","aromatici");
+  for(let n=1;n<=29;n++){
+    const name=(prefixes[n]||("alchil-"+n))+"benzen";
+    add("C".repeat(n)+"c1ccccc1",name,null,"aromatici");
+  }
 
-  // Alcooli și polialcooli
-  {smiles:"CO",iupacRo:"metanol",commonRo:"alcool metilic",aliasesRo:["alcool metilic"],category:"alcooli"},
-  {smiles:"CCO",iupacRo:"etanol",commonRo:"alcool etilic",aliasesRo:["alcool etilic"],category:"alcooli"},
-  {smiles:"CCCO",iupacRo:"propan-1-ol",commonRo:"alcool n-propilic",aliasesRo:["1-propanol","alcool propilic"],category:"alcooli"},
-  {smiles:"CC(O)C",iupacRo:"propan-2-ol",commonRo:"alcool izopropilic",aliasesRo:["2-propanol","izopropanol","alcool izopropilic"],category:"alcooli"},
-  {smiles:"CCCCO",iupacRo:"butan-1-ol",commonRo:"alcool n-butilic",aliasesRo:["1-butanol"],category:"alcooli"},
-  {smiles:"CCC(O)C",iupacRo:"butan-2-ol",commonRo:"alcool sec-butilic",aliasesRo:["2-butanol"],category:"alcooli"},
-  {smiles:"OCCO",iupacRo:"etan-1,2-diol",commonRo:"etilenglicol",aliasesRo:["etilenglicol"],category:"alcooli"},
-  {smiles:"OCC(O)CO",iupacRo:"propan-1,2,3-triol",commonRo:"glicerol",aliasesRo:["glicerină","glicerina"],category:"alcooli"},
+  // 5. Derivați halogenați: cloroalcani și bromoalcani.
+  for(let n=1;n<=15;n++){
+    add("Cl"+"C".repeat(n),"1-cloro"+alkaneName(n),null,"halogenati");
+    add("Br"+"C".repeat(n),"1-bromo"+alkaneName(n),null,"halogenati");
+  }
 
-  // Fenoli
-  {smiles:"Oc1ccccc1",iupacRo:"benzenol",commonRo:"fenol",aliasesRo:["fenol","hidroxibenzen"],category:"fenoli"},
-  {smiles:"Cc1ccccc1O",iupacRo:"2-metilbenzenol",commonRo:"o-crezol",aliasesRo:["2-metilfenol","ortocrezol","o crezol"],category:"fenoli"},
-  {smiles:"Cc1ccc(O)cc1",iupacRo:"4-metilbenzenol",commonRo:"p-crezol",aliasesRo:["4-metilfenol","paracrezol","p crezol"],category:"fenoli"},
-  {smiles:"Oc1ccc(O)cc1",iupacRo:"benzen-1,4-diol",commonRo:"hidrochinonă",aliasesRo:["hidrochinona"],category:"fenoli"},
-  {smiles:"Oc1ccccc1O",iupacRo:"benzen-1,2-diol",commonRo:"pirocatechină",aliasesRo:["catecol","pirocatechina"],category:"fenoli"},
-  {smiles:"Oc1cccc(O)c1",iupacRo:"benzen-1,3-diol",commonRo:"rezorcinol",aliasesRo:["rezorcinol"],category:"fenoli"},
+  // 6. Alcooli: alcooli primari și secundari.
+  for(let n=1;n<=15;n++) add("C".repeat(n)+"O",root(n)+"an-1-ol",null,"alcooli");
+  for(let n=3;n<=17;n++) add("C"+"C(O)"+"C".repeat(n-2),root(n)+"an-2-ol",null,"alcooli");
 
-  // Amine
-  {smiles:"CN",iupacRo:"metanamină",commonRo:"metilamină",aliasesRo:["metilamina"],category:"amine"},
-  {smiles:"CCN",iupacRo:"etanamină",commonRo:"etilamină",aliasesRo:["etilamina"],category:"amine"},
-  {smiles:"CCCN",iupacRo:"propan-1-amină",commonRo:"propilamină",aliasesRo:["propilamina","1-propilamină"],category:"amine"},
-  {smiles:"CC(N)C",iupacRo:"propan-2-amină",commonRo:"izopropilamină",aliasesRo:["izopropilamina"],category:"amine"},
-  {smiles:"Nc1ccccc1",iupacRo:"benzenamină",commonRo:"anilină",aliasesRo:["anilina","fenilamină","fenilamina"],category:"amine"},
-  {smiles:"NCCN",iupacRo:"etan-1,2-diamină",commonRo:"etilendiamină",aliasesRo:["etilendiamina"],category:"amine"},
+  // 7. Fenoli: fenol și omologi para-alchil substituiți.
+  add("Oc1ccccc1","benzenol","fenol","fenoli",["fenol"]);
+  for(let n=1;n<=29;n++){
+    const name=(n===1?"4-metil":n===2?"4-etil":"4-"+(prefixes[n]||"alchil"))+"fenol";
+    add("C".repeat(n)+"c1ccc(O)cc1",name,null,"fenoli");
+  }
 
-  // Nitroderivați
-  {smiles:"C[N+](=O)[O-]",iupacRo:"nitrometan",commonRo:"nitrometan",aliasesRo:[],category:"nitroderivati"},
-  {smiles:"O=[N+]([O-])c1ccccc1",iupacRo:"nitrobenzen",commonRo:"nitrobenzen",aliasesRo:[],category:"nitroderivati"},
+  // 8. Amine primare alifatice.
+  for(let n=1;n<=30;n++) add("C".repeat(n)+"N",root(n)+"an-1-amină",null,"amine");
 
-  // Aldehide și cetone
-  {smiles:"C=O",iupacRo:"metanal",commonRo:"formaldehidă",aliasesRo:["formaldehida"],category:"carbonilici"},
-  {smiles:"CC=O",iupacRo:"etanal",commonRo:"acetaldehidă",aliasesRo:["acetaldehida"],category:"carbonilici"},
-  {smiles:"CCC=O",iupacRo:"propanal",commonRo:"propionaldehidă",aliasesRo:["propionaldehida"],category:"carbonilici"},
-  {smiles:"CCCC=O",iupacRo:"butanal",commonRo:"butiraldehidă",aliasesRo:["butiraldehida"],category:"carbonilici"},
-  {smiles:"O=Cc1ccccc1",iupacRo:"benzen-carbaldehidă",commonRo:"benzaldehidă",aliasesRo:["benzaldehida"],category:"carbonilici"},
-  {smiles:"CC(=O)C",iupacRo:"propanonă",commonRo:"acetonă",aliasesRo:["acetona","dimetilcetonă","dimetilcetona"],category:"carbonilici"},
-  {smiles:"CC(=O)CC",iupacRo:"butan-2-onă",commonRo:"metiletilcetonă",aliasesRo:["metil-etil-cetonă","metiletilcetona"],category:"carbonilici"},
-  {smiles:"CC(=O)CCC",iupacRo:"pentan-2-onă",commonRo:"metil-propil-cetonă",aliasesRo:["metilpropilcetona"],category:"carbonilici"},
-  {smiles:"O=C1CCCCC1",iupacRo:"ciclohexanonă",commonRo:"ciclohexanonă",aliasesRo:[],category:"carbonilici"},
+  // 9. Nitroderivați: omologi nitroalcani.
+  for(let n=1;n<=30;n++) add("C".repeat(n)+"[N+](=O)[O-]",n===1?"nitrometan":n===2?"nitroetan":"1-nitro"+alkaneName(n),null,"nitroderivati");
 
-  // Acizi carboxilici și acizi grași
-  {smiles:"O=CO",iupacRo:"acid metanoic",commonRo:"acid formic",aliasesRo:["acid formic"],category:"carboxilici"},
-  {smiles:"CC(=O)O",iupacRo:"acid etanoic",commonRo:"acid acetic",aliasesRo:["acid acetic"],category:"carboxilici"},
-  {smiles:"CCC(=O)O",iupacRo:"acid propanoic",commonRo:"acid propionic",aliasesRo:["acid propionic"],category:"carboxilici"},
-  {smiles:"CCCC(=O)O",iupacRo:"acid butanoic",commonRo:"acid butiric",aliasesRo:["acid butiric"],category:"carboxilici"},
-  {smiles:"CCCCC(=O)O",iupacRo:"acid pentanoic",commonRo:"acid valerianic",aliasesRo:["acid valerianic","acid valeri anic"],category:"carboxilici"},
-  {smiles:"O=C(O)c1ccccc1",iupacRo:"acid benzoic",commonRo:"acid benzoic",aliasesRo:[],category:"carboxilici"},
-  {smiles:"O=C(O)C(=O)O",iupacRo:"acid etandioic",commonRo:"acid oxalic",aliasesRo:["acid oxalic"],category:"carboxilici"},
-  {smiles:"CCCCCCCCCCCCCCCC(=O)O",iupacRo:"acid hexadecanoic",commonRo:"acid palmitic",aliasesRo:["acid palmitic"],category:"acizi grasi"},
-  {smiles:"CCCCCCCCCCCCCCCCCC(=O)O",iupacRo:"acid octadecanoic",commonRo:"acid stearic",aliasesRo:["acid stearic"],category:"acizi grasi"},
+  // 10. Aldehide și cetone.
+  for(let n=1;n<=15;n++) add("C".repeat(n-1)+"C=O",root(n)+"anal",null,"carbonilici");
+  for(let n=3;n<=17;n++) add("C"+"C(=O)"+"C".repeat(n-2),root(n)+"an-2-onă",null,"carbonilici");
 
-  // Esteri, amide și nitrili
-  {smiles:"COC(=O)C",iupacRo:"etanoat de metil",commonRo:"acetat de metil",aliasesRo:["acetat de metil"],category:"derivati acizi"},
-  {smiles:"CCOC(=O)C",iupacRo:"etanoat de etil",commonRo:"acetat de etil",aliasesRo:["acetat de etil"],category:"derivati acizi"},
-  {smiles:"CCOC(=O)CC",iupacRo:"propanoat de etil",commonRo:"propionat de etil",aliasesRo:["propionat de etil"],category:"derivati acizi"},
-  {smiles:"C(=O)N",iupacRo:"metanamidă",commonRo:"formamidă",aliasesRo:["formamida"],category:"derivati acizi"},
-  {smiles:"CC(=O)N",iupacRo:"etanamidă",commonRo:"acetamidă",aliasesRo:["acetamida"],category:"derivati acizi"},
-  {smiles:"CC#N",iupacRo:"etanonitril",commonRo:"acetonitril",aliasesRo:["acetonitril"],category:"derivati acizi"},
-  {smiles:"N#Cc1ccccc1",iupacRo:"benzonitril",commonRo:"cianură de fenil",aliasesRo:["cianura de fenil"],category:"derivati acizi"},
+  // 11. Acizi carboxilici alifatici.
+  for(let n=1;n<=30;n++) add("C".repeat(n-1)+"C(=O)O",acidName(n),null,"carboxilici");
 
-  // Aminoacizi
-  {smiles:"NCC(=O)O",iupacRo:"acid 2-aminoetanoic",commonRo:"glicină",aliasesRo:["glicina"],category:"aminoacizi"},
-  {smiles:"CC(N)C(=O)O",iupacRo:"acid 2-aminopropanoic",commonRo:"alanină",aliasesRo:["alanina"],category:"aminoacizi"},
-  {smiles:"CC(C)C(N)C(=O)O",iupacRo:"acid 2-amino-3-metilbutanoic",commonRo:"valină",aliasesRo:["valina"],category:"aminoacizi"},
-  {smiles:"CC(C)CC(N)C(=O)O",iupacRo:"acid 2-amino-4-metilpentanoic",commonRo:"leucină",aliasesRo:["leucina"],category:"aminoacizi"},
-  {smiles:"NC(CO)C(=O)O",iupacRo:"acid 2-amino-3-hidroxipropanoic",commonRo:"serină",aliasesRo:["serina"],category:"aminoacizi"},
+  // 12. Acizi grași: serie omoloagă C4-C33.
+  for(let n=4;n<=33;n++) add("C".repeat(n-1)+"C(=O)O",acidName(n),"acid gras "+root(n),"acizi grasi");
 
-  // Zaharide - reprezentări aciclice pentru recunoașterea formulei structurale
-  {smiles:"O=C[C@H](O)[C@@H](O)[C@H](O)[C@H](O)CO",iupacRo:"D-glucoză (formă aciclică)",commonRo:"glucoză",aliasesRo:["glucoza","d-glucoză","d-glucoza"],category:"zaharide"},
-  {smiles:"OC[C@H](O)[C@@H](O)[C@H](O)C(=O)CO",iupacRo:"D-fructoză (formă aciclică)",commonRo:"fructoză",aliasesRo:["fructoza","d-fructoză","d-fructoza"],category:"zaharide"},
-  {smiles:"O=C[C@H](O)[C@H](O)[C@H](O)CO",iupacRo:"D-riboză (formă aciclică)",commonRo:"riboză",aliasesRo:["riboza","d-riboză","d-riboza"],category:"zaharide"},
-];
+  // 13. Derivați ai acizilor: esteri, amide și nitrili.
+  for(let n=1;n<=10;n++){
+    const acyl= n+1;
+    add("C"+"O"+"C".repeat(n-1)+"C(=O)C", "etanoat de "+(prefixes[n]||"alchil"),null,"derivati acizi");
+  }
+  for(let n=1;n<=10;n++) add("C".repeat(n-1)+"C(=O)N",root(n)+"anamidă",null,"derivati acizi");
+  for(let n=1;n<=10;n++) add("C".repeat(n)+"C#N",root(n+1)+"anenitril",null,"derivati acizi");
 
-// Alias pentru codul paginii și compatibilitate cu versiunile anterioare.
-const UNIQUE_COMPOUNDS = ORGANIC_COMPOUNDS;
-if (typeof module !== "undefined" && module.exports) module.exports = { ORGANIC_COMPOUNDS, UNIQUE_COMPOUNDS };
+  // 14. Aminoacizi: aminoacizi proteinogeni și aminoacizi neproteinogeni uzuali.
+  [
+    ["NCC(=O)O","acid 2-aminoetanoic","glicină"],
+    ["CC(N)C(=O)O","acid 2-aminopropanoic","alanină"],
+    ["CC(C)C(N)C(=O)O","acid 2-amino-3-metilbutanoic","valină"],
+    ["CC(C)CC(N)C(=O)O","acid 2-amino-4-metilpentanoic","leucină"],
+    ["CCC(C)C(N)C(=O)O","acid 2-amino-3-metilpentanoic","izoleucină"],
+    ["NC(CO)C(=O)O","acid 2-amino-3-hidroxipropanoic","serină"],
+    ["CC(O)C(N)C(=O)O","acid 2-amino-3-hidroxibutanoic","treonină"],
+    ["NC(CS)C(=O)O","acid 2-amino-3-sulfanylpropanoic","cisteină"],
+    ["CSCC(N)C(=O)O","acid 2-amino-4-(metilsulfanil)butanoic","metionină"],
+    ["NC(CC1=CC=CC=C1)C(=O)O","acid 2-amino-3-fenilpropanoic","fenilalanină"],
+    ["NC(CC1=CC=C(O)C=C1)C(=O)O","acid 2-amino-3-(4-hidroxifenil)propanoic","tirozină"],
+    ["NC(CC1=CNC2=CC=CC=C12)C(=O)O","acid 2-amino-3-(1H-indol-3-il)propanoic","triptofan"],
+    ["NC(CC(=O)O)C(=O)O","acid 2-aminobutandioic","acid aspartic"],
+    ["NC(CCC(=O)O)C(=O)O","acid 2-aminopentandioic","acid glutamic"],
+    ["NC(CC(N)=O)C(=O)O","acid 2,4-diamino-4-oxobutanoic","asparagină"],
+    ["NC(CCC(N)=O)C(=O)O","acid 2,5-diamino-5-oxopentanoic","glutamină"],
+    ["NCCCCC(N)C(=O)O","acid 2,6-diaminohexanoic","lizină"],
+    ["NC(CCCNC(N)=N)C(=O)O","acid 2-amino-5-guanidinopentanoic","arginină"],
+    ["N1CCCC1C(=O)O","acid pirolidin-2-carboxilic","prolină"],
+    ["NC(CC1=CN=CN1)C(=O)O","acid 2-amino-3-(1H-imidazol-4-il)propanoic","histidină"],
+    ["NCCC(=O)O","acid 3-aminopropanoic","beta-alanină"],
+    ["NCCCC(=O)O","acid 4-aminobutanoic","acid gamma-aminobutiric"],
+    ["NCC(C)C(=O)O","acid 2-aminobutanoic","acid alfa-aminobutiric"],
+    ["NC(CCC)C(=O)O","acid 2-aminopentanoic","norvalină"],
+    ["NC(CCCC)C(=O)O","acid 2-aminohexanoic","norleucină"],
+    ["NC(CO)CC(=O)O","acid 2-amino-4-hidroxibutanoic","homoserină"],
+    ["NC1CCC(O)C1C(=O)O","acid 4-hidroxipirolidin-2-carboxilic","hidroxiprolină"],
+    ["NC(CCC(=O)N)C(=O)O","acid 2-amino-5-carbamoilpentanoic","glutamină izomerică"],
+    ["NC(C)(C)C(=O)O","acid 2-amino-2-metilpropanoic","alfa-aminoisobutiric"],
+    ["NC(CCS)C(=O)O","acid 2-amino-4-sulfanylbutanoic","homocisteină"]
+  ].forEach(x=>add(x[0],x[1],x[2],"aminoacizi"));
+
+  // 15. Zaharide: aldohexoze, aldopentoze și cetohexoze, inclusiv stereoizomeri.
+  const hexoses=[
+    ["glucoză","@","@@","@","@"],["mannoză","@@","@@","@","@"],
+    ["galactoză","@","@@","@@","@"],["taloză","@@","@@","@@","@"],
+    ["alloză","@","@","@","@"],["altroză","@@","@","@","@"],
+    ["guloză","@","@","@@","@"],["idoză","@@","@","@@","@"]
+  ];
+  hexoses.forEach(([name,a,b,c,d])=>{
+    const sm="O=C[C"+a+"H](O)[C"+b+"H](O)[C"+c+"H](O)[C"+d+"H](O)CO";
+    add(sm,"aldohexoză ("+name+")","D-"+name,"zaharide",["d-"+name]);
+    const inv=x=>x==="@"?"@@":"@";
+    const mirror="O=C[C"+inv(a)+"H](O)[C"+inv(b)+"H](O)[C"+inv(c)+"H](O)[C"+inv(d)+"H](O)CO";
+    add(mirror,"aldohexoză ("+name+" enantiomer)","L-"+name,"zaharide",["l-"+name]);
+  });
+  const pentoses=[["riboză","@","@","@"],["arabinoză","@@","@","@"],["xiloză","@","@@","@"],["lixoză","@@","@@","@"]];
+  pentoses.forEach(([name,a,b,c])=>{
+    const sm="O=C[C"+a+"H](O)[C"+b+"H](O)[C"+c+"H](O)CO";
+    add(sm,"aldopentoză ("+name+")","D-"+name,"zaharide",["d-"+name]);
+    const inv=x=>x==="@"?"@@":"@";
+    add("O=C[C"+inv(a)+"H](O)[C"+inv(b)+"H](O)[C"+inv(c)+"H](O)CO","aldopentoză ("+name+" enantiomer)","L-"+name,"zaharide",["l-"+name]);
+  });
+  [
+    ["fructoză","@","@@","@"],["psicoză","@","@","@"],["sorboză","@@","@@","@"],["tagatoză","@@","@","@"]
+  ].forEach(([name,a,b,c])=>{
+    const sm="OC[C"+a+"H](O)[C"+b+"H](O)[C"+c+"H](O)C(=O)CO";
+    add(sm,"cetohexoză ("+name+")","D-"+name,"zaharide",["d-"+name]);
+  });
+
+  const counts={};
+  compounds.forEach(c=>counts[c.category]=(counts[c.category]||0)+1);
+  window.ORGANIC_COMPOUNDS=compounds;
+  window.UNIQUE_COMPOUNDS=compounds;
+  window.SUBMED_COMPOUND_COUNTS=counts;
+  if(typeof module!=="undefined"&&module.exports) module.exports={ORGANIC_COMPOUNDS:compounds,UNIQUE_COMPOUNDS:compounds,SUBMED_COMPOUND_COUNTS:counts};
+})();
