@@ -116,6 +116,43 @@
   .wk small{display:block;font:600 .6rem var(--mono);color:var(--ink-3);text-transform:uppercase}.wk b{display:block;font-size:.95rem}.wk span{display:block;font-size:.66rem;color:var(--ink-2);margin-top:3px}
   .wk .pl-bar{margin-top:6px;height:5px}
   @media(max-width:560px){.wk{grid-template-columns:repeat(4,1fr)}}
+
+/* Coach: pași clari, configurare și previzualizare */
+.coach-intro{margin-bottom:14px}
+.coach-intro h3{margin:0 0 6px}
+.coach-insights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:14px 0}
+.coach-insight{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);min-width:0}
+.coach-insight b,.coach-insight span,.coach-insight small{display:block}
+.coach-insight b{font:800 1.25rem var(--font-display);color:var(--blue-deep)}
+.coach-insight span{font-size:.76rem;font-weight:700;margin-top:2px}
+.coach-insight small{font-size:.68rem;color:var(--ink-3);margin-top:3px;line-height:1.4}
+.coach-recommendation,.coach-hint{padding:13px 14px;border:1px solid var(--blue-tint-2);border-radius:12px;background:var(--surface-2);margin:12px 0}
+.coach-recommendation p{margin:4px 0 8px}
+.coach-tag{display:inline-flex;margin:3px 5px 2px 0;padding:5px 9px;border-radius:100px;background:var(--blue-tint);color:var(--blue-deep);font-size:.7rem;font-weight:700}
+.coach-config{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0 12px}
+.coach-field{display:grid;gap:5px;min-width:0}
+.coach-field>span{font-size:.72rem;font-weight:800;color:var(--ink-2)}
+.coach-field small{font-size:.67rem;color:var(--ink-3);line-height:1.4}
+.coach-field select,.coach-field input{width:100%;min-height:44px}
+.coach-generate{width:100%;min-height:46px}
+.coach-plan-summary{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:20px 0 8px;padding:12px 14px;border-radius:12px;background:var(--blue-tint-2);color:var(--blue-deep)}
+.coach-plan-summary span{font:600 .7rem var(--mono);text-align:right}
+.coach-tabs{margin:12px 0 5px}
+.coach-day{margin-top:10px}
+.coach-day .pi{gap:8px}
+.coach-day .pi-t{min-width:92px}
+.coach-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.coach-actions button{min-height:44px}
+@media(max-width:620px){
+  .coach-insights{grid-template-columns:1fr 1fr}
+  .coach-insight:last-child{grid-column:1/-1}
+  .coach-config{grid-template-columns:1fr}
+  .coach-plan-summary{align-items:flex-start;flex-direction:column}
+  .coach-plan-summary span{text-align:left}
+  .coach-actions{display:grid;grid-template-columns:1fr}
+  .coach-actions button{width:100%}
+}
+
 </style>
 </head>
 <body data-nav="full">
@@ -417,7 +454,7 @@ function generatePlan({ minutes, startMin, focus, horizon }) {
     return (1 - rate) * (focus === 'new' ? 50 : 100) + (p.attempts - p.correct) * .2;
   };
   const ranked = chapters.map(c => ({ c, s: score(c) })).filter(x => x.s >= 0).sort((a, b) => b.s - a.s).map(x => x.c);
-  const nx = plan.nextExam; const dte = nx ? Math.round((nx.localDate - today) / 86400000) : null;
+  const nx = plan.nextExam, dte = nx ? Math.round((nx.localDate - today) / 86400000) : null;
   const days = [];
   for (let i = 0; i < horizon; i++) {
     const d = addDays(today, i), k = key(d);
@@ -433,105 +470,122 @@ function generatePlan({ minutes, startMin, focus, horizon }) {
       items.push({ type: 'grile', title: `${Math.max(10, Math.round(minutes / 6))} grile mixte`, minutes: r5(minutes * .25), href: 'grile.html', count: Math.max(10, Math.round(minutes / 6)) });
     } else {
       const bio = ch.subject === 'biologie', lesM = r5(minutes * .3), grM = r5(minutes * .35), thM = r5(minutes * .15);
-      items.push({ type: 'lesson', title: bio ? `Lecție Barron's: ${ch.name}` : `Teorie și reacții: ${ch.name}`, minutes: lesM, href: href, chapterId: ch.id });
+      items.push({ type: 'lesson', title: bio ? `Lecție Barron's: ${ch.name}` : `Teorie și reacții: ${ch.name}`, minutes: lesM, href, chapterId: ch.id });
       const n = Math.max(5, Math.floor(grM / 2));
       items.push({ type: 'grile', title: `${n} grile din ${ch.name}`, minutes: grM, href: `${href}&count=${n}`, count: n, chapterId: ch.id });
       items.push(bio ? { type: 'flashcards', title: 'Flashcarduri de recapitulare', minutes: thM, href: 'flashcards.html?due=1', count: Math.min(20, thM * 2) }
         : { type: 'scheme', title: 'Scheme chimice și structuri', minutes: thM, href: 'iupac-quiz.html' });
-      const rest = minutes - items.reduce((s, x) => s + x.minutes, 0);
-      if (rest >= 5) items.push({ type: 'review', title: 'Reia grilele greșite', minutes: r5(rest), href: 'grile.html?mode=mistakes&count=10' });
+      const rest = minutes - items.reduce((sum, x) => sum + x.minutes, 0);
+      if (rest >= 5) items.push({ type: 'review', title: 'Reia grilele greșite', minutes: rest, href: 'grile.html?mode=mistakes&count=10' });
     }
-    const total = items.reduce((s, x) => s + x.minutes, 0);
+    const total = items.reduce((sum, x) => sum + x.minutes, 0);
     const busy = events.filter(e => e.day === k).sort((a, b) => a.start_min - b.start_min);
-    let st = startMin;
-    busy.forEach(e => { if (st < e.start_min + e.duration_min && st + total > e.start_min) st = e.start_min + e.duration_min + 10; });
-    items.forEach(x => { x.startMin = st; st += x.minutes; });
-    if (st <= 1440) days.push({ day: k, recap, items });
+    let cursor = startMin;
+    busy.forEach(e => { if (cursor < e.start_min + e.duration_min && cursor + total > e.start_min) cursor = e.start_min + e.duration_min + 10; });
+    items.forEach(x => { x.startMin = cursor; cursor += x.minutes; });
+    if (cursor <= 1440) days.push({ day: k, recap, items });
   }
   return { created: new Date().toISOString(), focus, minutes, startMin, days, inCalendar: false };
 }
 let gen = S.coach_plan || null, planTab = 'today';
 function renderPlanner() {
   const h = $('wPlanner'); h.replaceChildren();
-  h.append(el('div', 'pl-kick', 'Coach virtual'), el('h3', null, 'Creează-ți planul de învățare'));
-  const w = weakest();
-  h.append(el('p', 'pl-muted', w.length ? 'Ce ai de îmbunătățit, după rezultatele tale:' : 'Rezolvă câteva grile (minim 5 pe capitol) și Coach-ul îți va arăta punctele slabe. Până atunci, planul pornește de la capitolele neîncepute.'));
-  if (w.length) { const g = el('div', 'pl-weak'); w.forEach(c => { const d = el('div'); d.append(el('b', null, c.name), el('span', 'pl-muted', `${acc(c)}% corecte din ${perf(c).attempts} răspunsuri`)); g.append(d); }); h.append(g); }
-  const mk = (lbl, node) => { const d = el('div'); d.append(el('label', null, lbl), node); return d; };
-  const mins = el('select', 'pl-sel', null, { id: 'pMin' }); [[60, '1 oră'], [90, '1 h 30'], [120, '2 ore'], [180, '3 ore'], [240, '4 ore']].forEach(([v, t]) => mins.append(new Option(t, v)));
-  mins.value = String([60, 90, 120, 180, 240].includes(plan.dailyMinutes) ? plan.dailyMinutes : 60);
-  const st = el('input', 'pl-in', null, { type: 'time', value: '17:00', id: 'pStart' });
-  const foc = el('select', 'pl-sel', null, { id: 'pFocus' }); foc.append(new Option('Îmbunătățesc punctele slabe', 'weak'), new Option('Învăț capitole noi', 'new'), new Option('Echilibrat', 'balanced'));
-  if (S.coach_focus) foc.value = S.coach_focus;
-  const hor = el('select', 'pl-sel', null, { id: 'pHor' }); hor.append(new Option('7 zile', 7), new Option('14 zile', 14));
-  const run = el('button', 'btn-primary', gen ? 'Regenerează planul' : 'Generează planul cu Coach-ul', { type: 'button' });
-  run.onclick = () => {
-    const [a, b] = (st.value || '17:00').split(':').map(Number);
-    gen = generatePlan({ minutes: +mins.value, startMin: a * 60 + b, focus: foc.value, horizon: +hor.value });
-    S.coach_plan = gen; S.coach_focus = foc.value; persist(); renderPlanner(); renderWeek();
+  const weak = weakest(), allDone = chapters.filter(c => status(c) === 'done').length;
+  const intro = el('div','coach-intro');
+  intro.append(el('div','pl-kick','Coach virtual · planificare ghidată'),el('h3',null,'Ce vrei să lucrezi în perioada următoare?'));
+  intro.append(el('p','pl-muted','Coach-ul folosește progresul la grile, capitolele parcurse, timpul disponibil și examenele programate pentru a propune un program. Îl poți ajusta înainte să îl adaugi în calendar.'));
+  h.append(intro);
+  const insights=el('div','coach-insights');
+  const insight=(value,label,detail)=>{const box=el('div','coach-insight');box.append(el('b',null,value),el('span',null,label),el('small',null,detail));insights.append(box)};
+  insight(String(chapters.length-allDone),'capitole rămase','din materia disponibilă');
+  insight(weak.length?weak.length+' capitole':'—', 'puncte de consolidat', weak.length?'minimum 5 grile pe capitol':'mai rezolvă grile pentru analiză');
+  insight(plan.nextExam?String(Math.max(0,Math.round((plan.nextExam.localDate-today)/86400000)))+' zile':'—','până la examen',plan.nextExam?.name||'nu ai un examen programat');
+  h.append(insights);
+  if(weak.length){
+    const rec=el('div','coach-recommendation');
+    rec.append(el('strong',null,'Prioritatea recomandată'),el('p','pl-muted','Ai rezultate mai slabe la aceste capitole. Coach-ul le va prioritiza în plan:'));
+    weak.forEach(c=>{const tag=el('span','coach-tag',c.name+' · '+acc(c)+'%');rec.append(tag)});
+    h.append(rec);
+  }else{
+    h.append(el('p','coach-hint','Încă nu există suficiente răspunsuri pentru o analiză a punctelor slabe. Coach-ul va porni de la capitolele neîncepute și de la recapitulare.'));
+  }
+  const mk=(label,node,help)=>{const box=el('label','coach-field');box.append(el('span',null,label),node);if(help)box.append(el('small',null,help));return box};
+  const mins=el('select','pl-sel',null,{id:'pMin'});[[45,'45 minute'],[60,'1 oră'],[90,'1 h 30'],[120,'2 ore'],[180,'3 ore'],[240,'4 ore']].forEach(([v,t])=>mins.append(new Option(t,v)));
+  mins.value=String([45,60,90,120,180,240].includes(gen?.minutes)?gen.minutes:[60,90,120,180,240].includes(plan.dailyMinutes)?plan.dailyMinutes:60);
+  const st=el('input','pl-in',null,{type:'time',value:gen?hm(gen.startMin):'17:00',id:'pStart'});
+  const foc=el('select','pl-sel',null,{id:'pFocus'});
+  foc.append(new Option('Echilibrat · teorie și exerciții','balanced'),new Option('Consolidez capitolele slabe','weak'),new Option('Parcurg materie nouă','new'));
+  foc.value=gen?.focus||S.coach_focus||'balanced';
+  const hor=el('select','pl-sel',null,{id:'pHor'});hor.append(new Option('Următoarele 7 zile',7),new Option('Următoarele 14 zile',14));
+  hor.value=String(gen?.days?.length>7?14:7);
+  const config=el('div','coach-config');
+  config.append(mk('Timp disponibil zilnic',mins,'Durata totală a sesiunii de pregătire.'),mk('Ora de început',st,'Coach-ul va evita pe cât posibil activitățile deja programate.'),mk('Prioritatea de învățare',foc,'Alege ce contează cel mai mult acum.'),mk('Orizontul planului',hor,'Poți genera un plan pe una sau două săptămâni.'));
+  const run=el('button','btn-primary coach-generate',gen?'Actualizează planul':'Generează planul meu',{type:'button'});
+  run.onclick=()=>{
+    const [hh,mm]=(st.value||'17:00').split(':').map(Number);
+    gen=generatePlan({minutes:+mins.value,startMin:hh*60+mm,focus:foc.value,horizon:+hor.value});
+    S.coach_plan=gen;S.coach_focus=foc.value;S.coach_horizon=+hor.value;persist();renderPlanner();renderWeek();
   };
-  const f = el('div', 'pl-form pf'); f.append(mk('Timp pe zi', mins), mk('Începe la', st), mk('Obiectiv', foc), mk('Interval', hor), run); h.append(f);
-  if (!gen || !gen.days.length) { h.append(el('p', 'pl-empty', gen ? 'Nu am putut genera zile (examenul e foarte aproape sau nu ai capitole disponibile).' : 'Planul va conține pentru fiecare zi grile, lecții, scheme chimice și recapitulări, cu timp estimat și oră în calendar.')); return; }
-  const tabs = el('div', 'dl-tabs'); tabs.style.margin = '16px 0 4px';
-  [['today', 'Azi'], ['week', 'Pe zile']].forEach(([v, t]) => { const b = el('button', planTab === v ? 'on' : '', t, { type: 'button' }); b.onclick = () => { planTab = v; renderPlanner(); }; tabs.append(b); });
+  h.append(config,run);
+  if(!gen||!gen.days.length){
+    h.append(el('p','pl-empty',gen?'Nu am putut genera zile în intervalul ales. Verifică dacă ora de început lasă suficient timp până la miezul nopții.':'După generare, vei vedea aici programul pe zile și vei putea să îl verifici înainte de salvare.'));
+    return;
+  }
+  const summary=el('div','coach-plan-summary');
+  const totalMin=gen.days.reduce((sum,d)=>sum+d.items.reduce((a,x)=>a+x.minutes,0),0);
+  summary.append(el('strong',null,'Plan propus'),el('span',null,`${gen.days.length} zile · ${Math.round(totalMin/60*10)/10} ore în total`));
+  h.append(summary);
+  const tabs=el('div','dl-tabs coach-tabs');
+  [['today','Astăzi'],['week','Toate zilele']].forEach(([v,t])=>{const b=el('button',planTab===v?'on':'',t,{type:'button'});b.onclick=()=>{planTab=v;renderPlanner()};tabs.append(b)});
   h.append(tabs);
-  const shown = planTab === 'today' ? gen.days.filter(d => d.day === todayStr) : gen.days;
-  if (!shown.length) h.append(el('p', 'pl-empty', 'Nu există un plan pentru azi în această variantă.'));
-  const ICON = { lesson: '📖', grile: '✍️', flashcards: '🃏', scheme: '🧪', review: '🔁' };
-  shown.forEach(d => {
-    const card = el('div', 'pd'), head = el('div', 'pd-h');
-    head.append(el('span', null, fromKey(d.day).toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'short' }) + (d.recap ? ' · recapitulare' : '')), el('span', null, d.items.reduce((s, x) => s + x.minutes, 0) + ' min'));
+  const shown=planTab==='today'?gen.days.filter(d=>d.day===todayStr):gen.days;
+  if(!shown.length)h.append(el('p','pl-empty','Nu există activități propuse pentru astăzi. Selectează „Toate zilele” pentru a vedea planul complet.'));
+  const ICON={lesson:'📖',grile:'✍️',flashcards:'🃏',scheme:'🧪',review:'🔁'};
+  shown.forEach(d=>{
+    const card=el('div','pd coach-day'),head=el('div','pd-h');
+    head.append(el('span',null,fromKey(d.day).toLocaleDateString('ro-RO',{weekday:'long',day:'numeric',month:'short'})+(d.recap?' · recapitulare':'')),el('span',null,d.items.reduce((sum,x)=>sum+x.minutes,0)+' min'));
     card.append(head);
-    d.items.forEach(x => {
-      const r = el('div', 'pi'), a = el('a', 'pi-n', `${ICON[x.type] || '•'} ${x.title}`, { href: x.href });
-      r.append(el('span', 'pi-t', `${hm(x.startMin)}–${hm(x.startMin + x.minutes)}`), a, el('span', 'pi-m', x.minutes + ' min')); card.append(r);
+    d.items.forEach(x=>{
+      const row=el('div','pi'),link=el('a','pi-n',`${ICON[x.type]||'•'} ${x.title}`,{href:x.href});
+      row.append(el('span','pi-t',`${hm(x.startMin)}–${hm(x.startMin+x.minutes)}`),link,el('span','pi-m',x.minutes+' min'));card.append(row);
     });
     h.append(card);
   });
-  const acts = el('div'); acts.style.cssText = 'display:flex;gap:9px;flex-wrap:wrap;margin-top:16px';
-  const g1 = el('button', 'btn-primary', gen.inCalendar ? 'Adăugat în calendar ✓' : 'Adaugă planul în calendar', { type: 'button' }); g1.disabled = !!gen.inCalendar;
-  g1.onclick = async () => {
-    g1.disabled = true; g1.textContent = 'Se adaugă…';
-    try {
-      for (const d of gen.days) for (const x of d.items) await Coach.addDayEvent({ day: d.day, name: x.title, startMin: x.startMin, durationMin: x.minutes, eventType: 'study', notes: 'Plan Coach SubMed' });
-      gen.inCalendar = true; S.coach_plan = gen; await persist(); await loadEvents();
-      renderPlanner(); renderStrip(); renderWeek(); renderStats(); say('Planul a fost adăugat în calendar.');
-    } catch (er) { say('Nu toate blocurile au putut fi adăugate: ' + (er.message || 'eroare')); g1.disabled = false; g1.textContent = 'Reîncearcă adăugarea în calendar'; await loadEvents(); renderStrip(); renderWeek(); }
+  const actions=el('div','coach-actions');
+  const add=el('button','btn-primary',gen.inCalendar?'Plan adăugat în calendar ✓':'Adaugă planul în calendar',{type:'button'});add.disabled=!!gen.inCalendar;
+  add.onclick=async()=>{
+    add.disabled=true;add.textContent='Se adaugă…';
+    try{
+      for(const d of gen.days)for(const x of d.items)await Coach.addDayEvent({day:d.day,name:x.title,startMin:x.startMin,durationMin:x.minutes,eventType:'study',notes:'Plan Coach SubMed'});
+      gen.inCalendar=true;S.coach_plan=gen;await persist();await loadEvents();renderPlanner();renderStrip();renderWeek();renderStats();say('Planul a fost adăugat în calendar.');
+    }catch(error){say('Nu toate blocurile au putut fi adăugate: '+(error.message||'eroare'));add.disabled=false;add.textContent='Reîncearcă adăugarea în calendar';await loadEvents();renderStrip();renderWeek();}
   };
-  const g2 = el('button', 'btn-secondary', 'Setează obiectivele de azi', { type: 'button' });
-  g2.onclick = () => {
-    const d = gen.days.find(x => x.day === todayStr); if (!d) { say('Planul nu conține ziua de azi.'); return; }
-    const t = totals();
-    S.plan_goals[todayStr] = d.items.map((x, i) => ({ id: `${todayStr}-${i}`, type: x.type === 'grile' || x.type === 'flashcards' ? x.type : 'manual', label: x.title, target: x.count || 1, base: x.type === 'grile' ? t.att : t.known, minutes: x.minutes, manual: false }));
-    persist(); renderGoals(); $('wGoals').scrollIntoView({ behavior: 'smooth' });
+  const goals=el('button','btn-secondary','Transformă planul de azi în obiective',{type:'button'});
+  goals.onclick=()=>{
+    const d=gen.days.find(x=>x.day===todayStr);if(!d){say('Planul nu conține ziua de azi.');return}
+    const t=totals();
+    S.plan_goals[todayStr]=d.items.map((x,i)=>({id:`${todayStr}-${i}`,type:x.type==='grile'||x.type==='flashcards'?x.type:'manual',label:x.title,target:x.count||1,base:x.type==='grile'?t.att:t.known,minutes:x.minutes,manual:false}));
+    persist();renderGoals();$('wGoals').scrollIntoView({behavior:'smooth'});
   };
-  acts.append(g1, g2); h.append(acts);
+  actions.append(add,goals);h.append(actions);
 }
 
-/* 8 ─ overview săptămână + intenție ──────────────────────── */
+/* 8 ─ overview săptămână ────────────────────────────────── */
 function renderWeek() {
-  const h = $('wWeek'); h.replaceChildren();
-  const wk = el('div', 'wk');
-  for (let i = 0; i < 7; i++) {
-    const d = addDays(today, i), k = key(d), ev = events.filter(e => e.day === k);
-    const min = ev.filter(e => e.event_type === 'study').reduce((s, e) => s + e.duration_min, 0);
-    const a = el('a', i === 0 ? 'today' : '', null, { href: 'calendar.html' });
-    const bar = el('div', 'pl-bar'), fill = el('i'); fill.style.width = Math.min(100, min / 240 * 100) + '%'; bar.append(fill);
-    a.append(el('small', null, d.toLocaleDateString('ro-RO', { weekday: 'short' })), el('b', null, String(d.getDate())), el('span', null, `${ev.length} blocuri`), el('span', null, min ? (min / 60).toFixed(1).replace('.0', '') + ' h studiu' : 'liber'), bar);
+  const h=$('wWeek');h.replaceChildren();
+  const wk=el('div','wk');
+  for(let i=0;i<7;i++){
+    const d=addDays(today,i),k=key(d),ev=events.filter(e=>e.day===k);
+    const min=ev.filter(e=>e.event_type==='study').reduce((sum,e)=>sum+e.duration_min,0);
+    const a=el('a',i===0?'today':'',null,{href:'calendar.html'});
+    const bar=el('div','pl-bar'),fill=el('i');fill.style.width=Math.min(100,min/240*100)+'%';bar.append(fill);
+    a.append(el('small',null,d.toLocaleDateString('ro-RO',{weekday:'short'})),el('b',null,String(d.getDate())),el('span',null,`${ev.length} blocuri`),el('span',null,min?(min/60).toFixed(1).replace('.0','')+' h studiu':'liber'),bar);
     wk.append(a);
   }
   h.append(wk);
-  const row = el('div'); row.style.cssText = 'display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:16px';
-  const sel = el('select', 'pl-sel'); [['weak', 'Vreau să recuperez capitolele slabe'], ['new', 'Vreau să parcurg materia nouă'], ['exam', 'Mă pregătesc pentru următorul examen'], ['daily', 'Vreau un ritm zilnic constant']].forEach(([v, t]) => sel.append(new Option(t, v)));
-  const go = el('button', 'btn-primary', 'Creează plan după intenția mea', { type: 'button' });
-  go.onclick = () => {
-    const v = sel.value, focus = v === 'weak' ? 'weak' : v === 'new' ? 'new' : 'balanced';
-    const nx = plan.nextExam, dte = nx ? Math.round((nx.localDate - today) / 86400000) : null;
-    gen = generatePlan({ minutes: v === 'daily' ? 60 : (plan.dailyMinutes || 90), startMin: gen?.startMin || 17 * 60, focus, horizon: v === 'exam' && dte > 0 ? Math.min(14, dte) : 7 });
-    S.coach_plan = gen; S.coach_focus = focus; persist(); planTab = 'week'; renderPlanner(); $('wPlanner').scrollIntoView({ behavior: 'smooth' });
-  };
-  const cal = el('a', 'btn-secondary', 'Vezi calendarul complet →', { href: 'calendar.html' }); cal.style.textDecoration = 'none';
-  row.append(sel, go, cal); h.append(row);
+  const link=el('a','btn-secondary','Deschide calendarul și ajustează orarul →', {href:'calendar.html'});
+  link.style.cssText='display:inline-flex;text-decoration:none;margin-top:16px';
+  h.append(link);
 }
 
 if (plan.preferences.target_score) $('coachIntro').textContent = `Ținta ta este ${plan.preferences.target_score}/45. Planul se ajustează după răspunsurile și examenele tale.`;
