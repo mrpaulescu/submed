@@ -103,7 +103,6 @@ const ORGANIC_COMPOUNDS = [
   {smiles:"O=C(O)C(=O)O",iupacRo:"acid etandioic",commonRo:"acid oxalic",aliasesRo:["acid oxalic"],category:"carboxilici"},
   {smiles:"CCCCCCCCCCCCCCCC(=O)O",iupacRo:"acid hexadecanoic",commonRo:"acid palmitic",aliasesRo:["acid palmitic"],category:"acizi grasi"},
   {smiles:"CCCCCCCCCCCCCCCCCC(=O)O",iupacRo:"acid octadecanoic",commonRo:"acid stearic",aliasesRo:["acid stearic"],category:"acizi grasi"},
-  {smiles:"CCCCCCCC/C=C\\CCCCCCCC(=O)O",iupacRo:"acid (Z)-octadec-9-enoic",commonRo:"acid oleic",aliasesRo:["acid oleic"],category:"acizi grasi"},
 
   // Esteri, amide și nitrili
   {smiles:"COC(=O)C",iupacRo:"etanoat de metil",commonRo:"acetat de metil",aliasesRo:["acetat de metil"],category:"derivati acizi"},
@@ -119,13 +118,12 @@ const ORGANIC_COMPOUNDS = [
   {smiles:"CC(N)C(=O)O",iupacRo:"acid 2-aminopropanoic",commonRo:"alanină",aliasesRo:["alanina"],category:"aminoacizi"},
   {smiles:"CC(C)C(N)C(=O)O",iupacRo:"acid 2-amino-3-metilbutanoic",commonRo:"valină",aliasesRo:["valina"],category:"aminoacizi"},
   {smiles:"CC(C)CC(N)C(=O)O",iupacRo:"acid 2-amino-4-metilpentanoic",commonRo:"leucină",aliasesRo:["leucina"],category:"aminoacizi"},
-  {smiles:"NCC(O)C(=O)O",iupacRo:"acid 2-amino-3-hidroxipropanoic",commonRo:"serină",aliasesRo:["serina"],category:"aminoacizi"},
-  {smiles:"NCC(=O)O",iupacRo:"acid 2-aminoetanoic",commonRo:"glicină",aliasesRo:["glicina"],category:"aminoacizi"},
+  {smiles:"NC(CO)C(=O)O",iupacRo:"acid 2-amino-3-hidroxipropanoic",commonRo:"serină",aliasesRo:["serina"],category:"aminoacizi"},
 
   // Zaharide - reprezentări aciclice pentru recunoașterea formulei structurale
-  {smiles:"O=CC(O)C(O)C(O)C(O)CO",iupacRo:"aldohexoză (glucoză)",commonRo:"glucoză",aliasesRo:["glucoza","d-glucoză","d-glucoza"],category:"zaharide"},
-  {smiles:"OCC(=O)C(O)C(O)C(O)CO",iupacRo:"cetohexoză (fructoză)",commonRo:"fructoză",aliasesRo:["fructoza","d-fructoză","d-fructoza"],category:"zaharide"},
-  {smiles:"O=CC(O)C(O)C(O)CO",iupacRo:"aldopentoză (riboză)",commonRo:"riboză",aliasesRo:["riboza","d-riboză","d-riboza"],category:"zaharide"},
+  {smiles:"O=C[C@H](O)[C@@H](O)[C@H](O)[C@H](O)CO",iupacRo:"D-glucoză (formă aciclică)",commonRo:"glucoză",aliasesRo:["glucoza","d-glucoză","d-glucoza"],category:"zaharide"},
+  {smiles:"OC[C@H](O)[C@@H](O)[C@H](O)C(=O)CO",iupacRo:"D-fructoză (formă aciclică)",commonRo:"fructoză",aliasesRo:["fructoza","d-fructoză","d-fructoza"],category:"zaharide"},
+  {smiles:"O=C[C@H](O)[C@H](O)[C@H](O)CO",iupacRo:"D-riboză (formă aciclică)",commonRo:"riboză",aliasesRo:["riboza","d-riboză","d-riboza"],category:"zaharide"},
 ];
 
 // Alias pentru codul paginii și compatibilitate cu versiunile anterioare.
