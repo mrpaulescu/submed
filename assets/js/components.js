@@ -44,7 +44,6 @@ const NAV_LINKS = [
   { label: 'Grile',      href: 'grile.html' },
   { label: 'Scanare',    href: 'scan.html' },
   { label: 'Flashcards', href: 'flashcards.html' },
-  { label: 'Ghid',       href: 'walkthrough.html' },
   { label: 'Contact',    href: 'desprecontact.html' },
 ];
 
