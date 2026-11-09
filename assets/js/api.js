@@ -784,34 +784,89 @@ export const Coach = {
     return true;
   },
 
-  // ── evenimentele personale din programul zilei (user_day_events)
+  // ── evenimentele personale din program (user_day_events)
+  // Coloanele event_type și notes sunt adăugate de migrarea calendarului.
   async listDayEvents(day) {
+    return this.listDayEventsBetween(day, day);
+  },
+
+  async listDayEventsBetween(fromDay, toDay) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Neautentificat');
     const { data, error } = await supabase.from('user_day_events')
-      .select('id, name, start_min, duration_min')
-      .eq('day', day)
+      .select('id, day, name, start_min, duration_min, event_type, notes, created_at')
+      .eq('user_id', user.id)
+      .gte('day', fromDay)
+      .lte('day', toDay)
+      .order('day')
       .order('start_min');
     if (error) throw error;
     return data || [];
   },
 
-  async addDayEvent({ day, name, startMin, durationMin }) {
+  async addDayEvent({ day, name, startMin, durationMin, eventType = 'personal', notes = null }) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Neautentificat');
+    const payload = normaliseDayEvent({ day, name, startMin, durationMin, eventType, notes });
     const { data, error } = await supabase.from('user_day_events')
-      .insert({ user_id: user.id, day, name, start_min: startMin, duration_min: durationMin })
-      .select('id, name, start_min, duration_min').single();
+      .insert({ user_id: user.id, ...payload })
+      .select('id, day, name, start_min, duration_min, event_type, notes, created_at').single();
     if (error) throw error;
     return data;
   },
 
-  async deleteDayEvent(id) {
-    const { error } = await supabase.from('user_day_events').delete().eq('id', id);
+  async updateDayEvent({ id, day, name, startMin, durationMin, eventType = 'personal', notes = null }) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Neautentificat');
+    if (!id) throw new Error('Eveniment lipsă');
+    const payload = normaliseDayEvent({ day, name, startMin, durationMin, eventType, notes });
+    const { data, error } = await supabase.from('user_day_events')
+      .update(payload)
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select('id, day, name, start_min, duration_min, event_type, notes, created_at')
+      .maybeSingle();
     if (error) throw error;
+    if (!data) throw new Error('Evenimentul nu mai există sau nu îți aparține');
+    return data;
+  },
+
+  async deleteDayEvent(id) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Neautentificat');
+    const { data, error } = await supabase.from('user_day_events')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select('id');
+    if (error) throw error;
+    if (!data?.length) throw new Error('Evenimentul nu mai există sau nu îți aparține');
     return true;
   },
 };
+
+function normaliseDayEvent({ day, name, startMin, durationMin, eventType, notes }) {
+  const trimmedName = String(name || '').trim();
+  const start = Number(startMin);
+  const duration = Number(durationMin);
+  const type = String(eventType || 'personal').trim().toLowerCase();
+  const allowedTypes = new Set(['study', 'personal', 'exam', 'appointment', 'work', 'other']);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day || '')) throw new Error('Data evenimentului nu este validă');
+  if (!trimmedName || trimmedName.length > 100) throw new Error('Titlul evenimentului trebuie să aibă între 1 și 100 de caractere');
+  if (!Number.isInteger(start) || start < 0 || start > 1435) throw new Error('Ora de început nu este validă');
+  if (!Number.isInteger(duration) || duration < 5 || duration > 720 || start + duration > 1440) throw new Error('Durata evenimentului nu este validă');
+  if (!allowedTypes.has(type)) throw new Error('Tipul evenimentului nu este valid');
+  const trimmedNotes = String(notes || '').trim();
+  if (trimmedNotes.length > 500) throw new Error('Notițele pot avea cel mult 500 de caractere');
+  return {
+    day,
+    name: trimmedName,
+    start_min: start,
+    duration_min: duration,
+    event_type: type,
+    notes: trimmedNotes || null,
+  };
+}
 
 export const Chemistry = {
   async listStructures({ chapterId = null, search = '', limit = 100 } = {}) {
