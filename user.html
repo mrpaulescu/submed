@@ -631,6 +631,7 @@ $('saveName').addEventListener('click', async e => {
   try {
     await Profiles.savePreferences({ name });
     prefs.name = name; $('accName').textContent = name;
+    if (authUser) authUser.name = name;
     if (!authUser?.avatar_url) renderAvatar(null);
     flash($('nameSaved'));
   } catch (err) { msg('Nu am putut salva numele. Încearcă din nou.'); }
