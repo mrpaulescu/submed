@@ -44,6 +44,7 @@ const NAV_LINKS = [
   { label: 'Grile',      href: 'grile.html' },
   { label: 'Scanare',    href: 'scan.html' },
   { label: 'Flashcards', href: 'flashcards.html' },
+  { label: 'Ghid',       href: 'walkthrough.html' },
   { label: 'Contact',    href: 'desprecontact.html' },
 ];
 
@@ -181,6 +182,7 @@ function buildFooter() {
           <a href="flashcards.html">Flashcards</a>
           <a href="lewis-structure.html">Lewis Builder</a>
           <a href="iupac-quiz.html">Quiz IUPAC</a>
+          <a href="walkthrough.html">Ghid interactiv</a>
         </div>
         <div class="fcol"><h5>Centre</h5>
           <a href="cluj.html">UMF Cluj</a>
