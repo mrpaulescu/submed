@@ -1,318 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ro">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1"/>
-    <title>Lewis Builder | Submed</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="assets/css/app.css">
-
-    <style>
-        :root {
-            --submed-blue: var(--blue);
-            --submed-bg: var(--paper);
-            --submed-text: var(--ink);
-            --submed-border: var(--line);
-            --accent-dim: #2d6eff22;
-        }
-
-        body {
-            background-color: var(--submed-bg);
-            color: var(--submed-text);
-            padding-top: 100px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .builder-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            flex: 1;
-        }
-
-        /* Toolbar */
-        .toolbar {
-            background: white;
-            border: 1px solid var(--submed-border);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
-
-        .tool-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding-right: 12px;
-            border-right: 1px solid var(--submed-border);
-        }
-        .tool-group:last-child { border-right: none; }
-
-        .tool-group label {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #888;
-        }
-
-        .btn-submed-tool {
-            font-size: 13px;
-            font-weight: 600;
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 1px solid var(--submed-border);
-            background: var(--surface-2);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-submed-tool:hover {
-            border-color: var(--submed-blue);
-            color: var(--submed-blue);
-        }
-
-        .btn-submed-tool.active {
-            background: var(--submed-blue);
-            color: white !important;
-            border-color: var(--submed-blue);
-        }
-
-        /* Canvas */
-        .canvas-wrap {
-            background: white;
-            border: 1px solid var(--submed-border);
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: center;
-        }
-
-        #lewisCanvas {
-            background: #FFFFFF;
-            border-radius: 8px;
-            cursor: crosshair;
-            border: 1px solid var(--line);
-        }
-
-    </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lewis Builder · SubMed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css">
+<style>
+.lb-shell{width:min(1160px,calc(100% - 32px));margin:0 auto;padding:112px 0 54px;color:var(--ink)}
+.lb-hero{margin-bottom:22px}.lb-kicker{font:700 .67rem var(--mono);letter-spacing:.1em;color:var(--blue-deep)}.lb-hero h1{font:800 clamp(2rem,4vw,3rem)/1.15 var(--font-display);letter-spacing:-.04em;margin:10px 0}.lb-hero h1 span{color:var(--blue)}.lb-hero p{color:var(--ink-2);max-width:700px;line-height:1.7}
+.lb-grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;align-items:start}.lb-main,.lb-panel{background:var(--surface);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}.lb-main{padding:17px;min-width:0}.lb-panel{padding:18px;position:sticky;top:92px}
+.lb-task{padding:15px;border:1px solid #cbdcff;background:var(--blue-tint-2);border-radius:13px;margin-bottom:14px}.lb-task small{font:700 .62rem var(--mono);letter-spacing:.09em;color:var(--blue-deep)}.lb-task h2{font:800 1.25rem var(--font-display);margin:6px 0}.lb-task p{font-size:.75rem;color:var(--ink-2);margin:0}.lb-toolbar{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:13px;border-bottom:1px solid var(--line);margin-bottom:13px}.lb-group{display:flex;align-items:center;flex-wrap:wrap;gap:5px;padding-right:10px;margin-right:3px;border-right:1px solid var(--line)}.lb-group:last-child{border:0}.lb-group label{font:700 .58rem var(--mono);color:var(--ink-3);margin:0 4px}.lb-tool{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:7px 10px;font:700 .7rem var(--font);color:var(--ink-2);cursor:pointer}.lb-tool.active{background:var(--blue);color:white;border-color:var(--blue)}.lb-tool:hover{border-color:var(--blue)}
+.lb-canvas-wrap{border:1px solid var(--line);border-radius:13px;background:#fff;padding:6px;overflow:hidden}#lewisCanvas{display:block;width:100%;height:auto;min-height:300px;touch-action:none;cursor:crosshair}.lb-canvas-note{font-size:.65rem;color:var(--ink-3);padding:8px 3px 0}
+.lb-controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.lb-btn{border:1px solid var(--line);border-radius:9px;padding:10px 14px;font:800 .73rem var(--font);cursor:pointer;background:var(--surface-2);color:var(--ink-2)}.lb-btn.primary{background:var(--blue);color:white;border-color:var(--blue)}.lb-btn:disabled{opacity:.45;cursor:not-allowed}
+.lb-panel h3{font:800 .9rem var(--font-display);margin:0 0 12px}.lb-field{display:grid;gap:6px;margin-bottom:13px}.lb-field label{font-size:.68rem;font-weight:800;color:var(--ink-2)}.lb-field select{border:1px solid var(--line-2);border-radius:9px;padding:10px;background:var(--surface-2);color:var(--ink);font:600 .75rem var(--font);width:100%}.lb-hint{background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:12px;font-size:.7rem;line-height:1.65;color:var(--ink-2)}.lb-result{margin-top:13px;border-radius:11px;padding:12px;font-size:.75rem;line-height:1.6;display:none}.lb-result.ok{display:block;background:#eaf8f1;color:#116b48;border:1px solid #bce8d2}.lb-result.no{display:block;background:#fff1f1;color:#9e2929;border:1px solid #f3caca}.lb-key{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.lb-key span{font:700 .64rem var(--mono);background:var(--surface-2);border:1px solid var(--line);border-radius:7px;padding:5px 7px}
+@media(max-width:900px){.lb-grid{grid-template-columns:1fr}.lb-panel{position:static}.lb-main{padding:12px}}@media(max-width:560px){.lb-shell{width:calc(100% - 22px);padding-top:94px}.lb-toolbar{gap:6px}.lb-group{border:0;padding:0}.lb-tool{padding:7px 8px;font-size:.65rem}#lewisCanvas{min-height:230px}.lb-controls .lb-btn{flex:1}}
+</style>
+<script type="module" src="assets/js/guard.js"></script>
 </head>
 <body data-nav="full">
-
-    <div class="builder-container">
-        <div class="text-center mb-4">
-            <h2 style="font-weight: 800; color: var(--submed-blue);">Lewis Structure Builder</h2>
-            <p style="color: var(--ink-2);">Instrument pentru exersarea structurilor chimice</p>
-        </div>
-
-        <div class="toolbar">
-            <div class="tool-group">
-                <label>Mod</label>
-                <button class="btn-submed-tool active" data-tool="atom">Atom</button>
-                <button class="btn-submed-tool" data-tool="bond">Legătură</button>
-                <button class="btn-submed-tool" data-tool="lone">Perechi</button>
-                <button class="btn-submed-tool" data-tool="delete">Șterge</button>
-            </div>
-            <div class="tool-group">
-                <label>Element</label>
-                <button class="btn-submed-tool active" data-element="C">C</button>
-                <button class="btn-submed-tool" data-element="H">H</button>
-                <button class="btn-submed-tool" data-element="O">O</button>
-                <button class="btn-submed-tool" data-element="N">N</button>
-            </div>
-            <div class="tool-group">
-                <label>Legătură</label>
-                <button class="btn-submed-tool active" data-order="1">S</button>
-                <button class="btn-submed-tool" data-order="2">D</button>
-                <button class="btn-submed-tool" data-order="3">T</button>
-            </div>
-            <button class="btn-submed-tool text-danger ms-auto" id="btn-clear">Reset</button>
-        </div>
-
-        <div class="canvas-wrap">
-            <svg id="lewisCanvas" width="800" height="360" viewBox="0 0 800 360"></svg>
-        </div>
-
-        <div class="mt-4 p-3 bg-white border rounded-3">
-            <label class="fw-bold mb-2">Denumire Moleculă</label>
-            <input type="text" class="form-control" id="substanceName" placeholder="Ex: Dioxid de carbon">
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="assets/js/components.js"></script>
-    <script>
-    (function() {
-        const svg = document.getElementById('lewisCanvas');
-        const NS = 'http://www.w3.org/2000/svg';
-
-        let atoms = [];
-        let bonds = [];
-        let nextId = 1;
-        let tool = 'atom';
-        let currentElement = 'C';
-        let bondOrder = 1;
-        let bondFirst = null;
-        let dragAtom = null;
-        let dragOffset = { x: 0, y: 0 };
-
-        const R = 20;
-        const LONE_R = 3;
-        const LONE_OFF = 12;
-
-        function getPt(e) {
-            const rect = svg.getBoundingClientRect();
-            return {
-                x: (e.clientX - rect.left) * (svg.viewBox.baseVal.width / rect.width),
-                y: (e.clientY - rect.top) * (svg.viewBox.baseVal.height / rect.height)
-            };
-        }
-
-        function findAtomAt(x, y) {
-            return atoms.find(a => Math.hypot(a.x - x, a.y - y) <= R * 1.5);
-        }
-
-        function render() {
-            while (svg.firstChild) svg.removeChild(svg.firstChild);
-
-            // Draw Bonds
-            bonds.forEach(b => {
-                const dx = b.to.x - b.from.x;
-                const dy = b.to.y - b.from.y;
-                const len = Math.hypot(dx, dy);
-                const ux = dx / len;
-                const uy = dy / len;
-                const perpX = -uy;
-                const perpY = ux;
-                const sep = 5;
-
-                for (let i = 0; i < b.order; i++) {
-                    const line = document.createElementNS(NS, 'line');
-                    const off = (b.order === 1) ? 0 : (i - (b.order - 1) / 2) * sep;
-                    line.setAttribute('x1', b.from.x + perpX * off);
-                    line.setAttribute('y1', b.from.y + perpY * off);
-                    line.setAttribute('x2', b.to.x + perpX * off);
-                    line.setAttribute('y2', b.to.y + perpY * off);
-                    line.setAttribute('stroke', '#407BFF');
-                    line.setAttribute('stroke-width', 2);
-                    svg.appendChild(line);
-                }
-            });
-
-            // Draw Atoms
-            atoms.forEach(a => {
-                const g = document.createElementNS(NS, 'g');
-                
-                const circle = document.createElementNS(NS, 'circle');
-                circle.setAttribute('cx', a.x);
-                circle.setAttribute('cy', a.y);
-                circle.setAttribute('r', R);
-                circle.setAttribute('fill', 'white');
-                circle.setAttribute('stroke', bondFirst === a ? '#2D6EFF' : '#D3DBEB');
-                circle.setAttribute('stroke-width', 2);
-                g.appendChild(circle);
-
-                // Lone Pairs
-                const lp = a.lonePairs || 0;
-                const offsets = [
-                    [],
-                    [{x: LONE_OFF, y:0}],
-                    [{x: -LONE_OFF, y:0}, {x: LONE_OFF, y:0}],
-                    [{x: -LONE_OFF, y:0}, {x: LONE_OFF, y:0}, {x:0, y:-LONE_OFF}],
-                    [{x: -LONE_OFF, y:0}, {x: LONE_OFF, y:0}, {x:0, y:-LONE_OFF}, {x:0, y:LONE_OFF}]
-                ];
-                (offsets[lp] || []).forEach(o => {
-                    const dot = document.createElementNS(NS, 'circle');
-                    dot.setAttribute('cx', a.x + o.x);
-                    dot.setAttribute('cy', a.y + o.y);
-                    dot.setAttribute('r', LONE_R);
-                    dot.setAttribute('fill', '#407BFF');
-                    g.appendChild(dot);
-                });
-
-                const text = document.createElementNS(NS, 'text');
-                text.setAttribute('x', a.x);
-                text.setAttribute('y', a.y);
-                text.setAttribute('text-anchor', 'middle');
-                text.setAttribute('dominant-baseline', 'central');
-                text.setAttribute('font-family', 'JetBrains Mono');
-                text.setAttribute('font-weight', 'bold');
-                text.textContent = a.element;
-                g.appendChild(text);
-
-                svg.appendChild(g);
-            });
-        }
-
-        svg.addEventListener('mousedown', (e) => {
-            const pt = getPt(e);
-            const atom = findAtomAt(pt.x, pt.y);
-
-            if (tool === 'atom' && !atom) {
-                atoms.push({ id: nextId++, element: currentElement, x: pt.x, y: pt.y, lonePairs: 0 });
-            } else if (tool === 'delete' && atom) {
-                atoms = atoms.filter(a => a !== atom);
-                bonds = bonds.filter(b => b.from !== atom && b.to !== atom);
-            } else if (tool === 'lone' && atom) {
-                atom.lonePairs = (atom.lonePairs + 1) % 5;
-            } else if (tool === 'bond' && atom) {
-                if (!bondFirst) {
-                    bondFirst = atom;
-                } else {
-                    if (bondFirst !== atom) {
-                        const existing = bonds.find(b => (b.from === bondFirst && b.to === atom) || (b.from === atom && b.to === bondFirst));
-                        if (existing) existing.order = bondOrder;
-                        else bonds.push({ from: bondFirst, to: atom, order: bondOrder });
-                    }
-                    bondFirst = null;
-                }
-            }
-            render();
-        });
-
-        // Event Listeners for Buttons
-        document.querySelectorAll('[data-tool]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('[data-tool]').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                tool = this.dataset.tool;
-                bondFirst = null;
-                render();
-            });
-        });
-
-        document.querySelectorAll('[data-element]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('[data-element]').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                currentElement = this.dataset.element;
-            });
-        });
-
-        document.querySelectorAll('[data-order]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('[data-order]').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                bondOrder = parseInt(this.dataset.order);
-            });
-        });
-
-        document.getElementById('btn-clear').addEventListener('click', () => {
-            atoms = []; bonds = []; render();
-        });
-
-        render();
-    })();
-    </script>
-</body>
-</html>
+<main class="lb-shell">
+<header class="lb-hero"><div class="lb-kicker">⚗ CHIMIE ORGANICĂ · ATELIER INTERACTIV</div><h1>Construiește structura <span>Lewis.</span></h1><p>Primești un compus din aceeași bibliotecă folosită de Quiz-ul IUPAC. Desenează atomii, legăturile și perechile de electroni, apoi verifică structura.</p></header>
+<div class="lb-grid">
+<section class="lb-main">
+<div class="lb-task"><small>COMPUSUL DE CONSTRUIT</small><h2 id="taskName">Se încarcă…</h2><p id="taskMeta">Alege o clasă și generează un exercițiu.</p></div>
+<div class="lb-toolbar">
+<div class="lb-group"><label>ACȚIUNE</label><button class="lb-tool active" data-tool="atom">Atom</button><button class="lb-tool" data-tool="bond">Legătură</button><button class="lb-tool" data-tool="lone">Perechi</button><button class="lb-tool" data-tool="delete">Șterge</button></div>
+<div class="lb-group"><label>ELEMENT</label><span id="elementTools"></span></div>
+<div class="lb-group"><label>ORDIN</label><button class="lb-tool active" data-order="1">Simplă</button><button class="lb-tool" data-order="2">Dublă</button><button class="lb-tool" data-order="3">Triplă</button></div>
+</div>
+<div class="lb-canvas-wrap"><svg id="lewisCanvas" viewBox="0 0 900 430" role="img" aria-label="Canvas pentru desenarea structurii Lewis"></svg></div>
+<div class="lb-canvas-note">Selectează „Atom” și apasă pe canvas pentru a adăuga atomi. În modul „Legătură”, selectează doi atomi. Poți muta atomii prin tragere.</div>
+<div class="lb-controls"><button class="lb-btn primary" id="validateBtn">✓ Verifică structura</button><button class="lb-btn" id="newTaskBtn">Alt compus ↻</button><button class="lb-btn" id="clearBtn">Golește canvasul</button></div>
+<div id="result" class="lb-result" role="status" aria-live="polite"></div>
+</section>
+<aside class="lb-panel">
+<h3>Setările exercițiului</h3>
+<div class="lb-field"><label for="categorySelect">Clasa de compuși</label><select id="categorySelect"></select></div>
+<div class="lb-field"><label for="difficultySelect">Dificultate</label><select id="difficultySelect"><option value="all">Toți compușii disponibili</option><option value="small">Molecule mici (max. 6 atomi grei)</option><option value="medium">Molecule medii (7–12 atomi grei)</option></select></div>
+<div class="lb-hint"><b>Ce verifică sistemul?</b><br>Numărul și tipul atomilor, conectivitatea, ordinul fiecărei legături și numărul de perechi neparticipante pentru atomii suportați. Hidrogenii impliciți din formulă trebuie desenați explicit.</div>
+<div class="lb-key"><span>C — carbon</span><span>H — hidrogen</span><span>O — oxigen</span><span>N — azot</span><span>F / Cl / Br / I</span><span>S — sulf</span><span>P — fosfor</span></div>
+<div id="supportedCount" style="font-size:.67rem;color:var(--ink-3);margin-top:12px"></div>
+</aside>
+</div>
+</main>
+<script src="compounds.js?v=20261109"></script>
+<script type="module" src="assets/js/components.js?v=20261109"></script>
+<script src="assets/js/lewis-builder.js?v=20261109" defer></script>
+</body></html>
