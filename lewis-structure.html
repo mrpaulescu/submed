@@ -21,17 +21,17 @@
 </head>
 <body data-nav="full">
 <main class="lb-shell">
-<header class="lb-hero"><div class="lb-kicker">⚗ CHIMIE ORGANICĂ · ATELIER INTERACTIV</div><h1>Construiește structura <span>Lewis.</span></h1><p>Primești un compus din aceeași bibliotecă folosită de Quiz-ul IUPAC. Desenează atomii, legăturile și perechile de electroni, apoi verifică structura.</p></header>
+<header class="lb-hero"><h1>Lewis Builder</h1></header>
 <div class="lb-grid">
 <section class="lb-main">
 <div class="lb-task"><small>COMPUSUL DE CONSTRUIT</small><h2 id="taskName">Se încarcă…</h2><p id="taskMeta">Alege o clasă și generează un exercițiu.</p></div>
 <div class="lb-toolbar">
 <div class="lb-group"><label>ACȚIUNE</label><button class="lb-tool active" data-tool="atom">Atom</button><button class="lb-tool" data-tool="bond">Legătură</button><button class="lb-tool" data-tool="lone">Perechi</button><button class="lb-tool" data-tool="delete">Șterge</button></div>
 <div class="lb-group"><label>ELEMENT</label><span id="elementTools"></span></div>
-<div class="lb-group"><label>ORDIN</label><button class="lb-tool active" data-order="1">Simplă</button><button class="lb-tool" data-order="2">Dublă</button><button class="lb-tool" data-order="3">Triplă</button></div>
+<div class="lb-group"><label>ORDIN</label><button class="lb-tool active" data-order="1">Simplă</button><button class="lb-tool" data-order="2">Dublă</button><button class="lb-tool" data-order="3">Triplă</button></div><div class="lb-group"><label>SARCINĂ</label><button class="lb-tool active" data-charge="0">0</button><button class="lb-tool" data-charge="1">+</button><button class="lb-tool" data-charge="-1">−</button></div>
 </div>
 <div class="lb-canvas-wrap"><svg id="lewisCanvas" viewBox="0 0 900 430" role="img" aria-label="Canvas pentru desenarea structurii Lewis"></svg></div>
-<div class="lb-canvas-note">Selectează „Atom” și apasă pe canvas pentru a adăuga atomi. În modul „Legătură”, selectează doi atomi. Poți muta atomii prin tragere.</div>
+
 <div class="lb-controls"><button class="lb-btn primary" id="validateBtn">✓ Verifică structura</button><button class="lb-btn" id="newTaskBtn">Alt compus ↻</button><button class="lb-btn" id="clearBtn">Golește canvasul</button></div>
 <div id="result" class="lb-result" role="status" aria-live="polite"></div>
 </section>
@@ -39,8 +39,8 @@
 <h3>Setările exercițiului</h3>
 <div class="lb-field"><label for="categorySelect">Clasa de compuși</label><select id="categorySelect"></select></div>
 <div class="lb-field"><label for="difficultySelect">Dificultate</label><select id="difficultySelect"><option value="all">Toți compușii disponibili</option><option value="small">Molecule mici (max. 6 atomi grei)</option><option value="medium">Molecule medii (7–12 atomi grei)</option></select></div>
-<div class="lb-hint"><b>Ce verifică sistemul?</b><br>Numărul și tipul atomilor, conectivitatea, ordinul fiecărei legături și numărul de perechi neparticipante pentru atomii suportați. Hidrogenii impliciți din formulă trebuie desenați explicit.</div>
-<div class="lb-key"><span>C — carbon</span><span>H — hidrogen</span><span>O — oxigen</span><span>N — azot</span><span>F / Cl / Br / I</span><span>S — sulf</span><span>P — fosfor</span></div>
+
+<div class="lb-key"><span>C — carbon</span><span>O — oxigen</span><span>N — azot</span><span>F / Cl / Br / I</span><span>S — sulf</span><span>P — fosfor</span><span>· · — pereche neparticipantă</span></div>
 <div id="supportedCount" style="font-size:.67rem;color:var(--ink-3);margin-top:12px"></div>
 </aside>
 </div>
