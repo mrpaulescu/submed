@@ -62,6 +62,11 @@
   .sub input{accent-color:var(--blue)}
   .sub.on{color:var(--ink-3);text-decoration:line-through}
   /* duo path */
+  details>summary.sec-lbl{font-size:1.05rem;font-weight:800;color:var(--ink);cursor:pointer;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);line-height:1.4}
+  details>summary.sec-lbl::marker{color:var(--blue-deep)}
+  details>summary.sec-lbl:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+  details[open]>summary.sec-lbl{margin-bottom:12px;background:var(--blue-tint-2)}
+  details .pl-muted{font-size:.95rem;line-height:1.6}
   .dl-tabs{display:flex;gap:6px}.dl-tabs button{border:1px solid var(--line);background:#fff;border-radius:100px;padding:5px 12px;font:700 .72rem var(--font);color:var(--ink-2);cursor:pointer}
   .dl-tabs button.on{background:var(--blue);border-color:var(--blue);color:#fff}
   .dl-ch{padding:16px 0;border-bottom:1px solid var(--blue-tint-2)}.dl-ch:last-child{border:0}
@@ -121,8 +126,10 @@
   <div class="sec-lbl">Examene</div>
   <section class="pl-card" id="wExam"></section>
 
-  <div class="sec-lbl">Progres pe capitole</div>
-  <section class="pl-card"><div class="pl-head"><p class="pl-muted" style="margin:0">Fiecare cerc e un subcapitol. Verde = parcurs, albastru = următorul, gri întrerupt = neînceput.</p><div class="dl-tabs" id="dlTabs"><button data-s="all" class="on">Toate</button><button data-s="biologie">Biologie</button><button data-s="chimie">Chimie</button></div></div><div id="dlList"></div></section>
+  <details>
+    <summary class="sec-lbl">☰ Progres pe capitole</summary>
+    <section class="pl-card"><div class="pl-head"><p class="pl-muted" style="margin:0">Fiecare cerc e un subcapitol. Verde = parcurs, albastru = următorul, gri întrerupt = neînceput.</p><div class="dl-tabs" id="dlTabs"><button data-s="all" class="on">Toate</button><button data-s="biologie">Biologie</button><button data-s="chimie">Chimie</button></div></div><div id="dlList"></div></section>
+  </details>
 
   <div class="sec-lbl">Coach · planul tău de învățare</div>
   <section class="pl-card" id="wPlanner"></section>
