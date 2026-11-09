@@ -184,7 +184,7 @@
         <h1>Pregătirea ta pentru <em>admitere</em>, pas cu pas</h1>
         <p class="lead">Învață materia, exersează cu grile, rezolvă subiectele oficiale și urmărește-ți progresul — totul într-un singur loc, cu un plan care se adaptează ritmului tău.</p>
         <div class="actions">
-          <a class="btn btn-primary lg" href="wizard.html">Începe acum <span class="arrow">→</span></a>
+          <a class="btn btn-primary lg" href="login.html?next=wizard.html" data-auth-gate="wizard.html">Începe acum <span class="arrow">→</span></a>
           <a class="btn btn-ghost lg" href="#cum-functioneaza">Vezi cum funcționează</a>
         </div>
         <div class="micro">✦ Îți creezi contul în mai puțin de un minut · alegi centrul și materiile</div>
@@ -380,7 +380,7 @@
     </div>
 
     <div class="steps-cta">
-      <a class="btn btn-primary lg" href="wizard.html">Începe cu pasul 1 <span class="arrow">→</span></a>
+      <a class="btn btn-primary lg" href="login.html?next=wizard.html" data-auth-gate="wizard.html">Începe cu pasul 1 <span class="arrow">→</span></a>
     </div>
   </div>
 </section>
@@ -552,7 +552,7 @@
     <h2>Începe-ți pregătirea azi</h2>
     <p>Îți creezi contul în mai puțin de un minut, îți alegi centrul și materiile, apoi pornești de la pasul 1.</p>
     <div class="actions">
-      <a class="btn btn-primary lg" href="wizard.html">Începe acum <span class="arrow">→</span></a>
+      <a class="btn btn-primary lg" href="login.html?next=wizard.html" data-auth-gate="wizard.html">Începe acum <span class="arrow">→</span></a>
       <a class="btn btn-ghost lg" href="login.html">Am deja cont</a>
     </div>
     <div class="rr">Îți alegi centrul și materiile · îți poți șterge contul oricând</div>
@@ -579,6 +579,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script type="module" src="assets/js/components.js"></script>
+<script type="module" src="assets/js/wizard-gate.js?v=20261109"></script>
 <script>
   (function(){
     const target = new Date('2026-07-26T09:00:00');
