@@ -35,6 +35,9 @@ function parseSmiles(smiles){
   if(h<0||h>4)throw Error('invalid valence '+n.el+' '+used[k]);
   for(let z=0;z<h;z++){const id=nodes.length;nodes.push({id,el:'H',arom:false});edges.push({a:n.id,b:id,order:1});}
  });
+ // Kekule form: alternating single/double bonds for aromatic rings.
+ const aromatic = edges.filter(e=>e.order===1.5);
+ aromatic.forEach((e,k)=>{e.order=(k%2===0)?2:1;});
  return {nodes,edges};
 }
 function supported(compound){try{const g=parseSmiles(compound.smiles);return g.nodes.length<=45&&g.nodes.every(n=>allowedElements.includes(n.el))&&g.nodes.every(n=>loneExpected[n.el]!==undefined);}catch(e){return false;}}
