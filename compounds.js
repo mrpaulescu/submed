@@ -57,7 +57,7 @@
   }
 
   // 6. Alcooli: alcooli primari și secundari.
-  for(let n=1;n<=15;n++) add("C".repeat(n)+"O",root(n)+"an-1-ol",null,"alcooli");
+  for(let n=1;n<=15;n++) add("C".repeat(n)+"O",n===1?"metanol":n===2?"etanol":root(n)+"an-1-ol",null,"alcooli");
   for(let n=3;n<=17;n++) add("C"+"C(O)"+"C".repeat(n-2),root(n)+"an-2-ol",null,"alcooli");
 
   // 7. Fenoli: fenol și omologi para-alchil substituiți.
@@ -68,7 +68,7 @@
   }
 
   // 8. Amine primare alifatice.
-  for(let n=1;n<=30;n++) add("C".repeat(n)+"N",root(n)+"an-1-amină",null,"amine");
+  for(let n=1;n<=30;n++) add("C".repeat(n)+"N",n<=2?root(n)+"anamină":root(n)+"an-1-amină",null,"amine");
 
   // 9. Nitroderivați: omologi nitroalcani.
   for(let n=1;n<=30;n++) add("C".repeat(n)+"[N+](=O)[O-]",n===1?"nitrometan":n===2?"nitroetan":"1-nitro"+alkaneName(n),null,"nitroderivati");
@@ -115,12 +115,12 @@
     ["NC(CC1=CN=CN1)C(=O)O","acid 2-amino-3-(1H-imidazol-4-il)propanoic","histidină"],
     ["NCCC(=O)O","acid 3-aminopropanoic","beta-alanină"],
     ["NCCCC(=O)O","acid 4-aminobutanoic","acid gamma-aminobutiric"],
-    ["NCC(C)C(=O)O","acid 2-aminobutanoic","acid alfa-aminobutiric"],
+    ["CCC(N)C(=O)O","acid 2-aminobutanoic","acid alfa-aminobutiric"],
     ["NC(CCC)C(=O)O","acid 2-aminopentanoic","norvalină"],
     ["NC(CCCC)C(=O)O","acid 2-aminohexanoic","norleucină"],
-    ["NC(CO)CC(=O)O","acid 2-amino-4-hidroxibutanoic","homoserină"],
+    ["NC(CCO)C(=O)O","acid 2-amino-4-hidroxibutanoic","homoserină"],
     ["NC1CCC(O)C1C(=O)O","acid 4-hidroxipirolidin-2-carboxilic","hidroxiprolină"],
-    ["NC(CCC(=O)N)C(=O)O","acid 2-amino-5-carbamoilpentanoic","glutamină izomerică"],
+    ["CC(N)(C(=O)O)CC(=O)O","acid 2-amino-2-metilbutandioic","acid 2-metilaspartic"],
     ["NC(C)(C)C(=O)O","acid 2-amino-2-metilpropanoic","alfa-aminoisobutiric"],
     ["NC(CCS)C(=O)O","acid 2-amino-4-sulfanylbutanoic","homocisteină"]
   ].forEach(x=>add(x[0],x[1],x[2],"aminoacizi"));
