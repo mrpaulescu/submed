@@ -6,7 +6,7 @@ const categories={alcani:'Alcani și cicloalcani',alchene:'Alchene și alcadiene
 const valence={C:4,N:3,O:2,F:1,Cl:1,Br:1,I:1,S:2,P:3};
 const electrons={C:4,N:5,O:6,F:7,Cl:7,Br:7,I:7,S:6,P:5};
 const allowedElements=['C','H','O','N','F','Cl','Br','I','S','P'];
-let atoms=[],bonds=[],nextId=1,tool='atom',element='C',order=1,bondFirst=null,drag=null,current=null,charge=0;
+let atoms=[],bonds=[],nextId=1,tool='atom',element='C',order=1,bondFirst=null,drag=null,current=null,charge=0,challengePool=[];
 function parseSmiles(smiles){
  const nodes=[],edges=[],stack=[],rings={};let i=0,prev=null,pending=null;
  const add=(el,arom=false,formalCharge=0,explicitH=0)=>{
