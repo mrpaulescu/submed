@@ -86,7 +86,7 @@
   // 13. Derivați ai acizilor: esteri, amide și nitrili.
   for(let n=1;n<=10;n++){
     const acyl= n+1;
-    add("C"+"O"+"C".repeat(n-1)+"C(=O)C", "etanoat de "+(prefixes[n]||"alchil"),null,"derivati acizi");
+    add("C".repeat(n)+"OC(=O)C", "etanoat de "+(prefixes[n]||"alchil"),null,"derivati acizi");
   }
   for(let n=1;n<=10;n++) add("C".repeat(n-1)+"C(=O)N",root(n)+"anamidă",null,"derivati acizi");
   for(let n=1;n<=10;n++) add("C".repeat(n)+"C#N",root(n+1)+"anenitril",null,"derivati acizi");
@@ -151,6 +151,12 @@
   ].forEach(([name,a,b,c])=>{
     const sm="OC[C"+a+"H](O)[C"+b+"H](O)[C"+c+"H](O)C(=O)CO";
     add(sm,"cetohexoză ("+name+")","D-"+name,"zaharide",["d-"+name]);
+  });
+  // Aldotetroze: două perechi de stereoizomeri.
+  [["eritroză","@","@"],["treoză","@","@@"]].forEach(([name,a,b])=>{
+    add("O=C[C"+a+"H](O)[C"+b+"H](O)CO","aldotetroză ("+name+")","D-"+name,"zaharide",["d-"+name]);
+    const inv=x=>x==="@"?"@@":"@";
+    add("O=C[C"+inv(a)+"H](O)[C"+inv(b)+"H](O)CO","aldotetroză ("+name+" enantiomer)","L-"+name,"zaharide",["l-"+name]);
   });
 
   const counts={};
