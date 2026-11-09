@@ -16,7 +16,20 @@
   .pl-kick{font:700 .64rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--blue-deep);margin-bottom:4px}
   .pl-link{font:700 .74rem var(--mono);color:var(--blue-deep);text-decoration:none;white-space:nowrap}
   .pl-link:hover{text-decoration:underline}
-  .pl-row2{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;align-items:stretch;margin-top:14px}
+  .pl-row2 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    align-items: stretch;
+    margin-top: 14px;
+    width: 100%;
+}
+
+.pl-row2 > * {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+}
   .pl-stack{margin-top:14px}
   @media(max-width:860px){.pl-row2{grid-template-columns:1fr}}
   .pl-muted{color:var(--ink-2);font-size:.84rem;line-height:1.5}
@@ -184,12 +197,7 @@ async function persist() {
   }
 }
 
-// subcapitole: coloana opțională chapters.subchapters (jsonb: ["Nume", ...] sau [{name}]). Dacă nu există, capitolul e un singur nod.
-const subMap = {};
-try {
-  const { data, error } = await supabase.from('chapters').select('id, subchapters');
-  if (!error) (data || []).forEach(r => { if (Array.isArray(r.subchapters)) subMap[r.id] = r.subchapters.map(s => typeof s === 'string' ? s : s.name).filter(Boolean); });
-} catch (e) {}
+const subMap = {}
 
 const subjects = plan.subjects.length ? plan.subjects : ['biologie', 'chimie'];
 const chapters = plan.chapters.filter(c => subjects.includes(c.subject) && c.question_count > 0)
@@ -362,28 +370,8 @@ function renderExam() {
   const form = el('div', 'pl-form c3'); form.append(sel, name, date, time, type, go);
   form.style.gridTemplateColumns = '1fr 1fr'; go.classList.add('wide'); go.style.gridColumn = '1/-1';
   left.append(form);
-  // rezultate externe
-  const right = el('div'); right.append(el('div', 'pl-kick', 'Rezultate la alte examene'), el('p', 'pl-muted', 'Ai dat o simulare în afara platformei? Introdu rezultatul ca să intre în statistici.'));
-  S.external_results.slice().sort((a, b) => b.date.localeCompare(a.date)).forEach(r => {
-    const row = el('div', 'res-row'); row.append(el('span', null, `${r.name} · ${r.score}/${r.max} (${Math.round(r.score / r.max * 100)}%)`));
-    const x = el('button', 'pl-x', 'Șterge', { type: 'button' });
-    x.onclick = () => { S.external_results = S.external_results.filter(z => z.id !== r.id); persist(); renderExam(); renderStats(); };
-    row.append(x); right.append(row);
-  });
-  const rn = el('input', 'pl-in wide', null, { type: 'text', placeholder: 'Nume examen', maxlength: 100 });
-  const rd = el('input', 'pl-in', null, { type: 'date', max: todayStr });
-  const rs = el('input', 'pl-in', null, { type: 'number', placeholder: 'Punctaj', min: 0, step: '0.5' });
-  const rm = el('input', 'pl-in', null, { type: 'number', value: 45, min: 1 });
-  const rb = el('button', 'btn-secondary wide', 'Salvează rezultatul', { type: 'button' });
-  rb.onclick = () => {
-    const score = parseFloat(rs.value), max = parseFloat(rm.value);
-    if (!rn.value.trim() || !rd.value || !(score >= 0) || !(max > 0) || score > max) { say('Completează numele, data și un punctaj valid.'); return; }
-    S.external_results.push({ id: Date.now(), name: rn.value.trim(), date: rd.value, score, max });
-    persist(); renderExam(); renderStats();
-  };
-  const f2 = el('div', 'pl-form'); f2.style.gridTemplateColumns = '1fr 1fr 1fr'; rn.style.gridColumn = '1/-1'; rb.style.gridColumn = '1/-1';
-  f2.append(rn, rd, rs, rm, rb); right.append(f2);
-  wrap.append(left, right); h.append(wrap);
+  wrap.append(left);
+  h.append(wrap);
 }
 
 /* 6 ─ progres stil Duolingo ──────────────────────────────── */
