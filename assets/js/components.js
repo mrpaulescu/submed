@@ -25,7 +25,7 @@ const MODE = document.body?.dataset.nav
 const PUBLIC_PAGES = new Set([
   '', 'index.html',
   'login.html', 'register.html', 'reset-password.html', 'wizard.html', 'grile.html',
-  'desprecontact.html', 'termeni.html', 'confidentialitate.html', 'cookies.html',
+  'desprecontact.html', 'termeni.html', 'confidentialitate.html', 'cookies.html', 'walkthrough.html',
 ]);
 // Gate conținutul: dacă pagina nu e publică și nu ești autentificat → login.
 // Dacă backendul nu e disponibil, requireLogin nu redirecționează (preview).
