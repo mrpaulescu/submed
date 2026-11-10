@@ -97,6 +97,33 @@ function markup() {
     </div>`;
 }
 
+function refreshContextOption() {
+  const button = document.getElementById('submedWallContextAction');
+  const label = document.getElementById('submedWallContextTitle');
+  const context = window.SubMedWallContext;
+  const valid = context && uuidLike(context.id) && ['question','flashcard'].includes(context.type);
+  button.hidden = !valid;
+  if (valid) label.textContent = context.type === 'question' ? 'Salvează grila curentă' : 'Salvează flashcard-ul curent';
+}
+
+function notify(message) {
+  let host = document.getElementById('submedWallCaptureToast');
+  if (!host) {
+    host = document.createElement('div');
+    host.id = 'submedWallCaptureToast';
+    host.style.cssText = 'position:fixed;left:50%;bottom:28px;transform:translate(-50%,15px);z-index:2500;background:var(--navy,#10234b);color:#fff;border-radius:12px;padding:11px 15px;font:600 .82rem var(--font,\'Plus Jakarta Sans\',sans-serif);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;max-width:calc(100vw - 30px);';
+    document.body.append(host);
+  }
+  host.textContent = message;
+  host.style.opacity = '1';
+  host.style.transform = 'translate(-50%,0)';
+  clearTimeout(notify.timer);
+  notify.timer = setTimeout(() => {
+    host.style.opacity = '0';
+    host.style.transform = 'translate(-50%,15px)';
+  }, 2600);
+}
+
 function setMenu(open) {
   const menu = document.getElementById('submedWallMenu');
   const button = document.getElementById('submedWallFab');
@@ -127,23 +154,17 @@ function openTextDialog(type = 'note') {
   document.getElementById('submedWallBody').focus();
 }
 
-function closeDialogs() {
-  document.querySelectorAll('#submedWallCaptureRoot .sw-dialog-overlay').forEach(dialog => { dialog.hidden = true; });
-  setMenu(false);
-  document.body.classList.remove('note-modal-open');
-}
-
 async function saveCurrentContext() {
   const context = window.SubMedWallContext;
   if (!context || !uuidLike(context.id)) {
-    toast('Nu există un material SubMed compatibil deschis în această pagină.');
+    notify('Nu există un material SubMed compatibil deschis în această pagină.');
     return;
   }
   const statusType = context.type;
   try {
     const result = await PersonalWall.saveReference(statusType,context.id,context.sourcePage || location.pathname,context.category || 'altele');
     closeDialogs();
-    toast(result.alreadySaved ? 'Materialul este deja pe peretele tău.' : `${WALL_TYPES[statusType] || 'Material'} salvat pe perete.`);
+    notify(result.alreadySaved ? 'Materialul este deja pe peretele tău.' : `${WALL_TYPES[statusType] || 'Material'} salvat pe perete.`);
   } catch(error) {
     toast(error.message || 'Materialul nu a putut fi salvat.');
   }
@@ -177,7 +198,7 @@ async function loadPickerResults() {
           const category=document.getElementById('submedWallMaterialCategory').value;
           const saved=await PersonalWall.saveReference(type,result.id,location.pathname,category);
           closeDialogs();
-          toast(saved.alreadySaved?'Materialul este deja salvat.':'Material salvat pe perete.');
+          notify(saved.alreadySaved?'Materialul este deja salvat.':'Material salvat pe perete.');
         }catch(error){
           status.textContent=error.message||'Nu am putut salva materialul.';
           button.disabled=false;
@@ -196,6 +217,7 @@ function initCaptureEvents() {
   const root = document.getElementById(WIDGET_ID);
   const fab = document.getElementById('submedWallFab');
   fab.addEventListener('click',()=>{
+    refreshContextOption();
     setMenu(document.getElementById('submedWallMenu').hidden);
   });
 
@@ -271,10 +293,6 @@ function initCaptureEvents() {
   });
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape')closeDialogs();
-  });
-  root.addEventListener('click',event=>{
-    if(event.target.closest('.sw-dialog'))return;
-    setMenu(false);
   });
 }
 
