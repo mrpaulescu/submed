@@ -72,12 +72,16 @@ function makeNoteCard(note) {
   footer.className = 'note-foot';
   let sourceNode = document.createElement('span');
   sourceNode.className = 'note-source';
-  const safeSource = String(note.source_page || '');
-  if (safeSource && /^\\/?[a-z0-9_./-]+\\.html$/i.test(safeSource.replace(/^\\//, ''))) {
+  const sourcePath = String(note.source_page || '');
+  const cleanSourcePath = sourcePath.startsWith('/') ? sourcePath.slice(1) : sourcePath;
+  const validSourcePath = cleanSourcePath.toLowerCase().endsWith('.html')
+    && !cleanSourcePath.includes('..')
+    && /^[a-z0-9_./-]+$/i.test(cleanSourcePath);
+  if (validSourcePath) {
     const link = document.createElement('a');
-    link.href = safeSource;
+    link.href = cleanSourcePath;
     link.className = 'note-source';
-    link.textContent = safeSource.replace(/^\\//, '').replace('.html', '');
+    link.textContent = cleanSourcePath.replace('.html', '');
     sourceNode = link;
   } else {
     sourceNode.textContent = 'Notiță personală';
