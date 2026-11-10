@@ -90,7 +90,7 @@ async function hydrateReferences(items) {
     fetchRows('chemical_structures', 'id, name, iupac_name, formula, subject, chapter_id', idsFor('chemical_structure'), q => q.eq('active', true)),
     fetchRows('learning_lessons', 'id, title, description, module_id, estimated_minutes', idsFor('lesson'), q => q.eq('active', true)),
     fetchRows('submissions', 'id, exam_id, score, total, percentage, created_at', idsFor('submission')),
-    fetchRows('user_day_events', 'id, day, name, event_type, notes, start_min, duration_min', idsFor('calendar_event')),
+    fetchRows('user_day_events', 'id, day, name, start_min, duration_min', idsFor('calendar_event')),
   ]);
 
   const typeMaps = {
@@ -158,7 +158,11 @@ async function hydrateReferences(items) {
       }
       case 'calendar_event':
         displayTitle = row.name || 'Eveniment din calendar';
-        preview = [row.day, row.event_type, row.notes].filter(Boolean).join(' · ');
+        const eventStart = Number.isFinite(Number(row.start_min)) ? `${String(Math.floor(Number(row.start_min) / 60)).padStart(2,'0')}:${String(Number(row.start_min) % 60).padStart(2,'0')}` : '';
+        const eventEnd = Number.isFinite(Number(row.start_min)) && Number.isFinite(Number(row.duration_min))
+          ? `${String(Math.floor((Number(row.start_min) + Number(row.duration_min)) / 60)).padStart(2,'0')}:${String((Number(row.start_min) + Number(row.duration_min)) % 60).padStart(2,'0')}`
+          : '';
+        preview = [row.day, eventStart && eventEnd ? `${eventStart}–${eventEnd}` : eventStart].filter(Boolean).join(' · ');
         break;
       default:
         displayTitle = WALL_TYPES[item.item_type] || 'Material salvat';
@@ -352,7 +356,7 @@ export const PersonalWall = {
         query = supabase.from('submissions').select('id, exam_id, score, total, percentage, created_at').eq('user_id', user.id).order('created_at', { ascending:false }).limit(30);
         break;
       case 'calendar_event':
-        query = supabase.from('user_day_events').select('id, name, day, event_type, notes').eq('user_id', user.id).ilike('name', pattern).order('day', { ascending:false }).limit(30);
+        query = supabase.from('user_day_events').select('id, name, day, start_min, duration_min').eq('user_id', user.id).ilike('name', pattern).order('day', { ascending:false }).limit(30);
         break;
       default:
         throw new Error('Selectează un tip de material valid.');
@@ -373,6 +377,9 @@ export const PersonalWall = {
         row.year ?? relatedExam?.year,
         row.session ?? relatedExam?.session,
         row.day,
+        type === 'calendar_event' && row.start_min != null
+          ? `${String(Math.floor(Number(row.start_min) / 60)).padStart(2,'0')}:${String(Number(row.start_min) % 60).padStart(2,'0')}`
+          : '',
         row.percentage != null ? `${Number(row.percentage).toFixed(1)}%` : '',
         type === 'submission' && row.score != null ? `${row.score}/${row.total}` : '',
       ].filter(Boolean).join(' · ');
