@@ -182,6 +182,8 @@ export const PersonalWall = {
     const { data, error } = await query;
     if (error) throw error;
     let items = await hydrateReferences(data || []);
+    const commentCounts = await this.commentCounts(items.map(item => item.id));
+    items = items.map(item => ({ ...item, comment_count: commentCounts[item.id] || 0 }));
     const needle = String(search || '').trim().toLocaleLowerCase('ro');
     if (needle) {
       items = items.filter(item => [
@@ -340,6 +342,24 @@ export const PersonalWall = {
       ].filter(Boolean).join(' · ');
       return { id: row.id, title: String(title).slice(0, 140), preview: detail || '' };
     });
+  },
+
+  async commentCounts(itemIds = []) {
+    const ids = [...new Set(itemIds.filter(Boolean))];
+    if (!ids.length) return {};
+    const counts = {};
+    const pageSize = 1000;
+    for (let offset = 0; ; offset += pageSize) {
+      const { data, error } = await supabase.from('personal_wall_comments')
+        .select('id, item_id')
+        .in('item_id', ids)
+        .order('id', { ascending:true })
+        .range(offset, offset + pageSize - 1);
+      if (error) throw error;
+      (data || []).forEach(row => { counts[row.item_id] = (counts[row.item_id] || 0) + 1; });
+      if (!data || data.length < pageSize) break;
+    }
+    return counts;
   },
 
   async listComments(itemId) {
