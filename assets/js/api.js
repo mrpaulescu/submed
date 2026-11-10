@@ -509,23 +509,17 @@ export const Grile = {
 
   
   // Structured exam catalog: filters from exams/faculties metadata, not question.source text.
-  async listExamCatalog({ subject = null } = {}) {
-    let q = supabase.from('exams')
-      .select('id, name, year, session, exam_date, sheet_type, category, is_premium, faculty_id, num_questions, faculties!inner(id, name, city, slug), answer_keys(id, verified)')
+  async listExamCatalog() {
+    const { data, error } = await supabase.from('exams')
+      .select('id, name, year, session, exam_date, sheet_type, category, is_premium, faculty_id, num_questions, faculties(id, name, city, slug)')
       .eq('is_published', true)
       .order('exam_date', { ascending: false, nullsFirst: false })
       .order('year', { ascending: false });
-    const { data, error } = await q;
     if (error) throw error;
-    const exams = (data || []).filter(exam =>
-      Array.isArray(exam.answer_keys) && exam.answer_keys.some(key => key.verified)
-    );
-    return exams.map(exam => ({
+    return (data || []).map(exam => ({
       ...exam,
-      faculty: exam.faculties || null,
-      faculty_name: exam.faculties?.name || '',
+      faculty_name: exam.faculties?.name || 'Facultate nespecificată',
       faculty_city: exam.faculties?.city || '',
-      answer_keys: undefined,
     }));
   },
 
