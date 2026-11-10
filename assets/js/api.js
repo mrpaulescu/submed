@@ -509,14 +509,27 @@ export const Grile = {
 
   
   // Structured exam catalog: filters from exams/faculties metadata, not question.source text.
-  async listExamCatalog() {
-    const { data, error } = await supabase.from('exams')
+  async listExamCatalog({ subject = null } = {}) {
+    let q = supabase.from('exams')
       .select('id, name, year, session, exam_date, sheet_type, category, is_premium, faculty_id, num_questions, faculties(id, name, city, slug)')
       .eq('is_published', true)
       .order('exam_date', { ascending: false, nullsFirst: false })
       .order('year', { ascending: false });
+    const { data, error } = await q;
     if (error) throw error;
-    return (data || []).map(exam => ({
+
+    let exams = data || [];
+    if (subject === 'biologie' || subject === 'chimie') {
+      const { data: mappedRows, error: mappingError } = await supabase
+        .from('exam_questions')
+        .select('exam_id')
+        .eq('subject', subject);
+      if (mappingError) throw mappingError;
+      const examIds = new Set((mappedRows || []).map(row => row.exam_id).filter(Boolean));
+      exams = exams.filter(exam => examIds.has(exam.id));
+    }
+
+    return exams.map(exam => ({
       ...exam,
       faculty_name: exam.faculties?.name || 'Facultate nespecificată',
       faculty_city: exam.faculties?.city || '',
