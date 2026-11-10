@@ -453,7 +453,7 @@ examFilterIds.forEach((id, index) => {
     if (id !== 'cfgExam') {
       for (let i = index + 1; i < examFilterIds.length; i++) $(examFilterIds[i]).value = '';
     }
-    if (id !== 'cfgExam') selectedExamId = '';
+    selectedExamId = id === 'cfgExam' ? $('cfgExam').value : '';
     refreshExamFilters();
     updateAvail();
   });
