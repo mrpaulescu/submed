@@ -166,7 +166,7 @@ async function saveCurrentContext() {
     closeDialogs();
     notify(result.alreadySaved ? 'Materialul este deja pe peretele tău.' : `${WALL_TYPES[statusType] || 'Material'} salvat pe perete.`);
   } catch(error) {
-    toast(error.message || 'Materialul nu a putut fi salvat.');
+    notify(error.message || 'Materialul nu a putut fi salvat.');
   }
 }
 
@@ -274,7 +274,7 @@ function initCaptureEvents() {
         postit_color:document.getElementById('submedWallColor').value,
       },type,location.pathname);
       closeDialogs();
-      toast(type==='postit'?'Post-it salvat pe tablă.':'Notiță salvată pe perete.');
+      notify(type==='postit'?'Post-it salvat pe tablă.':'Notiță salvată pe perete.');
       document.dispatchEvent(new CustomEvent('submed:wall-item-created',{detail:{item:saved}}));
     }catch(error){
       status.textContent=error.message||'Elementul nu a putut fi salvat.';
