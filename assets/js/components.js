@@ -266,10 +266,8 @@ function inject() {
   const logoutBtn = document.getElementById('navLogout');
   if (logoutBtn) logoutBtn.addEventListener('click', () => Auth.logout());
 
-  if (MODE === 'full') {
-    populateUser();
-    initQuickNote();
-  }
+  if (MODE === 'full') populateUser();
+  if (MODE !== 'none') initQuickNote();
 }
 
 
