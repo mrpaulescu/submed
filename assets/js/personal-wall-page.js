@@ -33,9 +33,11 @@ const itemTitle = item => item.display_title || item.title || WALL_TYPES[item.it
 const itemPreview = item => item.preview || item.body || '';
 const isText = item => item.item_type === 'note' || item.item_type === 'postit';
 const filteredItems = () => {
+  const needle = $('wallSearch')?.value.trim().toLocaleLowerCase('ro') || '';
   let rows = state.items.filter(item =>
     (state.category === 'all' || item.category === state.category)
     && (!state.importantOnly || item.is_important)
+    && (!needle || [itemTitle(item),itemPreview(item),item.body,(item.tags||[]).join(' '),WALL_TYPES[item.item_type]].join(' ').toLocaleLowerCase('ro').includes(needle))
   );
   if (state.sort === 'recent') rows.sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at));
   if (state.sort === 'important') rows.sort((a,b) => Number(b.is_important) - Number(a.is_important) || new Date(b.updated_at) - new Date(a.updated_at));
@@ -59,7 +61,7 @@ function renderStats() {
   const bytes = new Blob([JSON.stringify(items.map(item => ({
     item_type:item.item_type, title:item.title, body:item.body, category:item.category,
     tags:item.tags, content_id:item.content_id, source_page:item.source_page,
-  }))]).size;
+  }))) ]).size;
   $('wallStats').innerHTML = `
     <div class="stat-pill"><span class="stat-pill-label">Elemente salvate</span><div class="stat-pill-val">${items.length}</div><div class="stat-pill-sub">în peretele tău</div></div>
     <div class="stat-pill"><span class="stat-pill-label">Importante</span><div class="stat-pill-val">${important}</div><div class="stat-pill-sub">marcate cu stea</div></div>
@@ -277,6 +279,7 @@ function renderViews() {
     button.setAttribute('aria-selected',String(active));
   });
   $('wallFilters').hidden = state.view !== 'db';
+  document.querySelector('.wall-search').hidden = state.view !== 'db';
   if (state.view === 'db') renderDatabase();
   if (state.view === 'map') renderMindmap();
   if (state.view === 'board') renderBoard();
@@ -442,12 +445,6 @@ async function init() {
   $('wallOverlay').addEventListener('click',closeDrawer);
   document.addEventListener('keydown',event=>{if(event.key==='Escape')closeDrawer();});
   document.addEventListener('click',async event=>{
-    const capture=event.target.closest('[data-wall-capture]');
-    if(capture && !capture.closest('.wall-board')) {
-      event.preventDefault();
-      document.getElementById('submedWallFab')?.click();
-      return;
-    }
     const button=event.target.closest('[data-action]');
     if(!button)return;
     const action=button.dataset.action;
@@ -487,8 +484,6 @@ async function init() {
       }catch(error){toast(error.message||'Comentariul nu a putut fi șters.');}
     }
   });
-  const bodyObserver = new MutationObserver(()=>{});
-  void bodyObserver;
   try {
     state.items=await PersonalWall.list();
     render();
