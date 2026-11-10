@@ -70,16 +70,17 @@ function makeNoteCard(note) {
 
   const footer = document.createElement('div');
   footer.className = 'note-foot';
-  const source = document.createElement('span');
-  source.className = 'note-source';
-  if (note.source_page && /^\/?[a-z0-9_./-]+\.html$/i.test(note.source_page.replace(/^\//, ''))) {
+  let sourceNode = document.createElement('span');
+  sourceNode.className = 'note-source';
+  const safeSource = String(note.source_page || '');
+  if (safeSource && /^\\/?[a-z0-9_./-]+\\.html$/i.test(safeSource.replace(/^\\//, ''))) {
     const link = document.createElement('a');
-    link.href = note.source_page;
+    link.href = safeSource;
     link.className = 'note-source';
-    link.textContent = note.source_page.replace(/^\//, '').replace('.html', '');
-    source.replaceWith(link);
+    link.textContent = safeSource.replace(/^\\//, '').replace('.html', '');
+    sourceNode = link;
   } else {
-    source.textContent = 'Notiță personală';
+    sourceNode.textContent = 'Notiță personală';
   }
   const actions = document.createElement('div');
   actions.className = 'note-actions';
@@ -96,7 +97,7 @@ function makeNoteCard(note) {
       }
     }),
   );
-  footer.append(source.parentNode === footer ? source : (note.source_page && /^\/?[a-z0-9_./-]+\.html$/i.test(note.source_page.replace(/^\//, '')) ? footer.lastChild : source), actions);
+  footer.append(sourceNode, actions);
   card.append(top);
   if (note.title) card.append(title);
   card.append(body, footer);
