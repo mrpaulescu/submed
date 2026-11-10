@@ -198,8 +198,21 @@ export const PersonalWall = {
     const user = await currentUser();
     const item = validateTextItem(payload, type);
     const source = String(sourcePage || '').split('?')[0].slice(0, 120);
+    let board_x = 24;
+    let board_y = 24;
+    if (item.on_board || type === 'postit') {
+      const { count, error: countError } = await supabase.from('personal_wall_items')
+        .select('id', { count:'exact', head:true })
+        .eq('user_id', user.id)
+        .eq('on_board', true);
+      if (countError) throw countError;
+      const columns = typeof window !== 'undefined' && window.innerWidth < 620 ? 1 : 2;
+      const position = Number(count || 0);
+      board_x = 20 + (position % columns) * 238;
+      board_y = 20 + Math.floor(position / columns) * 182;
+    }
     const { data, error } = await supabase.from('personal_wall_items')
-      .insert({ user_id: user.id, ...item, source_page: source })
+      .insert({ user_id: user.id, ...item, board_x, board_y, source_page: source })
       .select('*')
       .single();
     if (error) throw error;
