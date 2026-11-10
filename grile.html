@@ -13,12 +13,11 @@
 
 <style>
   /* ── capitole ─────────────────────────────────────────── */
-  .chap-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; margin-bottom:10px; box-shadow:var(--shadow); display:flex; align-items:center; gap:16px; }
+  .chap-card { flex-direction:row; align-items:center; margin-bottom:10px; gap:16px; }
   .chap-body { flex:1; min-width:0; }
   .chap-name { font-weight:700; font-size:1.02rem; font-family:var(--font-display); }
   .chap-meta { font-size:.78rem; color:var(--muted); font-family:var(--mono); margin-top:3px; }
-  .chap-prog { height:6px; background:var(--blue-tint-2); border-radius:4px; overflow:hidden; margin-top:8px; }
-  .chap-prog div { height:100%; background:linear-gradient(90deg,#2bbf82,#0f9e63); border-radius:4px; }
+  .chap-prog { margin-top:8px; }
   .chap-actions { display:flex; gap:8px; flex-shrink:0; }
   .chap-actions .btn-primary, .chap-actions .btn-secondary { padding:8px 14px; font-size:.84rem; }
 
@@ -27,21 +26,13 @@
   .cfg-row { padding:15px 0; border-bottom:1px solid var(--blue-tint-2); }
   .cfg-row:first-child { padding-top:0; }
   .cfg-row.cfg-last { border-bottom:0; }
-  .cfg-row > label { display:block; font-family:var(--mono); font-size:.7rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin-bottom:10px; }
-  .cfg-chips { display:flex; flex-wrap:wrap; gap:8px; }
-  .cfg-chip { display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:100px; border:1.5px solid var(--line-2); background:var(--surface); font-size:.9rem; font-weight:600; color:var(--ink-2); cursor:pointer; user-select:none; transition:all .15s; font-family:var(--font); }
-  .cfg-chip:hover { border-color:var(--blue); color:var(--blue-deep); }
-  .cfg-chip.on { background:var(--blue); border-color:var(--blue); color:#fff; box-shadow:0 4px 12px -5px rgba(45,110,255,.6); }
-  .cfg-chip:disabled { opacity:.42; cursor:not-allowed; box-shadow:none; }
-  .cfg-switch { display:flex; align-items:center; justify-content:space-between; gap:16px; }
-  .cfg-switch .sw-txt { font-size:.92rem; font-weight:600; }
-  .cfg-switch .sw-sub { font-size:.8rem; color:var(--muted); font-weight:400; margin-top:2px; max-width:52ch; }
-  .switch { position:relative; width:50px; height:28px; flex:0 0 auto; }
-  .switch input { opacity:0; width:0; height:0; }
-  .switch .track { position:absolute; inset:0; background:var(--line-2); border-radius:100px; transition:background .18s; cursor:pointer; }
-  .switch .track::before { content:''; position:absolute; height:22px; width:22px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform .18s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
-  .switch input:checked + .track { background:var(--blue); }
-  .switch input:checked + .track::before { transform:translateX(22px); }
+  .cfg-row > label { display:block; font-family:var(--mono); font-size:.7rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin-bottom:8px; }
+  .cfg-row .form-select { max-width:480px; min-height:44px; border-color:var(--line); color:var(--ink-2); font:600 .86rem var(--font); background-color:var(--surface-2); }
+  .cfg-row .form-select:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(45,110,255,.12); }
+  .cfg-check { display:flex; align-items:flex-start; gap:12px; padding:12px 0; }
+  .cfg-check .form-check-input { margin-top:5px; flex:0 0 auto; }
+  .cfg-check .form-check-label { font-size:.9rem; font-weight:700; color:var(--ink); }
+  .cfg-check small { display:block; margin-top:3px; color:var(--ink-2); font-size:.78rem; font-weight:400; }
   .cfg-actions { display:flex; align-items:center; gap:14px; margin-top:20px; flex-wrap:wrap; }
   .cfg-count { font-family:var(--mono); font-size:.8rem; color:var(--ink-3); }
   .cfg-count b { color:var(--blue-deep); }
@@ -144,20 +135,6 @@
   .selection-detail .cfg-row:first-child { padding-top:0; }
   .selection-detail .cfg-row:last-child { padding-bottom:0; border-bottom:0; }
   .cfg-row > label { display:block; font-family:var(--mono); font-size:.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-bottom:9px; }
-  .cfg-chips { display:flex; flex-wrap:wrap; gap:8px; }
-  .cfg-chip { display:inline-flex; align-items:center; justify-content:center; min-height:38px; padding:8px 14px; border-radius:10px; border:1.5px solid var(--line-2); background:var(--surface); font-size:.84rem; font-weight:600; color:var(--ink-2); cursor:pointer; user-select:none; transition:all .15s; font-family:var(--font); }
-  .cfg-chip:hover { border-color:var(--blue); color:var(--blue-deep); }
-  .cfg-chip.on { background:var(--blue-tint); border-color:var(--blue); color:var(--blue-deep); }
-  .cfg-chip:disabled { opacity:.42; cursor:not-allowed; }
-  .cfg-switch { display:flex; align-items:center; justify-content:space-between; gap:16px; }
-  .cfg-switch .sw-txt { font-size:.9rem; font-weight:600; }
-  .cfg-switch .sw-sub { font-size:.78rem; color:var(--muted); font-weight:400; margin-top:3px; max-width:60ch; }
-  .switch { position:relative; width:50px; height:28px; flex:0 0 auto; }
-  .switch input { opacity:0; width:0; height:0; }
-  .switch .track { position:absolute; inset:0; background:var(--line-2); border-radius:100px; transition:background .18s; cursor:pointer; }
-  .switch .track::before { content:''; position:absolute; height:22px; width:22px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform .18s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
-  .switch input:checked + .track { background:var(--blue); }
-  .switch input:checked + .track::before { transform:translateX(22px); }
   .cfg-select-wrap { min-width:0; max-width:480px; margin-top:12px; }
   .cfg-select-wrap label { display:block; margin:0 0 6px; color:var(--ink-3); font:700 .66rem var(--mono); letter-spacing:.06em; text-transform:uppercase; }
   .cfg-select { width:100%; min-height:44px; border:1.5px solid var(--line); border-radius:10px; padding:9px 12px; background:var(--surface-2); color:var(--ink-2); font:600 .84rem var(--font); }
@@ -172,6 +149,8 @@
   .cfg-count b { color:var(--blue-deep); }
   .chap-card { transition:transform .15s var(--fx),border-color .15s,box-shadow .15s; }
   .chap-card:hover { transform:translateY(-2px); border-color:#d3e0f7; box-shadow:var(--shadow-md); }
+  .chap-card .wq-bar-wrap { height:6px; margin-top:8px; }
+  .chap-card .wq-bar { background:var(--blue); border-radius:4px; height:100%; }
   .q-card { padding:clamp(18px,3vw,30px); }
   .quiz-top { flex-wrap:wrap; }
   @media(max-width:900px){ .source-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
@@ -231,13 +210,13 @@
     <section class="panel selection-detail" id="bankOptions" hidden>
       <div class="panel-title">Originea întrebărilor</div>
       <div class="cfg-row">
-        <label>Centru universitar</label>
-        <div class="cfg-chips" id="cfgCenter" role="group" aria-label="Filtrează banca după centru">
-          <button class="cfg-chip on" type="button" data-val="toate" aria-pressed="true">Toate centrele</button>
-          <button class="cfg-chip" type="button" data-val="cluj" aria-pressed="false">UMF Cluj</button>
-          <button class="cfg-chip" type="button" data-val="iasi" aria-pressed="false">UMF Iași</button>
-        </div>
-        <p class="exam-hint">Filtrul folosește mențiunea centrului din sursa fiecărei întrebări. Pentru o sesiune exactă, alege „Un examen publicat”.</p>
+        <label for="cfgCenter">Centru universitar</label>
+        <select class="form-select" id="cfgCenter">
+          <option value="toate">Toate centrele</option>
+          <option value="cluj">UMF Cluj</option>
+          <option value="iasi">UMF Iași</option>
+        </select>
+        <p class="exam-hint">Filtrul folosește mențiunea centrului din sursa întrebării. Pentru un examen exact, alege „Un examen publicat”.</p>
       </div>
     </section>
 
@@ -274,38 +253,36 @@
     <section class="panel selection-detail" id="sessionOptions" hidden>
       <div class="panel-title">Setările sesiunii</div>
       <div class="cfg-row">
-        <label>Dificultate</label>
-        <div class="cfg-chips" id="cfgDiff" role="group" aria-label="Alege dificultatea">
-          <button class="cfg-chip on" type="button" data-val="toate" aria-pressed="true">Toate nivelurile</button>
-          <button class="cfg-chip" type="button" data-val="usor" aria-pressed="false">Ușor</button>
-          <button class="cfg-chip" type="button" data-val="mediu" aria-pressed="false">Mediu</button>
-          <button class="cfg-chip" type="button" data-val="greu" aria-pressed="false">Dificil</button>
-        </div>
+        <label for="cfgDiff">Dificultate</label>
+        <select class="form-select" id="cfgDiff">
+          <option value="toate">Toate nivelurile</option>
+          <option value="usor">Ușor</option>
+          <option value="mediu">Mediu</option>
+          <option value="greu">Dificil</option>
+        </select>
       </div>
       <div class="cfg-row">
-        <label>Număr de întrebări</label>
-        <div class="cfg-chips" id="cfgCount" role="group" aria-label="Alege numărul de întrebări">
-          <button class="cfg-chip" type="button" data-val="10" aria-pressed="false">10</button>
-          <button class="cfg-chip on" type="button" data-val="20" aria-pressed="true">20</button>
-          <button class="cfg-chip" type="button" data-val="30" aria-pressed="false">30</button>
-          <button class="cfg-chip" type="button" data-val="50" aria-pressed="false">50</button>
-          <button class="cfg-chip" type="button" data-val="0" aria-pressed="false">Toate</button>
-        </div>
-      </div>
-      <div class="cfg-row cfg-switch">
-        <div>
-          <div class="sw-txt">Feedback instant</div>
-          <div class="sw-sub">Vezi răspunsul corect după fiecare întrebare. Dezactivează pentru a verifica totul la final.</div>
-        </div>
-        <label class="switch"><input type="checkbox" id="cfgInstant" checked><span class="track"></span></label>
+        <label for="cfgCount">Număr de întrebări</label>
+        <select class="form-select" id="cfgCount">
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="30">30</option>
+          <option value="50">50</option>
+          <option value="0">Toate</option>
+        </select>
       </div>
       <div class="cfg-row">
-        <div class="cfg-switch">
-          <div>
-            <div class="sw-txt">Cronometru</div>
-            <div class="sw-sub">Alocă aproximativ un minut pentru fiecare întrebare.</div>
-          </div>
-          <label class="switch"><input type="checkbox" id="cfgTimer"><span class="track"></span></label>
+        <div class="cfg-check">
+          <input class="form-check-input" type="checkbox" id="cfgInstant" checked>
+          <label class="form-check-label" for="cfgInstant">Feedback instant
+            <small>Vezi răspunsul corect după fiecare întrebare. Dezactivează pentru a verifica totul la final.</small>
+          </label>
+        </div>
+        <div class="cfg-check">
+          <input class="form-check-input" type="checkbox" id="cfgTimer">
+          <label class="form-check-label" for="cfgTimer">Cronometru
+            <small>Alocă aproximativ un minut pentru fiecare întrebare.</small>
+          </label>
         </div>
       </div>
       <div class="cfg-actions" id="cfgActions" hidden>
@@ -593,9 +570,9 @@ function resetSourceOptions() {
   diffSel = 'toate';
   countSel = 20;
   setChoiceGroup('cfgSource', '');
-  setChoiceGroup('cfgCenter', 'toate');
-  setChoiceGroup('cfgDiff', 'toate');
-  setChoiceGroup('cfgCount', '20');
+  $('cfgCenter').value = 'toate';
+  $('cfgDiff').value = 'toate';
+  $('cfgCount').value = '20';
   $('bankOptions').hidden = true;
   $('examOptions').hidden = true;
   $('chapterOptions').hidden = true;
@@ -694,16 +671,16 @@ $('cfgSource').addEventListener('click', event => {
 });
 
 bindSubjectChoices();
-bindChipGroup('cfgCenter', value => {
-  centerSel = value;
+$('cfgCenter').addEventListener('change', () => {
+  centerSel = $('cfgCenter').value;
   updateAvail();
 });
-bindChipGroup('cfgDiff', value => {
-  diffSel = value;
+$('cfgDiff').addEventListener('change', () => {
+  diffSel = $('cfgDiff').value;
   updateAvail();
 });
-bindChipGroup('cfgCount', value => {
-  countSel = Number.parseInt(value, 10);
+$('cfgCount').addEventListener('change', () => {
+  countSel = Number.parseInt($('cfgCount').value, 10);
   updateAvail();
 });
 
@@ -818,12 +795,12 @@ async function loadChapters() {
     }, { attempted: 0, correct: 0 });
     const pct = c.question_count ? Math.round(p.correct / c.question_count * 100) : 0;
     const row = document.createElement('div');
-    row.className = 'chap-card';
+    row.className = 'tool chap-card';
     row.innerHTML = `
       <div class="chap-body">
         <div class="chap-name">${c.name}</div>
         <div class="chap-meta">${c.question_count} întrebări · ${p.attempted} rezolvate · ${p.correct} corecte</div>
-        <div class="chap-prog"><div style="width:${pct}%"></div></div>
+        <div class="wq-bar-wrap chap-prog"><div class="wq-bar" style="width:${pct}%"></div></div>
       </div>
       <div class="chap-actions">
         <button class="btn-primary p-btn">Practică</button>
