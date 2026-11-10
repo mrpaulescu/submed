@@ -399,7 +399,6 @@ let selectedExamId = '';
 let examCatalog = [];
 let progress = {};
 
-let usingDemo = false;
 const normDiff = d => {
   if (d == null) return null;
   const s = String(d).toLowerCase();
@@ -882,7 +881,7 @@ function beginSession({ mode, label, questions, timed, rerun }) {
     idx: 0, answers: {}, checked: new Set(), flags: new Set(), results: [],
     timed, timerId: null, timeLeft: timed ? questions.length * SEC_PER_Q : 0,
     pendingSaves: [], finishing: false,
-    startedAt: Date.now(), rerun, demo: false,
+    startedAt: Date.now(), rerun,
   };
   $('navGrid').classList.add('hidden');
   $('btnNav').classList.toggle('hidden', mode !== 'exam');
@@ -1015,7 +1014,7 @@ function checkPractice() {
   const ok = gradeAnswer(sel, q.correct);
   S.results = S.results.filter(r => r.questionId !== q.id);
   S.results.push({ questionId: q.id, selected: sel, isCorrect: ok });
-  if (canSave && !S.demo) {
+  if (canSave) {
     const pending = Grile.recordAttempt(q.id, sel, ok).catch(error => {
       console.warn('Răspunsul nu a putut fi salvat:', error.message);
       throw error;
@@ -1084,7 +1083,7 @@ async function finishSession() {
     const sel = S.answers[q.id] || [];
     return { questionId: q.id, selected: sel, isCorrect: gradeAnswer(sel, q.correct) };
   });
-  if (S.mode === 'exam' && canSave && !S.demo) {
+  if (S.mode === 'exam' && canSave) {
     try { await Grile.recordAttempts(S.results); }
     catch (error) { console.warn('Rezultatele examenului nu au putut fi salvate:', error.message); }
   }
@@ -1133,12 +1132,25 @@ $('quizExit').addEventListener('click', () => {
   if (S?.timerId) clearInterval(S.timerId);
   backHome();
 });
-function backHome() { if (S?.timerId) clearInterval(S.timerId); show('viewChapters'); loadChapters(); updateAvail(); }
+function backHome() {
+  if (S?.timerId) clearInterval(S.timerId);
+  show('viewChapters');
+  if (sourceSel === 'chapters') loadChapters();
+  else if (sourceSel === 'bank' || (sourceSel === 'exam' && selectedExamId)) updateAvail();
+}
 
 /* ── init ──────────────────────────────────────────────── */
-if (subject === 'chimie') {
-  document.querySelector('#cfgSubject [data-val="biologie"]')?.classList.remove('on');
-  document.querySelector('#cfgSubject [data-val="chimie"]')?.classList.add('on');
+setChoiceGroup('cfgSubject', subject);
+if (coachParams.get('mode') !== 'mistakes') {
+  if (recommendedChapterId) {
+    sourceSel = 'chapters';
+    $('sourceStep').hidden = false;
+    $('chapterOptions').hidden = false;
+    setChoiceGroup('cfgSource', 'chapters');
+    loadChapters();
+  } else if (coachParams.has('subject')) {
+    $('sourceStep').hidden = false;
+  }
 }
 
 async function startDueMistakes() {
@@ -1160,7 +1172,6 @@ async function startDueMistakes() {
     msg('Nu ai întrebări greșite programate pentru azi. Revino după următoarea sesiune de grile.', 'success');
     return;
   }
-  usingDemo = false;
   beginSession({
     mode: 'practice',
     label: 'Greșeli de reluat',
