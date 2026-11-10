@@ -111,12 +111,6 @@ function renderDatabase() {
       ? 'Schimbă categoria, căutarea sau filtrul Important.'
       : 'Păstrează aici idei, post-it-uri și materiale din grile, flashcards și alte instrumente SubMed.');
     empty.append(title,desc);
-    if (!state.items.length) {
-      const button = makeNode('button','btn-primary','Adaugă primul element');
-      button.type = 'button';
-      button.dataset.wallCapture = '';
-      empty.append(button);
-    }
     host.append(empty);
     return;
   }
