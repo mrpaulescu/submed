@@ -332,7 +332,6 @@ export const PersonalWall = {
     const term = String(search || '').trim();
     const pattern = `%${term.replace(/[%_]/g, '\\$&')}%`;
     let query;
-    let select;
     switch (type) {
       case 'question':
         query = supabase.from('questions').select('id, text, source, difficulty, chapter_id').eq('active', true).ilike('text', pattern).limit(30);
@@ -360,10 +359,22 @@ export const PersonalWall = {
     }
     const { data, error } = await query;
     if (error) throw error;
-    return (data || []).map(row => {
-      const title = row.text || row.front || row.name || row.title || 'Material salvat';
+    const rows = data || [];
+    let submissionExams = new Map();
+    if (type === 'submission') {
+      const examIds = [...new Set(rows.map(row => row.exam_id).filter(Boolean))];
+      const exams = await fetchRows('exams', 'id, name, year, session', examIds);
+      submissionExams = mapIndex(exams);
+    }
+    return rows.map(row => {
+      const relatedExam = type === 'submission' ? submissionExams.get(row.exam_id) : null;
+      const title = row.text || row.front || row.name || row.title || relatedExam?.name || 'Material salvat';
       const detail = row.source || row.formula || row.description || [
-        row.year, row.session, row.day, row.percentage != null ? `${Number(row.percentage).toFixed(1)}%` : ''
+        row.year ?? relatedExam?.year,
+        row.session ?? relatedExam?.session,
+        row.day,
+        row.percentage != null ? `${Number(row.percentage).toFixed(1)}%` : '',
+        type === 'submission' && row.score != null ? `${row.score}/${row.total}` : '',
       ].filter(Boolean).join(' · ');
       return { id: row.id, title: String(title).slice(0, 140), preview: detail || '' };
     });
