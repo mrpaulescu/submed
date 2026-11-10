@@ -248,6 +248,18 @@ export const PersonalWall = {
     const update = {};
     if (Number.isFinite(board_x)) update.board_x = Math.max(0, Math.min(10000, Math.round(board_x)));
     if (Number.isFinite(board_y)) update.board_y = Math.max(0, Math.min(10000, Math.round(board_y)));
+    if (on_board === true && !Number.isFinite(board_x) && !Number.isFinite(board_y)) {
+      const user = await currentUser();
+      const { count, error: countError } = await supabase.from('personal_wall_items')
+        .select('id', { count:'exact', head:true })
+        .eq('user_id', user.id)
+        .eq('on_board', true);
+      if (countError) throw countError;
+      const columns = typeof window !== 'undefined' && window.innerWidth < 620 ? 1 : 2;
+      const position = Number(count || 0);
+      update.board_x = 20 + (position % columns) * 238;
+      update.board_y = 20 + Math.floor(position / columns) * 182;
+    }
     if (WALL_COLORS.includes(postit_color)) update.postit_color = postit_color;
     if (typeof on_board === 'boolean') update.on_board = on_board;
     if (typeof in_mindmap === 'boolean') update.in_mindmap = in_mindmap;
