@@ -507,7 +507,61 @@ export const Grile = {
     return count ?? 0;
   },
 
-  async recordAttempt(questionId, selected, isCorrect) {
+  
+  // Structured exam catalog: filters from exams/faculties metadata, not question.source text.
+  async listExamCatalog({ subject = null } = {}) {
+    let q = supabase.from('exams')
+      .select('id, name, year, session, exam_date, sheet_type, category, is_premium, faculty_id, num_questions, faculties!inner(id, name, city, slug), answer_keys(id, verified)')
+      .eq('is_published', true)
+      .order('exam_date', { ascending: false, nullsFirst: false })
+      .order('year', { ascending: false });
+    const { data, error } = await q;
+    if (error) throw error;
+    const exams = (data || []).filter(exam =>
+      Array.isArray(exam.answer_keys) && exam.answer_keys.some(key => key.verified)
+    );
+    return exams.map(exam => ({
+      ...exam,
+      faculty: exam.faculties || null,
+      faculty_name: exam.faculties?.name || '',
+      faculty_city: exam.faculties?.city || '',
+      answer_keys: undefined,
+    }));
+  },
+
+  async listQuestionsForExam(examId, { subject = null, shuffle = true, limit = null } = {}) {
+    if (!examId) throw new Error('Alege un examen.');
+    const { data: mapRows, error: mapError } = await supabase.from('exam_questions')
+      .select('question_no, subject, chapter_id, source_question_id, chapters(name)')
+      .eq('exam_id', examId)
+      .order('question_no');
+    if (mapError) throw mapError;
+    let mapping = mapRows || [];
+    if (subject) mapping = mapping.filter(row => row.subject === subject);
+    const ids = [...new Set(mapping.map(row => row.source_question_id).filter(Boolean))];
+    if (!ids.length) return [];
+    let query = supabase.from('questions')
+      .select('id, text, options, correct, explanation, multiple, difficulty, source, chapter_id')
+      .eq('active', true)
+      .in('id', ids);
+    const { data, error } = await query;
+    if (error) throw error;
+    const byId = new Map((data || []).map(row => [row.id, row]));
+    let questions = mapping.map(row => {
+      const question = byId.get(row.source_question_id);
+      return question ? {
+        ...question,
+        exam_question_no: row.question_no,
+        subject: row.subject,
+        chapter_name: row.chapters?.name || null,
+      } : null;
+    }).filter(Boolean);
+    if (shuffle) questions = questions.sort(() => Math.random() - 0.5);
+    if (limit) questions = questions.slice(0, limit);
+    return questions;
+  },
+
+async recordAttempt(questionId, selected, isCorrect) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Neautentificat');
     const { error } = await supabase.from('question_attempts')
