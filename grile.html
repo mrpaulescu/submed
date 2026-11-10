@@ -32,6 +32,7 @@
   .cfg-chip { display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:100px; border:1.5px solid var(--line-2); background:var(--surface); font-size:.9rem; font-weight:600; color:var(--ink-2); cursor:pointer; user-select:none; transition:all .15s; font-family:var(--font); }
   .cfg-chip:hover { border-color:var(--blue); color:var(--blue-deep); }
   .cfg-chip.on { background:var(--blue); border-color:var(--blue); color:#fff; box-shadow:0 4px 12px -5px rgba(45,110,255,.6); }
+  .cfg-chip:disabled { opacity:.42; cursor:not-allowed; box-shadow:none; }
   .cfg-switch { display:flex; align-items:center; justify-content:space-between; gap:16px; }
   .cfg-switch .sw-txt { font-size:.92rem; font-weight:600; }
   .cfg-switch .sw-sub { font-size:.8rem; color:var(--muted); font-weight:400; margin-top:2px; max-width:52ch; }
@@ -170,17 +171,18 @@
       <div class="cfg-row">
         <label>Materie</label>
         <div class="cfg-chips" id="cfgSubject">
-          <span class="cfg-chip on" data-val="biologie">🧬 Biologie</span>
-          <span class="cfg-chip" data-val="chimie">⚗️ Chimie</span>
+          <button class="cfg-chip on" type="button" data-val="biologie" aria-pressed="true">🧬 Biologie</button>
+          <button class="cfg-chip" type="button" data-val="chimie" aria-pressed="false">⚗️ Chimie</button>
         </div>
       </div>
       <div class="cfg-row">
-        <label>Centru universitar</label>
+        <label>Centru universitar · banca generală</label>
         <div class="cfg-chips" id="cfgCenter">
-          <span class="cfg-chip on" data-val="toate">Toate centrele</span>
-          <span class="cfg-chip" data-val="cluj">UMF Cluj</span>
-          <span class="cfg-chip" data-val="iasi">UMF Iași</span>
+          <button class="cfg-chip on" type="button" data-val="toate" aria-pressed="true">Toate centrele</button>
+          <button class="cfg-chip" type="button" data-val="cluj" aria-pressed="false">UMF Cluj</button>
+          <button class="cfg-chip" type="button" data-val="iasi" aria-pressed="false">UMF Iași</button>
         </div>
+        <div class="exam-hint">Acest filtru folosește eticheta text din sursa întrebării. Pentru selecția unui examen concret, folosește catalogul structurat de mai jos.</div>
       </div>
       <div class="cfg-row">
         <label>Catalog de examene</label>
@@ -199,20 +201,20 @@
       <div class="cfg-row">
         <label>Dificultate</label>
         <div class="cfg-chips" id="cfgDiff">
-          <span class="cfg-chip on" data-val="toate">Toate</span>
-          <span class="cfg-chip" data-val="usor">🟢 Ușor</span>
-          <span class="cfg-chip" data-val="mediu">🟠 Mediu</span>
-          <span class="cfg-chip" data-val="greu">🔴 Greu</span>
+          <button class="cfg-chip on" type="button" data-val="toate" aria-pressed="true">Toate</button>
+          <button class="cfg-chip" type="button" data-val="usor" aria-pressed="false">🟢 Ușor</button>
+          <button class="cfg-chip" type="button" data-val="mediu" aria-pressed="false">🟠 Mediu</button>
+          <button class="cfg-chip" type="button" data-val="greu" aria-pressed="false">🔴 Greu</button>
         </div>
       </div>
       <div class="cfg-row">
         <label>Număr de întrebări</label>
         <div class="cfg-chips" id="cfgCount">
-          <span class="cfg-chip" data-val="10">10</span>
-          <span class="cfg-chip on" data-val="20">20</span>
-          <span class="cfg-chip" data-val="30">30</span>
-          <span class="cfg-chip" data-val="50">50</span>
-          <span class="cfg-chip" data-val="0">Toate</span>
+          <button class="cfg-chip" type="button" data-val="10" aria-pressed="false">10</button>
+          <button class="cfg-chip on" type="button" data-val="20" aria-pressed="true">20</button>
+          <button class="cfg-chip" type="button" data-val="30" aria-pressed="false">30</button>
+          <button class="cfg-chip" type="button" data-val="50" aria-pressed="false">50</button>
+          <button class="cfg-chip" type="button" data-val="0" aria-pressed="false">Toate</button>
         </div>
       </div>
       <div class="cfg-row cfg-switch">
@@ -397,22 +399,7 @@ function setOptions(id, placeholder, values, selected = '') {
   select.value = values.some(item => (typeof item === 'object' ? item.value : String(item)) === previous) ? previous : '';
   select.disabled = values.length === 0;
 }
-function examRowsByFilters(before = 'cfgExamCategory') {
-  let rows = examCatalog.slice();
-  const filters = [
-    ['cfgExamCategory', exam => optionValue(exam.category)],
-    ['cfgExamFaculty', exam => String(exam.faculty_id || '')],
-    ['cfgExamYear', exam => String(exam.year || '')],
-    ['cfgExamSession', exam => optionValue(exam.session)],
-  ];
-  for (const [id, getter] of filters) {
-    if (id === before) break;
-    const value = $(id).value;
-    if (value) rows = rows.filter(exam => getter(exam) === value);
-  }
-  return rows;
-}
-function refreshExamFilters(changedId = '') {
+function refreshExamFilters() {
   const category = $('cfgExamCategory').value;
   let rows = examCatalog;
   const categories = uniqueFacet(examCatalog, exam => optionValue(exam.category))
@@ -445,6 +432,7 @@ function refreshExamFilters(changedId = '') {
   const previousExam = selectedExamId || $('cfgExam').value;
   setOptions('cfgExam','Exersează din întreaga bancă de grile',examOptions,previousExam);
   selectedExamId = $('cfgExam').value;
+  $('cfgCenter').querySelectorAll('.cfg-chip').forEach(chip => { chip.disabled = Boolean(selectedExamId); });
   $('examCatalogHint').textContent = examCatalog.length
     ? selectedExamId
       ? 'Examen selectat. Întrebările vor fi preluate din asocierea examenului cu banca de întrebări.'
@@ -465,7 +453,8 @@ examFilterIds.forEach((id, index) => {
     if (id !== 'cfgExam') {
       for (let i = index + 1; i < examFilterIds.length; i++) $(examFilterIds[i]).value = '';
     }
-    refreshExamFilters(id);
+    if (id !== 'cfgExam') selectedExamId = '';
+    refreshExamFilters();
     updateAvail();
   });
 });
@@ -514,8 +503,9 @@ function bindChipGroup(id, onChange) {
   const group = $(id); if (!group) return;
   group.addEventListener('click', e => {
     const chip = e.target.closest('.cfg-chip'); if (!chip) return;
-    group.querySelectorAll('.cfg-chip').forEach(c => c.classList.remove('on'));
+    group.querySelectorAll('.cfg-chip').forEach(c => { c.classList.remove('on'); c.setAttribute('aria-pressed', 'false'); });
     chip.classList.add('on');
+    chip.setAttribute('aria-pressed', 'true');
     onChange(chip.dataset.val);
   });
 }
