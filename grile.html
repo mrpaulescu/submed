@@ -878,6 +878,9 @@ function revealFor(q) { return S.mode === 'review' || (S.mode === 'practice' && 
 
 function renderQuestion() {
   const q = S.questions[S.idx];
+  window.SubMedWallContext = q?.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(q.id))
+    ? { type:'question', id:q.id, category:q.subject || subject || 'altele', sourcePage:'grile.html' }
+    : null;
   const n = S.questions.length;
   $('quizProg').innerHTML = `${S.label} · <b>${S.idx + 1}</b>/${n}`;
   $('qbarFill').style.width = ((S.idx + 1) / n * 100) + '%';
@@ -1106,6 +1109,7 @@ $('quizExit').addEventListener('click', () => {
 });
 function backHome() {
   if (S?.timerId) clearInterval(S.timerId);
+  window.SubMedWallContext = null;
   show('viewChapters');
   if (sourceSel === 'chapters') loadChapters();
   else if (sourceSel === 'bank' || (sourceSel === 'exam' && selectedExamId)) updateAvail();
