@@ -123,29 +123,57 @@
   .res-actions { display:flex; gap:10px; flex-wrap:wrap; }
   .res-actions button { flex:1; min-width:150px; }
 
-  /* configurator refresh — stronger hierarchy, consistent controls */
-  .config-card { padding:clamp(18px,3vw,30px); }
-  .config-intro { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:8px; }
-  .config-intro h3 { font:700 1.12rem var(--font-display); letter-spacing:-.02em; margin:0 0 5px; color:var(--ink); }
-  .config-intro p { font-size:.84rem; color:var(--ink-2); margin:0; max-width:62ch; }
-  .config-kicker { display:inline-flex; align-items:center; gap:7px; color:var(--blue-deep); background:var(--blue-tint-2); border:1px solid var(--line); padding:7px 11px; border-radius:100px; font:700 .66rem var(--mono); letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; }
-  .cfg-row > label { font-size:.68rem; }
-  .cfg-select-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
-  .cfg-select-wrap { min-width:0; }
-  .cfg-select-wrap label { display:block; margin:0 0 6px; color:var(--ink-3); font:700 .64rem var(--mono); letter-spacing:.06em; text-transform:uppercase; }
-  .cfg-select { width:100%; min-height:43px; border:1.5px solid var(--line); border-radius:11px; padding:9px 30px 9px 11px; background:var(--surface-2); color:var(--ink-2); font:600 .81rem var(--font); }
+  /* Selection controls reuse the same card, type and control language as
+     the dashboard. These rules only arrange existing components. */
+  .selection-panel { display:grid; gap:22px; margin-bottom:18px; }
+  .selection-step { min-width:0; }
+  .selection-step + .selection-step { border-top:1px solid var(--line); padding-top:20px; }
+  .selection-panel .panel-title { margin-bottom:12px; }
+  .subject-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  .source-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .choice-card { width:100%; min-width:0; cursor:pointer; appearance:none; text-align:left; font:inherit; }
+  .choice-card.is-selected { border-color:var(--blue); box-shadow:0 0 0 3px rgba(45,110,255,.12); }
+  .choice-card:focus-visible { outline:none; box-shadow:var(--ring); }
+  .choice-card .tool-desc { white-space:normal; }
+  .selection-detail { margin-bottom:16px; }
+  .selection-detail .panel-title { margin-bottom:12px; }
+  .selection-detail .cfg-row { padding:12px 0; }
+  .selection-detail .cfg-row:first-child { padding-top:0; }
+  .selection-detail .cfg-row:last-child { padding-bottom:0; border-bottom:0; }
+  .cfg-row > label { display:block; font-family:var(--mono); font-size:.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-bottom:9px; }
+  .cfg-chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .cfg-chip { display:inline-flex; align-items:center; justify-content:center; min-height:38px; padding:8px 14px; border-radius:10px; border:1.5px solid var(--line-2); background:var(--surface); font-size:.84rem; font-weight:600; color:var(--ink-2); cursor:pointer; user-select:none; transition:all .15s; font-family:var(--font); }
+  .cfg-chip:hover { border-color:var(--blue); color:var(--blue-deep); }
+  .cfg-chip.on { background:var(--blue-tint); border-color:var(--blue); color:var(--blue-deep); }
+  .cfg-chip:disabled { opacity:.42; cursor:not-allowed; }
+  .cfg-switch { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .cfg-switch .sw-txt { font-size:.9rem; font-weight:600; }
+  .cfg-switch .sw-sub { font-size:.78rem; color:var(--muted); font-weight:400; margin-top:3px; max-width:60ch; }
+  .switch { position:relative; width:50px; height:28px; flex:0 0 auto; }
+  .switch input { opacity:0; width:0; height:0; }
+  .switch .track { position:absolute; inset:0; background:var(--line-2); border-radius:100px; transition:background .18s; cursor:pointer; }
+  .switch .track::before { content:''; position:absolute; height:22px; width:22px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform .18s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
+  .switch input:checked + .track { background:var(--blue); }
+  .switch input:checked + .track::before { transform:translateX(22px); }
+  .cfg-select-wrap { min-width:0; max-width:480px; margin-top:12px; }
+  .cfg-select-wrap label { display:block; margin:0 0 6px; color:var(--ink-3); font:700 .66rem var(--mono); letter-spacing:.06em; text-transform:uppercase; }
+  .cfg-select { width:100%; min-height:44px; border:1.5px solid var(--line); border-radius:10px; padding:9px 12px; background:var(--surface-2); color:var(--ink-2); font:600 .84rem var(--font); }
   .cfg-select:focus { outline:0; border-color:var(--blue); box-shadow:0 0 0 3px rgba(45,110,255,.12); }
   .cfg-select:disabled { opacity:.55; cursor:not-allowed; }
-  .exam-hint { font-size:.76rem; color:var(--ink-3); margin-top:9px; line-height:1.5; }
-  .cfg-actions { border-top:1px solid var(--line); padding-top:18px; }
+  .exam-hint { font-size:.78rem; color:var(--ink-3); margin-top:10px; line-height:1.5; }
+  .exam-filter-step { max-width:480px; margin-top:14px; }
+  .exam-filter-step[hidden], .selection-detail[hidden], .selection-step[hidden], .source-grid[hidden], .cfg-actions[hidden] { display:none !important; }
+  .cfg-actions { display:flex; align-items:center; gap:14px; margin-top:2px; padding-top:18px; border-top:1px solid var(--line); flex-wrap:wrap; }
   .cfg-actions .btn-primary { min-height:46px; padding:12px 20px; }
+  .cfg-count { font-family:var(--mono); font-size:.78rem; color:var(--ink-3); }
+  .cfg-count b { color:var(--blue-deep); }
   .chap-card { transition:transform .15s var(--fx),border-color .15s,box-shadow .15s; }
   .chap-card:hover { transform:translateY(-2px); border-color:#d3e0f7; box-shadow:var(--shadow-md); }
   .q-card { padding:clamp(18px,3vw,30px); }
   .quiz-top { flex-wrap:wrap; }
-  @media(max-width:820px){ .cfg-select-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-  @media(max-width:520px){ .cfg-select-grid { grid-template-columns:1fr; } .config-intro { flex-direction:column; } .config-kicker { white-space:normal; } .chap-card { align-items:flex-start; flex-wrap:wrap; } .chap-actions { width:100%; } .chap-actions button { flex:1; } .q-actions { flex-wrap:wrap; } }
-  .hidden { display:none !important; }
+  @media(max-width:900px){ .source-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media(max-width:768px){ .source-grid { grid-template-columns:1fr; } }
+  @media(max-width:520px){ .subject-grid { grid-template-columns:1fr; } .chap-card { align-items:flex-start; flex-wrap:wrap; } .chap-actions { width:100%; } .chap-actions button { flex:1; } .q-actions { flex-wrap:wrap; } }
 </style>
 </head>
 
@@ -157,59 +185,103 @@
   <section id="viewChapters">
     <div class="greeting">
       <h2>Grile de admitere</h2>
-      <p>Alege materia și sursa întrebărilor, apoi configurează dificultatea și formatul sesiunii.</p>
+      <p>Alege materia, apoi spune-ne de unde vrei să provină întrebările. Opțiunile următoare se afișează în funcție de alegerea ta.</p>
     </div>
 
     <div class="alert-banner" id="guestBanner"></div>
+    <div class="alert-banner" id="banner"></div>
 
-    <!-- Configurator -->
-    <div class="config-card">
-      <div class="config-intro">
-        <div><h3>Configurează sesiunea</h3><p>Poți combina exercițiile din bancă cu un examen publicat în catalog.</p></div>
-        <span class="config-kicker">✦ Pregătire personalizată</span>
-      </div>
-      <div class="cfg-row">
-        <label>Materie</label>
-        <div class="cfg-chips" id="cfgSubject">
-          <button class="cfg-chip on" type="button" data-val="biologie" aria-pressed="true">🧬 Biologie</button>
-          <button class="cfg-chip" type="button" data-val="chimie" aria-pressed="false">⚗️ Chimie</button>
+    <section class="panel selection-panel">
+      <div class="selection-step" id="subjectStep">
+        <div class="panel-title">1. Alege materia</div>
+        <div class="subject-grid" id="cfgSubject" role="group" aria-label="Alege materia">
+          <button class="tool choice-card subject-choice" type="button" data-val="biologie" aria-pressed="false">
+            <span class="tool-name">Biologie</span>
+            <span class="tool-desc">Întrebări din materia de biologie.</span>
+          </button>
+          <button class="tool choice-card subject-choice" type="button" data-val="chimie" aria-pressed="false">
+            <span class="tool-name">Chimie</span>
+            <span class="tool-desc">Întrebări din materia de chimie.</span>
+          </button>
         </div>
       </div>
+
+      <div class="selection-step" id="sourceStep" hidden>
+        <div class="panel-title">2. Alege originea grilelor</div>
+        <div class="tool-grid source-grid" id="cfgSource" role="group" aria-label="Alege originea grilelor">
+          <button class="tool choice-card source-choice" type="button" data-val="bank" aria-pressed="false">
+            <span class="tool-name">Banca generală</span>
+            <span class="tool-desc">Amestecă întrebările disponibile pentru materia aleasă.</span>
+          </button>
+          <button class="tool choice-card source-choice" type="button" data-val="exam" aria-pressed="false">
+            <span class="tool-name">Un examen publicat</span>
+            <span class="tool-desc">Selectează categoria, facultatea, anul și sesiunea unui examen.</span>
+          </button>
+          <button class="tool choice-card source-choice" type="button" data-val="chapters" aria-pressed="false">
+            <span class="tool-name">Capitole</span>
+            <span class="tool-desc">Alege un capitol și lucrează întrebările aferente.</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel selection-detail" id="bankOptions" hidden>
+      <div class="panel-title">Originea întrebărilor</div>
       <div class="cfg-row">
-        <label>Centru universitar · banca generală</label>
-        <div class="cfg-chips" id="cfgCenter">
+        <label>Centru universitar</label>
+        <div class="cfg-chips" id="cfgCenter" role="group" aria-label="Filtrează banca după centru">
           <button class="cfg-chip on" type="button" data-val="toate" aria-pressed="true">Toate centrele</button>
           <button class="cfg-chip" type="button" data-val="cluj" aria-pressed="false">UMF Cluj</button>
           <button class="cfg-chip" type="button" data-val="iasi" aria-pressed="false">UMF Iași</button>
         </div>
-        <div class="exam-hint">Acest filtru folosește eticheta text din sursa întrebării. Pentru selecția unui examen concret, folosește catalogul structurat de mai jos.</div>
+        <p class="exam-hint">Filtrul folosește mențiunea centrului din sursa fiecărei întrebări. Pentru o sesiune exactă, alege „Un examen publicat”.</p>
       </div>
-      <div class="cfg-row">
-        <label>Catalog de examene</label>
-        <div class="cfg-select-grid">
-          <div class="cfg-select-wrap"><label for="cfgExamCategory">Categorie</label><select class="cfg-select" id="cfgExamCategory"><option value="">Toate categoriile</option></select></div>
-          <div class="cfg-select-wrap"><label for="cfgExamFaculty">Facultate</label><select class="cfg-select" id="cfgExamFaculty"><option value="">Toate facultățile</option></select></div>
-          <div class="cfg-select-wrap"><label for="cfgExamYear">An</label><select class="cfg-select" id="cfgExamYear"><option value="">Toți anii</option></select></div>
-          <div class="cfg-select-wrap"><label for="cfgExamSession">Sesiune</label><select class="cfg-select" id="cfgExamSession"><option value="">Toate sesiunile</option></select></div>
-        </div>
-        <div class="cfg-select-wrap" style="margin-top:10px">
-          <label for="cfgExam">Examen</label>
-          <select class="cfg-select" id="cfgExam"><option value="">Exersează din întreaga bancă de grile</option></select>
-        </div>
-        <div class="exam-hint" id="examCatalogHint">Filtrele folosesc metadatele catalogului: categorie, facultate, an și sesiune. Lasă examenul neales pentru banca generală.</div>
+    </section>
+
+    <section class="panel selection-detail" id="examOptions" hidden>
+      <div class="panel-title">Selectează examenul</div>
+      <p class="exam-hint" id="examCatalogHint">Se încarcă examenele publicate…</p>
+      <div class="exam-filter-step" id="examCategoryStep" hidden>
+        <label for="cfgExamCategory">Categorie</label>
+        <select class="cfg-select" id="cfgExamCategory"><option value="">Alege o categorie</option></select>
       </div>
+      <div class="exam-filter-step" id="examFacultyStep" hidden>
+        <label for="cfgExamFaculty">Facultate</label>
+        <select class="cfg-select" id="cfgExamFaculty"><option value="">Alege o facultate</option></select>
+      </div>
+      <div class="exam-filter-step" id="examYearStep" hidden>
+        <label for="cfgExamYear">An</label>
+        <select class="cfg-select" id="cfgExamYear"><option value="">Alege anul</option></select>
+      </div>
+      <div class="exam-filter-step" id="examSessionStep" hidden>
+        <label for="cfgExamSession">Sesiune</label>
+        <select class="cfg-select" id="cfgExamSession"><option value="">Alege sesiunea</option></select>
+      </div>
+      <div class="exam-filter-step" id="examExactStep" hidden>
+        <label for="cfgExam">Examen</label>
+        <select class="cfg-select" id="cfgExam"><option value="">Alege examenul</option></select>
+      </div>
+    </section>
+
+    <section class="panel selection-detail" id="chapterOptions" hidden>
+      <div class="panel-title">Alege capitolul</div>
+      <div id="chapList"><div class="empty-hint">Se încarcă capitolele…</div></div>
+    </section>
+
+    <section class="panel selection-detail" id="sessionOptions" hidden>
+      <div class="panel-title">Setările sesiunii</div>
       <div class="cfg-row">
         <label>Dificultate</label>
-        <div class="cfg-chips" id="cfgDiff">
-          <button class="cfg-chip on" type="button" data-val="toate" aria-pressed="true">Toate</button>
-          <button class="cfg-chip" type="button" data-val="usor" aria-pressed="false">🟢 Ușor</button>
-          <button class="cfg-chip" type="button" data-val="mediu" aria-pressed="false">🟠 Mediu</button>
-          <button class="cfg-chip" type="button" data-val="greu" aria-pressed="false">🔴 Greu</button>
+        <div class="cfg-chips" id="cfgDiff" role="group" aria-label="Alege dificultatea">
+          <button class="cfg-chip on" type="button" data-val="toate" aria-pressed="true">Toate nivelurile</button>
+          <button class="cfg-chip" type="button" data-val="usor" aria-pressed="false">Ușor</button>
+          <button class="cfg-chip" type="button" data-val="mediu" aria-pressed="false">Mediu</button>
+          <button class="cfg-chip" type="button" data-val="greu" aria-pressed="false">Dificil</button>
         </div>
       </div>
       <div class="cfg-row">
         <label>Număr de întrebări</label>
-        <div class="cfg-chips" id="cfgCount">
+        <div class="cfg-chips" id="cfgCount" role="group" aria-label="Alege numărul de întrebări">
           <button class="cfg-chip" type="button" data-val="10" aria-pressed="false">10</button>
           <button class="cfg-chip on" type="button" data-val="20" aria-pressed="true">20</button>
           <button class="cfg-chip" type="button" data-val="30" aria-pressed="false">30</button>
@@ -220,28 +292,24 @@
       <div class="cfg-row cfg-switch">
         <div>
           <div class="sw-txt">Feedback instant</div>
-          <div class="sw-sub">Îți arată răspunsul corect imediat ce ai bifat. Dezactivat = vezi rezultatul la final, ca la examen.</div>
+          <div class="sw-sub">Vezi răspunsul corect după fiecare întrebare. Dezactivează pentru a verifica totul la final.</div>
         </div>
         <label class="switch"><input type="checkbox" id="cfgInstant" checked><span class="track"></span></label>
       </div>
-      <div class="cfg-row cfg-switch cfg-last">
-        <div>
-          <div class="sw-txt">Cronometru</div>
-          <div class="sw-sub">Contra cronometru — un minut de întrebare. Când timpul expiră, sesiunea se încheie automat.</div>
+      <div class="cfg-row">
+        <div class="cfg-switch">
+          <div>
+            <div class="sw-txt">Cronometru</div>
+            <div class="sw-sub">Alocă aproximativ un minut pentru fiecare întrebare.</div>
+          </div>
+          <label class="switch"><input type="checkbox" id="cfgTimer"><span class="track"></span></label>
         </div>
-        <label class="switch"><input type="checkbox" id="cfgTimer"><span class="track"></span></label>
       </div>
-      <div class="cfg-actions">
-        <button class="btn-primary" id="cfgStart">⚡ Începe sesiunea</button>
-        <span class="cfg-count" id="cfgAvail"></span>
+      <div class="cfg-actions" id="cfgActions" hidden>
+        <button class="btn-primary" id="cfgStart" type="button">Începe sesiunea</button>
+        <span class="cfg-count" id="cfgAvail" aria-live="polite"></span>
       </div>
-    </div>
-
-    <div class="alert-banner" id="banner"></div>
-
-    <!-- Sau pe capitole -->
-    <div class="sec-lbl">Sau alege un capitol anume</div>
-    <div id="chapList"><div class="empty-hint">Se încarcă...</div></div>
+    </section>
   </section>
 
   <!-- ───────── VIEW: sesiune ───────── -->
