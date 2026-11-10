@@ -244,7 +244,10 @@ function initCookieBanner() {
 
 // ── Injectare ───────────────────────────────────────────────────
 function inject() {
-  if (MODE === 'none') return;
+  if (MODE === 'none') {
+    initQuickNote();
+    return;
+  }
 
   // simbolurile SVG ale mărcii + navbar la începutul body
   document.body.insertAdjacentHTML('afterbegin', AST_DEFS + buildNavbar());
@@ -273,7 +276,7 @@ function inject() {
 
 async function initQuickNote() {
   try {
-    await import('./personal-wall-quicknote.js?v=wall-second-brain-20261110');
+    await import('./personal-wall-quicknote.js?v=wall-quick-popup-20261110');
   } catch (error) {
     console.warn('[SubMed] Notița rapidă nu a putut fi încărcată:', error);
   }
