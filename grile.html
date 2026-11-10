@@ -675,53 +675,65 @@ async function updateAvail() {
   const el = $('cfgAvail');
   if (!el || !sourceSel || sourceSel === 'chapters') return;
   if (sourceSel === 'exam' && !selectedExamId) return;
+
+  const requestId = ++availabilityRequest;
   el.textContent = 'Se calculează disponibilitatea…';
+  $('cfgStart').disabled = true;
+
   try {
     const n = await countAvail({ subject, center: centerSel, difficulty: diffSel });
+    if (requestId !== availabilityRequest) return;
     el.textContent = n === 1 ? '1 întrebare disponibilă' : `${n} întrebări disponibile`;
     $('cfgStart').disabled = n === 0;
     $('cfgStart').textContent = n ? 'Începe sesiunea' : 'Nu există întrebări pentru selecție';
   } catch (error) {
+    if (requestId !== availabilityRequest) return;
     el.textContent = 'Disponibilitatea nu a putut fi verificată.';
     $('cfgStart').disabled = true;
     $('cfgStart').textContent = 'Începe sesiunea';
   }
 }
-
 $('cfgStart').addEventListener('click', startCustomSession);
 
 async function startCustomSession() {
   clearMsg();
+  const button = $('cfgStart');
+  if (button.disabled) return;
   if (sourceSel === 'exam' && !selectedExamId) {
     msg('Alege un examen înainte să începi.');
     return;
   }
+
+  button.disabled = true;
   const instant = $('cfgInstant').checked;
   const timed = $('cfgTimer').checked;
   const limit = countSel > 0 ? countSel : null;
-  let questions = [];
+
   try {
-    questions = await fetchQuestions({ subject, center: centerSel, difficulty: diffSel, limit });
+    const questions = await fetchQuestions({ subject, center: centerSel, difficulty: diffSel, limit });
+    if (!questions.length) {
+      msg('Nu există întrebări pentru această selecție. Schimbă filtrele sau alege altă sursă.');
+      return;
+    }
+
+    const exam = examCatalog.find(item => item.id === selectedExamId);
+    const parts = sourceSel === 'exam'
+      ? [exam?.name || 'Examen selectat', exam?.faculty_name, exam?.year, exam?.session, subject === 'biologie' ? 'Biologie' : 'Chimie'].filter(Boolean)
+      : [subject === 'biologie' ? 'Biologie' : 'Chimie', CENTER_LABEL[centerSel]];
+    if (diffSel !== 'toate') parts.push(DIFF_LABEL[diffSel]);
+
+    beginSession({
+      mode: instant ? 'practice' : 'exam',
+      label: parts.join(' · '),
+      questions,
+      timed,
+      rerun: startCustomSession,
+    });
   } catch (error) {
-    msg(error.message || 'Nu am putut încărca întrebările. Încearcă din nou.');
-    return;
+    msg(error.message || 'Nu am putut încărca întrebările. Verifică accesul și încearcă din nou.');
+  } finally {
+    if (!$('viewChapters').classList.contains('hidden')) updateAvail();
   }
-  if (!questions.length) {
-    msg('Nu există întrebări pentru această selecție. Schimbă filtrele sau alege altă sursă.');
-    return;
-  }
-  const exam = examCatalog.find(item => item.id === selectedExamId);
-  const parts = sourceSel === 'exam'
-    ? [exam?.name || 'Examen selectat', exam?.faculty_name, exam?.year, exam?.session, subject === 'biologie' ? 'Biologie' : 'Chimie'].filter(Boolean)
-    : [subject === 'biologie' ? 'Biologie' : 'Chimie', CENTER_LABEL[centerSel]];
-  if (diffSel !== 'toate') parts.push(DIFF_LABEL[diffSel]);
-  beginSession({
-    mode: instant ? 'practice' : 'exam',
-    label: parts.join(' · '),
-    questions,
-    timed,
-    rerun: startCustomSession,
-  });
 }
 
 /* ── capitole ──────────────────────────────────────────── */
