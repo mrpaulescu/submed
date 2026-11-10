@@ -382,7 +382,7 @@ try { currentUser = await Auth.getUser(); } catch (e) { currentUser = null; }
 if (!currentUser) {
   const g = $('guestBanner');
   g.className = 'alert-banner show success';
-  g.innerHTML = 'Mod vizitator — poți rezolva grilele fără cont. <a href="login.html" style="color:inherit;font-weight:700;text-decoration:underline">Autentifică-te</a> ca să-ți salvezi progresul.';
+  g.innerHTML = 'Autentifică-te pentru a încărca grilele și a salva progresul. <a href="login.html" style="color:inherit;font-weight:700;text-decoration:underline">Intră în cont</a>.';
 }
 const canSave = !!currentUser;
 
@@ -395,7 +395,10 @@ const SEC_PER_Q    = 60;
 const coachParams = new URLSearchParams(window.location.search);
 const recommendedChapterId = coachParams.get('chapter');
 let recommendedChapterOpened = false;
-let subject = coachParams.get('subject') === 'chimie' ? 'chimie' : 'biologie';
+const routeSubject = coachParams.get('subject');
+let subject = routeSubject === 'biologie' || routeSubject === 'chimie'
+  ? routeSubject
+  : recommendedChapterId ? 'biologie' : '';
 let centerSel = 'toate', diffSel = 'toate', countSel = 20;
 let sourceSel = '';
 let selectedExamId = '';
@@ -791,12 +794,17 @@ function mergeCellChapterAliases(chapters) {
 async function loadChapters() {
   const list = $('chapList'); list.innerHTML = '<div class="empty-hint">Se încarcă...</div>';
   let chapters = [];
+  let chapterLoadError = null;
   try { chapters = await Grile.listChapters(subject); }
-  catch (e) { chapters = []; }
+  catch (error) { chapterLoadError = error; }
   try { progress = canSave ? await Grile.myProgress() : {}; }
   catch (e) { progress = {}; }
   chapters = mergeCellChapterAliases(chapters);
   list.innerHTML = '';
+  if (chapterLoadError) {
+    list.innerHTML = '<div class="empty-hint">Capitolele nu au putut fi încărcate. Verifică accesul la materia selectată și încearcă din nou.</div>';
+    return;
+  }
   if (!chapters.length) {
     list.innerHTML = '<div class="empty-hint">Nu există capitole publicate pentru această materie.</div>';
     return;
@@ -1135,8 +1143,11 @@ if (coachParams.get('mode') !== 'mistakes') {
     $('chapterOptions').hidden = false;
     setChoiceGroup('cfgSource', 'chapters');
     loadChapters();
-  } else if (coachParams.has('subject')) {
+  } else if (subject) {
     $('sourceStep').hidden = false;
+  } else {
+    $('sourceStep').hidden = true;
+    resetSourceOptions();
   }
 }
 
