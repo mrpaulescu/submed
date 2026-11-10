@@ -275,7 +275,7 @@ function inject() {
 
 async function initQuickNote() {
   try {
-    await import('./personal-wall-quicknote.js?v=20261110');
+    await import('./personal-wall-quicknote.js?v=wall-second-brain-20261110');
   } catch (error) {
     console.warn('[SubMed] Notița rapidă nu a putut fi încărcată:', error);
   }
