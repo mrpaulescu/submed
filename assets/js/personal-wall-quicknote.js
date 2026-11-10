@@ -348,6 +348,14 @@ function bindEvents() {
   });
 
   document.addEventListener('click', event => {
+    const captureTrigger = event.target.closest('[data-wall-capture]');
+    if (captureTrigger) {
+      event.preventDefault();
+      setPopup(true);
+      const requestedMode = captureTrigger.dataset.wallType === 'postit' ? 'postit' : 'note';
+      setMode(requestedMode);
+      return;
+    }
     if (!root.contains(event.target) && fab.getAttribute('aria-expanded') === 'true') closePopup();
   });
 
