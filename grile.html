@@ -13,12 +13,11 @@
 
 <style>
   /* ── capitole ─────────────────────────────────────────── */
-  .chap-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; margin-bottom:10px; box-shadow:var(--shadow); display:flex; align-items:center; gap:16px; }
+  .chap-card { flex-direction:row; align-items:center; margin-bottom:10px; gap:16px; }
   .chap-body { flex:1; min-width:0; }
   .chap-name { font-weight:700; font-size:1.02rem; font-family:var(--font-display); }
   .chap-meta { font-size:.78rem; color:var(--muted); font-family:var(--mono); margin-top:3px; }
-  .chap-prog { height:6px; background:var(--blue-tint-2); border-radius:4px; overflow:hidden; margin-top:8px; }
-  .chap-prog div { height:100%; background:linear-gradient(90deg,#2bbf82,#0f9e63); border-radius:4px; }
+  .chap-prog { margin-top:8px; }
   .chap-actions { display:flex; gap:8px; flex-shrink:0; }
   .chap-actions .btn-primary, .chap-actions .btn-secondary { padding:8px 14px; font-size:.84rem; }
 
@@ -27,25 +26,16 @@
   .cfg-row { padding:15px 0; border-bottom:1px solid var(--blue-tint-2); }
   .cfg-row:first-child { padding-top:0; }
   .cfg-row.cfg-last { border-bottom:0; }
-  .cfg-row > label { display:block; font-family:var(--mono); font-size:.7rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin-bottom:10px; }
-  .cfg-chips { display:flex; flex-wrap:wrap; gap:8px; }
-  .cfg-chip { display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:100px; border:1.5px solid var(--line-2); background:var(--surface); font-size:.9rem; font-weight:600; color:var(--ink-2); cursor:pointer; user-select:none; transition:all .15s; font-family:var(--font); }
-  .cfg-chip:hover { border-color:var(--blue); color:var(--blue-deep); }
-  .cfg-chip.on { background:var(--blue); border-color:var(--blue); color:#fff; box-shadow:0 4px 12px -5px rgba(45,110,255,.6); }
-  .cfg-switch { display:flex; align-items:center; justify-content:space-between; gap:16px; }
-  .cfg-switch .sw-txt { font-size:.92rem; font-weight:600; }
-  .cfg-switch .sw-sub { font-size:.8rem; color:var(--muted); font-weight:400; margin-top:2px; max-width:52ch; }
-  .switch { position:relative; width:50px; height:28px; flex:0 0 auto; }
-  .switch input { opacity:0; width:0; height:0; }
-  .switch .track { position:absolute; inset:0; background:var(--line-2); border-radius:100px; transition:background .18s; cursor:pointer; }
-  .switch .track::before { content:''; position:absolute; height:22px; width:22px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform .18s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
-  .switch input:checked + .track { background:var(--blue); }
-  .switch input:checked + .track::before { transform:translateX(22px); }
+  .cfg-row > label { display:block; font-family:var(--mono); font-size:.7rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin-bottom:8px; }
+  .cfg-row .form-select { max-width:480px; min-height:44px; border-color:var(--line); color:var(--ink-2); font:600 .86rem var(--font); background-color:var(--surface-2); }
+  .cfg-row .form-select:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(45,110,255,.12); }
+  .cfg-check { display:flex; align-items:flex-start; gap:12px; padding:12px 0; }
+  .cfg-check .form-check-input { margin-top:5px; flex:0 0 auto; }
+  .cfg-check .form-check-label { font-size:.9rem; font-weight:700; color:var(--ink); }
+  .cfg-check small { display:block; margin-top:3px; color:var(--ink-2); font-size:.78rem; font-weight:400; }
   .cfg-actions { display:flex; align-items:center; gap:14px; margin-top:20px; flex-wrap:wrap; }
   .cfg-count { font-family:var(--mono); font-size:.8rem; color:var(--ink-3); }
   .cfg-count b { color:var(--blue-deep); }
-
-  .demo-note { display:inline-flex; align-items:center; gap:7px; font-family:var(--mono); font-size:.68rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--wip,#9a5a00); background:var(--orange-bg); border:1px solid #f4dcb2; border-radius:100px; padding:4px 11px; }
 
   /* ── sesiune ──────────────────────────────────────────── */
   .quiz-head { margin-bottom:16px; }
@@ -122,7 +112,51 @@
   .res-actions { display:flex; gap:10px; flex-wrap:wrap; }
   .res-actions button { flex:1; min-width:150px; }
 
-  .hidden { display:none !important; }
+  /* Selection controls reuse the same card, type and control language as
+     the dashboard. These rules only arrange existing components. */
+  /* The option cards reuse the dashboard's existing .tool component rules. */
+  .tool-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .tool { display:flex; flex-direction:column; gap:8px; background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:18px 18px 16px; box-shadow:var(--shadow); text-decoration:none; color:var(--ink); transition:transform .16s var(--fx), box-shadow .16s, border-color .16s; position:relative; }
+  .tool:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:#d3e0f7; color:var(--ink); }
+  .tool-name { font-family:var(--font-display); font-weight:700; font-size:.98rem; letter-spacing:-.01em; }
+  .tool-desc { font-size:.82rem; color:var(--ink-2); line-height:1.45; }
+  .selection-panel { display:grid; gap:22px; margin-bottom:18px; }
+  .selection-step { min-width:0; }
+  .selection-step + .selection-step { border-top:1px solid var(--line); padding-top:20px; }
+  .selection-panel .panel-title { margin-bottom:12px; }
+  .subject-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  .source-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .choice-card { width:100%; min-width:0; cursor:pointer; appearance:none; text-align:left; font:inherit; }
+  .choice-card.is-selected { border-color:var(--blue); box-shadow:0 0 0 3px rgba(45,110,255,.12); }
+  .choice-card:focus-visible { outline:none; box-shadow:var(--ring); }
+  .choice-card .tool-desc { white-space:normal; }
+  .selection-detail { margin-bottom:16px; }
+  .selection-detail .panel-title { margin-bottom:12px; }
+  .selection-detail .cfg-row { padding:12px 0; }
+  .selection-detail .cfg-row:first-child { padding-top:0; }
+  .selection-detail .cfg-row:last-child { padding-bottom:0; border-bottom:0; }
+  .cfg-row > label { display:block; font-family:var(--mono); font-size:.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-bottom:9px; }
+  .cfg-select-wrap { min-width:0; max-width:480px; margin-top:12px; }
+  .cfg-select-wrap label { display:block; margin:0 0 6px; color:var(--ink-3); font:700 .66rem var(--mono); letter-spacing:.06em; text-transform:uppercase; }
+  .cfg-select { width:100%; min-height:44px; border:1.5px solid var(--line); border-radius:10px; padding:9px 12px; background:var(--surface-2); color:var(--ink-2); font:600 .84rem var(--font); }
+  .cfg-select:focus { outline:0; border-color:var(--blue); box-shadow:0 0 0 3px rgba(45,110,255,.12); }
+  .cfg-select:disabled { opacity:.55; cursor:not-allowed; }
+  .exam-hint { font-size:.78rem; color:var(--ink-3); margin-top:10px; line-height:1.5; }
+  .exam-filter-step { max-width:480px; margin-top:14px; }
+  .exam-filter-step[hidden], .selection-detail[hidden], .selection-step[hidden], .source-grid[hidden], .cfg-actions[hidden] { display:none !important; }
+  .cfg-actions { display:flex; align-items:center; gap:14px; margin-top:2px; padding-top:18px; border-top:1px solid var(--line); flex-wrap:wrap; }
+  .cfg-actions .btn-primary { min-height:46px; padding:12px 20px; }
+  .cfg-count { font-family:var(--mono); font-size:.78rem; color:var(--ink-3); }
+  .cfg-count b { color:var(--blue-deep); }
+  .chap-card { transition:transform .15s var(--fx),border-color .15s,box-shadow .15s; }
+  .chap-card:hover { transform:translateY(-2px); border-color:#d3e0f7; box-shadow:var(--shadow-md); }
+  .chap-card .wq-bar-wrap { height:6px; margin-top:8px; }
+  .chap-card .wq-bar { background:var(--blue); border-radius:4px; height:100%; }
+  .q-card { padding:clamp(18px,3vw,30px); }
+  .quiz-top { flex-wrap:wrap; }
+  @media(max-width:900px){ .source-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media(max-width:768px){ .tool-grid { grid-template-columns:1fr; } .source-grid { grid-template-columns:1fr; } }
+  @media(max-width:520px){ .subject-grid { grid-template-columns:1fr; } .chap-card { align-items:flex-start; flex-wrap:wrap; } .chap-actions { width:100%; } .chap-actions button { flex:1; } .q-actions { flex-wrap:wrap; } }
 </style>
 </head>
 
@@ -134,72 +168,129 @@
   <section id="viewChapters">
     <div class="greeting">
       <h2>Grile de admitere</h2>
-      <p>Construiește-ți sesiunea: materie, centru, dificultate, câte întrebări și cum vrei feedbackul.</p>
+      <p>Alege materia, apoi spune-ne de unde vrei să provină întrebările. Opțiunile următoare se afișează în funcție de alegerea ta.</p>
     </div>
 
     <div class="alert-banner" id="guestBanner"></div>
-
-    <!-- Configurator -->
-    <div class="config-card">
-      <div class="cfg-row">
-        <label>Materie</label>
-        <div class="cfg-chips" id="cfgSubject">
-          <span class="cfg-chip on" data-val="biologie">🧬 Biologie</span>
-          <span class="cfg-chip" data-val="chimie">⚗️ Chimie</span>
-        </div>
-      </div>
-      <div class="cfg-row">
-        <label>Centru universitar</label>
-        <div class="cfg-chips" id="cfgCenter">
-          <span class="cfg-chip on" data-val="toate">Toate centrele</span>
-          <span class="cfg-chip" data-val="cluj">UMF Cluj</span>
-          <span class="cfg-chip" data-val="iasi">UMF Iași</span>
-        </div>
-      </div>
-      <div class="cfg-row">
-        <label>Dificultate</label>
-        <div class="cfg-chips" id="cfgDiff">
-          <span class="cfg-chip on" data-val="toate">Toate</span>
-          <span class="cfg-chip" data-val="usor">🟢 Ușor</span>
-          <span class="cfg-chip" data-val="mediu">🟠 Mediu</span>
-          <span class="cfg-chip" data-val="greu">🔴 Greu</span>
-        </div>
-      </div>
-      <div class="cfg-row">
-        <label>Număr de întrebări</label>
-        <div class="cfg-chips" id="cfgCount">
-          <span class="cfg-chip" data-val="10">10</span>
-          <span class="cfg-chip on" data-val="20">20</span>
-          <span class="cfg-chip" data-val="30">30</span>
-          <span class="cfg-chip" data-val="50">50</span>
-          <span class="cfg-chip" data-val="0">Toate</span>
-        </div>
-      </div>
-      <div class="cfg-row cfg-switch">
-        <div>
-          <div class="sw-txt">Feedback instant</div>
-          <div class="sw-sub">Îți arată răspunsul corect imediat ce ai bifat. Dezactivat = vezi rezultatul la final, ca la examen.</div>
-        </div>
-        <label class="switch"><input type="checkbox" id="cfgInstant" checked><span class="track"></span></label>
-      </div>
-      <div class="cfg-row cfg-switch cfg-last">
-        <div>
-          <div class="sw-txt">Cronometru</div>
-          <div class="sw-sub">Contra cronometru — un minut de întrebare. Când timpul expiră, sesiunea se încheie automat.</div>
-        </div>
-        <label class="switch"><input type="checkbox" id="cfgTimer"><span class="track"></span></label>
-      </div>
-      <div class="cfg-actions">
-        <button class="btn-primary" id="cfgStart">⚡ Începe sesiunea</button>
-        <span class="cfg-count" id="cfgAvail"></span>
-      </div>
-    </div>
-
     <div class="alert-banner" id="banner"></div>
 
-    <!-- Sau pe capitole -->
-    <div class="sec-lbl">Sau alege un capitol anume</div>
-    <div id="chapList"><div class="empty-hint">Se încarcă...</div></div>
+    <section class="panel selection-panel">
+      <div class="selection-step" id="subjectStep">
+        <div class="panel-title">1. Alege materia</div>
+        <div class="subject-grid" id="cfgSubject" role="group" aria-label="Alege materia">
+          <button class="tool choice-card subject-choice" type="button" data-val="biologie" aria-pressed="false">
+            <span class="tool-name">Biologie</span>
+            <span class="tool-desc">Întrebări din materia de biologie.</span>
+          </button>
+          <button class="tool choice-card subject-choice" type="button" data-val="chimie" aria-pressed="false">
+            <span class="tool-name">Chimie</span>
+            <span class="tool-desc">Întrebări din materia de chimie.</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="selection-step" id="sourceStep" hidden>
+        <div class="panel-title">2. Alege originea grilelor</div>
+        <div class="tool-grid source-grid" id="cfgSource" role="group" aria-label="Alege originea grilelor">
+          <button class="tool choice-card source-choice" type="button" data-val="bank" aria-pressed="false">
+            <span class="tool-name">Banca generală</span>
+            <span class="tool-desc">Amestecă întrebările disponibile pentru materia aleasă.</span>
+          </button>
+          <button class="tool choice-card source-choice" type="button" data-val="exam" aria-pressed="false">
+            <span class="tool-name">Un examen publicat</span>
+            <span class="tool-desc">Selectează categoria, facultatea, anul și sesiunea unui examen.</span>
+          </button>
+          <button class="tool choice-card source-choice" type="button" data-val="chapters" aria-pressed="false">
+            <span class="tool-name">Capitole</span>
+            <span class="tool-desc">Alege un capitol și lucrează întrebările aferente.</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel selection-detail" id="bankOptions" hidden>
+      <div class="panel-title">Originea întrebărilor</div>
+      <div class="cfg-row">
+        <label for="cfgCenter">Centru universitar</label>
+        <select class="form-select" id="cfgCenter">
+          <option value="toate">Toate centrele</option>
+          <option value="cluj">UMF Cluj</option>
+          <option value="iasi">UMF Iași</option>
+        </select>
+        <p class="exam-hint">Filtrul folosește mențiunea centrului din sursa întrebării. Pentru un examen exact, alege „Un examen publicat”.</p>
+      </div>
+    </section>
+
+    <section class="panel selection-detail" id="examOptions" hidden>
+      <div class="panel-title">Selectează examenul</div>
+      <p class="exam-hint" id="examCatalogHint">Se încarcă examenele publicate…</p>
+      <div class="exam-filter-step" id="examCategoryStep" hidden>
+        <label for="cfgExamCategory">Categorie</label>
+        <select class="cfg-select" id="cfgExamCategory"><option value="">Alege o categorie</option></select>
+      </div>
+      <div class="exam-filter-step" id="examFacultyStep" hidden>
+        <label for="cfgExamFaculty">Facultate</label>
+        <select class="cfg-select" id="cfgExamFaculty"><option value="">Alege o facultate</option></select>
+      </div>
+      <div class="exam-filter-step" id="examYearStep" hidden>
+        <label for="cfgExamYear">An</label>
+        <select class="cfg-select" id="cfgExamYear"><option value="">Alege anul</option></select>
+      </div>
+      <div class="exam-filter-step" id="examSessionStep" hidden>
+        <label for="cfgExamSession">Sesiune</label>
+        <select class="cfg-select" id="cfgExamSession"><option value="">Alege sesiunea</option></select>
+      </div>
+      <div class="exam-filter-step" id="examExactStep" hidden>
+        <label for="cfgExam">Examen</label>
+        <select class="cfg-select" id="cfgExam"><option value="">Alege examenul</option></select>
+      </div>
+    </section>
+
+    <section class="panel selection-detail" id="chapterOptions" hidden>
+      <div class="panel-title">Alege capitolul</div>
+      <div id="chapList"><div class="empty-hint">Se încarcă capitolele…</div></div>
+    </section>
+
+    <section class="panel selection-detail" id="sessionOptions" hidden>
+      <div class="panel-title">Setările sesiunii</div>
+      <div class="cfg-row">
+        <label for="cfgDiff">Dificultate</label>
+        <select class="form-select" id="cfgDiff">
+          <option value="toate">Toate nivelurile</option>
+          <option value="usor">Ușor</option>
+          <option value="mediu">Mediu</option>
+          <option value="greu">Dificil</option>
+        </select>
+      </div>
+      <div class="cfg-row">
+        <label for="cfgCount">Număr de întrebări</label>
+        <select class="form-select" id="cfgCount">
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="30">30</option>
+          <option value="50">50</option>
+          <option value="0">Toate</option>
+        </select>
+      </div>
+      <div class="cfg-row">
+        <div class="cfg-check">
+          <input class="form-check-input" type="checkbox" id="cfgInstant" checked>
+          <label class="form-check-label" for="cfgInstant">Feedback instant
+            <small>Vezi răspunsul corect după fiecare întrebare. Dezactivează pentru a verifica totul la final.</small>
+          </label>
+        </div>
+        <div class="cfg-check">
+          <input class="form-check-input" type="checkbox" id="cfgTimer">
+          <label class="form-check-label" for="cfgTimer">Cronometru
+            <small>Alocă aproximativ un minut pentru fiecare întrebare.</small>
+          </label>
+        </div>
+      </div>
+      <div class="cfg-actions" id="cfgActions" hidden>
+        <button class="btn-primary" id="cfgStart" type="button">Începe sesiunea</button>
+        <span class="cfg-count" id="cfgAvail" aria-live="polite"></span>
+      </div>
+    </section>
   </section>
 
   <!-- ───────── VIEW: sesiune ───────── -->
@@ -252,10 +343,10 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script type="module" src="assets/js/components.js?v=public-grile-20261028"></script>
+<script type="module" src="assets/js/components.js?v=wall-quick-popup-20261110"></script>
 <script type="module">
 import { Auth } from './assets/js/auth.js?v=supabase-singleton-20261028';
-import { Grile, gradeAnswer } from './assets/js/api.js';
+import { Grile, gradeAnswer } from './assets/js/api.js?v=grile-wizard-20261110';
 
 const $ = id => document.getElementById(id);
 const show = v => { for (const s of ['viewChapters','viewQuiz','viewResult']) $(s).classList.toggle('hidden', s !== v); };
@@ -263,13 +354,13 @@ const banner = $('banner');
 const msg = (t, type='error') => { banner.textContent = t; banner.className = `alert-banner show ${type}`; };
 const clearMsg = () => { banner.className = 'alert-banner'; };
 
-/* ── autentificare opțională (mod demonstrativ pentru invitați) ── */
+/* ── autentificare și salvarea progresului ── */
 let currentUser = null;
 try { currentUser = await Auth.getUser(); } catch (e) { currentUser = null; }
 if (!currentUser) {
   const g = $('guestBanner');
-  g.className = 'alert-banner show success';
-  g.innerHTML = 'Mod vizitator — poți rezolva grilele fără cont. <a href="login.html" style="color:inherit;font-weight:700;text-decoration:underline">Autentifică-te</a> ca să-ți salvezi progresul.';
+  g.className = 'alert-banner show error';
+  g.innerHTML = 'Autentifică-te pentru a încărca grilele și a salva progresul. <a href="login.html" style="color:inherit;font-weight:700;text-decoration:underline">Intră în cont</a>.';
 }
 const canSave = !!currentUser;
 
@@ -282,50 +373,17 @@ const SEC_PER_Q    = 60;
 const coachParams = new URLSearchParams(window.location.search);
 const recommendedChapterId = coachParams.get('chapter');
 let recommendedChapterOpened = false;
-let subject = coachParams.get('subject') === 'chimie' ? 'chimie' : 'biologie';
+const routeSubject = coachParams.get('subject');
+let subject = routeSubject === 'biologie' || routeSubject === 'chimie'
+  ? routeSubject
+  : recommendedChapterId ? 'biologie' : '';
 let centerSel = 'toate', diffSel = 'toate', countSel = 20;
+let sourceSel = '';
+let availabilityRequest = 0;
+let selectedExamId = '';
+let examCatalog = [];
 let progress = {};
 
-/* ── bancă demonstrativă (înlocuită de conținutul real) ──── */
-const DEMO = (() => {
-  const CHAP = {
-    biologie: ['Celula','Sistemul nervos','Sistemul circulator','Genetică','Diviziunea celulară'],
-    chimie:   ['Alcooli','Acizi carboxilici','Hidrocarburi','Amine','Reacții de oxidare'],
-  };
-  const CENTERS = ['Cluj','Iași'];
-  const DIFFS = ['usor','mediu','greu'];
-  const K = ['A','B','C','D'];
-  const banks = {};
-  function make(subject, i) {
-    const chap = CHAP[subject][i % 5];
-    const center = CENTERS[i % 2];
-    const diff = DIFFS[i % 3];
-    const ci = i % 4;
-    const multiple = (i % 6 === 0);
-    const correct = multiple ? [K[ci], K[(ci + 2) % 4]].sort() : [K[ci]];
-    return {
-      id: `demo-${subject}-${i}`,
-      text: `(${chap}) Întrebare demonstrativă #${i + 1}. Text de test pentru verificarea funcțiilor — conținutul real se adaugă ulterior.`,
-      options: K.map(k => ({ key: k, text: `Varianta ${k} — răspuns demonstrativ` })),
-      correct, multiple,
-      explanation: `Răspuns demonstrativ corect: ${correct.join(', ')}. Explicația reală va însoți conținutul.`,
-      difficulty: diff, source: `Admitere ${center} 2024`,
-      chapter_id: `demo-ch-${subject}-${i % 5}`, chapter_name: chap,
-    };
-  }
-  function bank(subject) { return banks[subject] || (banks[subject] = Array.from({ length: 60 }, (_, i) => make(subject, i))); }
-  return {
-    filter(subject, { center, difficulty } = {}) {
-      let qs = bank(subject).slice();
-      if (center) { const p = (Array.isArray(center) ? center : [center]).map(s => s.toLowerCase()); qs = qs.filter(q => p.some(x => q.source.toLowerCase().includes(x))); }
-      if (difficulty && difficulty !== 'toate') qs = qs.filter(q => q.difficulty === difficulty);
-      return qs;
-    },
-    chapters(subject) { return CHAP[subject].map((n, i) => ({ id: `demo-ch-${subject}-${i}`, name: n, subject, question_count: 12 })); },
-  };
-})();
-
-let usingDemo = false;
 const normDiff = d => {
   if (d == null) return null;
   const s = String(d).toLowerCase();
@@ -336,66 +394,347 @@ const normDiff = d => {
 };
 const shuffle = a => a.sort(() => Math.random() - 0.5);
 
-/* ── strat de date: real cu fallback demonstrativ ────────── */
-async function fetchQuestions({ subject, center, difficulty, limit }) {
-  let qs = [];
-  try { qs = await Grile.listQuestionsBySubject(subject, { center: CENTER_MAP[center], shuffle: true, limit: null }); }
-  catch (e) { qs = []; }
-  if (!qs.length) { usingDemo = true; qs = shuffle(DEMO.filter(subject, { center: CENTER_MAP[center] })); }
-  else usingDemo = false;
-  if (difficulty && difficulty !== 'toate') qs = qs.filter(q => normDiff(q.difficulty) === difficulty);
-  if (limit) qs = qs.slice(0, limit);
-  return qs;
+/* ── alegerea progresivă a sursei ───────────────────────── */
+const examFilterIds = ['cfgExamCategory','cfgExamFaculty','cfgExamYear','cfgExamSession','cfgExam'];
+const examStepIds = ['examCategoryStep','examFacultyStep','examYearStep','examSessionStep','examExactStep'];
+
+function optionValue(value) {
+  return value == null || String(value).trim() === '' ? '__none__' : String(value);
 }
-async function countAvail({ subject, center, difficulty }) {
-  try {
-    let arr = await Grile.listQuestionsBySubject(subject, { center: CENTER_MAP[center], shuffle: false, limit: null });
-    if (arr && arr.length) {
-      usingDemo = false;
-      if (difficulty && difficulty !== 'toate') arr = arr.filter(q => normDiff(q.difficulty) === difficulty);
-      return arr.length;
-    }
-  } catch (e) {}
-  usingDemo = true;
-  return DEMO.filter(subject, { center: CENTER_MAP[center], difficulty }).length;
+function uniqueFacet(rows, getter) {
+  return [...new Set(rows.map(getter).map(optionValue))]
+    .sort((a,b) => a.localeCompare(b, 'ro', { numeric:true }));
+}
+function setOptions(id, placeholder, values, selected = '') {
+  const select = $(id);
+  select.replaceChildren(new Option(placeholder, ''));
+  values.forEach(item => select.add(new Option(item.label, item.value)));
+  select.value = values.some(item => item.value === selected) ? selected : '';
+  select.disabled = values.length === 0;
+}
+function showExamStep(id, visible) {
+  $(id).hidden = !visible;
+}
+function clearLaterExamFilters(fromIndex) {
+  for (let i = fromIndex; i < examFilterIds.length; i++) {
+    const control = $(examFilterIds[i]);
+    if (control) control.value = '';
+  }
+  selectedExamId = '';
+}
+function refreshExamFilters() {
+  examFilterIds.forEach(id => { $(id).disabled = true; });
+  examStepIds.forEach(id => showExamStep(id, false));
+  selectedExamId = '';
+
+  if (!examCatalog.length) {
+    $('examCatalogHint').textContent = 'Nu există examene publicate asociate acestei materii. Poți alege banca generală sau capitole.';
+    return;
+  }
+
+  const categories = uniqueFacet(examCatalog, exam => exam.category).map(value => ({
+    value,
+    label: value === '__none__' ? 'Fără categorie' : value,
+  }));
+  setOptions('cfgExamCategory', 'Alege categoria', categories, $('cfgExamCategory').dataset.selected || '');
+  showExamStep('examCategoryStep', true);
+  $('cfgExamCategory').disabled = false;
+
+  const category = $('cfgExamCategory').value;
+  if (!category) {
+    $('examCatalogHint').textContent = 'Selectează categoria pentru a vedea facultățile și examenele disponibile.';
+    return;
+  }
+
+  let rows = examCatalog.filter(exam => optionValue(exam.category) === category);
+  const facultyMap = new Map(rows.map(exam => {
+    const value = optionValue(exam.faculty_id);
+    const label = exam.faculty_name && exam.faculty_name !== 'Facultate nespecificată'
+      ? [exam.faculty_name, exam.faculty_city].filter(Boolean).join(' · ')
+      : 'Facultate nespecificată';
+    return [value, { value, label }];
+  }));
+  const faculties = [...facultyMap.values()].sort((a,b) => a.label.localeCompare(b.label, 'ro'));
+  setOptions('cfgExamFaculty', 'Alege facultatea', faculties, $('cfgExamFaculty').dataset.selected || '');
+  showExamStep('examFacultyStep', faculties.length > 0);
+  $('cfgExamFaculty').disabled = faculties.length === 0;
+  if (!faculties.length) {
+    $('examCatalogHint').textContent = 'Nu există facultăți asociate acestei categorii.';
+    return;
+  }
+
+  const faculty = $('cfgExamFaculty').value;
+  if (!faculty) {
+    $('examCatalogHint').textContent = 'Selectează facultatea pentru a continua.';
+    return;
+  }
+  rows = rows.filter(exam => optionValue(exam.faculty_id) === faculty);
+
+  const years = uniqueFacet(rows, exam => exam.year)
+    .sort((a,b) => Number(b === '__none__' ? -Infinity : b) - Number(a === '__none__' ? -Infinity : a))
+    .map(value => ({ value, label: value === '__none__' ? 'An nespecificat' : value }));
+  setOptions('cfgExamYear', 'Alege anul', years, $('cfgExamYear').dataset.selected || '');
+  showExamStep('examYearStep', years.length > 0);
+  $('cfgExamYear').disabled = years.length === 0;
+  if (!years.length) {
+    $('examCatalogHint').textContent = 'Nu există ani disponibili pentru facultatea selectată.';
+    return;
+  }
+
+  const year = $('cfgExamYear').value;
+  if (!year) {
+    $('examCatalogHint').textContent = 'Selectează anul pentru a vedea sesiunile.';
+    return;
+  }
+  rows = rows.filter(exam => optionValue(exam.year) === year);
+
+  const sessions = uniqueFacet(rows, exam => exam.session).map(value => ({
+    value,
+    label: value === '__none__' ? 'Sesiune nespecificată' : value,
+  }));
+  setOptions('cfgExamSession', 'Alege sesiunea', sessions, $('cfgExamSession').dataset.selected || '');
+  showExamStep('examSessionStep', sessions.length > 0);
+  $('cfgExamSession').disabled = sessions.length === 0;
+  if (!sessions.length) {
+    $('examCatalogHint').textContent = 'Nu există sesiuni disponibile pentru anul selectat.';
+    return;
+  }
+
+  const session = $('cfgExamSession').value;
+  if (!session) {
+    $('examCatalogHint').textContent = 'Selectează sesiunea pentru a vedea examenele.';
+    return;
+  }
+  rows = rows.filter(exam => optionValue(exam.session) === session);
+
+  const exams = rows.map(exam => ({
+    value: exam.id,
+    label: [exam.name, exam.exam_date, exam.sheet_type].filter(Boolean).join(' · '),
+  }));
+  setOptions('cfgExam', 'Alege examenul', exams, $('cfgExam').dataset.selected || '');
+  showExamStep('examExactStep', exams.length > 0);
+  $('cfgExam').disabled = exams.length === 0;
+  selectedExamId = $('cfgExam').value;
+  $('examCatalogHint').textContent = selectedExamId
+    ? 'Examen selectat. Poți configura numărul de întrebări și modul de lucru.'
+    : exams.length
+      ? 'Alege examenul pentru a continua.'
+      : 'Nu există examene în această combinație.';
 }
 
-/* ── configurator ──────────────────────────────────────── */
-function bindChipGroup(id, onChange) {
-  const group = $(id); if (!group) return;
-  group.addEventListener('click', e => {
-    const chip = e.target.closest('.cfg-chip'); if (!chip) return;
-    group.querySelectorAll('.cfg-chip').forEach(c => c.classList.remove('on'));
-    chip.classList.add('on');
-    onChange(chip.dataset.val);
+async function loadExamCatalog() {
+  examCatalog = [];
+  $('examCatalogHint').textContent = 'Se încarcă examenele publicate…';
+  clearLaterExamFilters(0);
+  examFilterIds.forEach(id => { $(id).dataset.selected = ''; });
+  try {
+    examCatalog = await Grile.listExamCatalog({ subject });
+  } catch (error) {
+    $('examCatalogHint').textContent = 'Catalogul nu a putut fi încărcat. Verifică accesul la examene și încearcă din nou.';
+  }
+  refreshExamFilters();
+}
+
+examFilterIds.forEach((id, index) => {
+  $(id).addEventListener('change', () => {
+    const selected = $(id).value;
+    for (let i = index + 1; i < examFilterIds.length; i++) {
+      $(examFilterIds[i]).dataset.selected = '';
+      $(examFilterIds[i]).value = '';
+    }
+    $(id).dataset.selected = selected;
+    if (id === 'cfgExam') selectedExamId = selected;
+    refreshExamFilters();
+    if (selectedExamId) {
+      $('sessionOptions').hidden = false;
+      $('cfgActions').hidden = false;
+      updateAvail();
+    } else {
+      $('sessionOptions').hidden = true;
+      $('cfgActions').hidden = true;
+    }
+  });
+});
+
+function setChoiceGroup(groupId, value) {
+  const group = $(groupId);
+  group.querySelectorAll('[data-val]').forEach(button => {
+    const active = button.dataset.val === value;
+    button.classList.toggle('on', active);
+    button.classList.toggle('is-selected', active);
+    button.setAttribute('aria-pressed', String(active));
   });
 }
-bindChipGroup('cfgSubject', v => { subject = v; loadChapters(); updateAvail(); });
-bindChipGroup('cfgCenter',  v => { centerSel = v; updateAvail(); });
-bindChipGroup('cfgDiff',    v => { diffSel = v; updateAvail(); });
-bindChipGroup('cfgCount',   v => { countSel = parseInt(v, 10); });
 
-async function updateAvail() {
-  const el = $('cfgAvail'); if (!el) return; el.textContent = 'se numără...';
-  const n = await countAvail({ subject, center: centerSel, difficulty: diffSel });
-  el.innerHTML = `<b>${n}</b> întrebări disponibile` + (usingDemo ? ' &nbsp;<span class="demo-note">mod demonstrativ</span>' : '');
+function resetSourceOptions() {
+  availabilityRequest++;
+  sourceSel = '';
+  selectedExamId = '';
+  centerSel = 'toate';
+  diffSel = 'toate';
+  countSel = 20;
+  setChoiceGroup('cfgSource', '');
+  $('cfgCenter').value = 'toate';
+  $('cfgDiff').value = 'toate';
+  $('cfgCount').value = '20';
+  $('bankOptions').hidden = true;
+  $('examOptions').hidden = true;
+  $('chapterOptions').hidden = true;
+  $('sessionOptions').hidden = true;
+  $('cfgActions').hidden = true;
+  clearLaterExamFilters(0);
+  examFilterIds.forEach(id => { $(id).dataset.selected = ''; });
 }
 
+function chooseSource(source) {
+  sourceSel = source;
+  setChoiceGroup('cfgSource', source);
+  $('bankOptions').hidden = source !== 'bank';
+  $('examOptions').hidden = source !== 'exam';
+  $('chapterOptions').hidden = source !== 'chapters';
+  $('sessionOptions').hidden = source === 'chapters' || source === 'exam';
+  $('cfgActions').hidden = source === 'chapters' || source === 'exam';
+
+  if (source === 'bank') {
+    updateAvail();
+  } else if (source === 'exam') {
+    loadExamCatalog();
+  } else if (source === 'chapters') {
+    loadChapters();
+  }
+}
+
+async function fetchQuestions({ subject, center, difficulty, limit }) {
+  let qs;
+  if (sourceSel === 'exam' && selectedExamId) {
+    qs = await Grile.listQuestionsForExam(selectedExamId, { subject, shuffle: true, limit: null });
+  } else {
+    qs = await Grile.listQuestionsBySubject(subject, {
+      center: CENTER_MAP[center],
+      shuffle: true,
+      limit: null,
+    });
+  }
+  if (difficulty && difficulty !== 'toate') {
+    qs = qs.filter(q => normDiff(q.difficulty) === difficulty);
+  }
+  return limit ? qs.slice(0, limit) : qs;
+}
+
+async function countAvail({ subject, center, difficulty }) {
+  let rows;
+  if (sourceSel === 'exam' && selectedExamId) {
+    rows = await Grile.listQuestionsForExam(selectedExamId, { subject, shuffle: false, limit: null });
+  } else {
+    rows = await Grile.listQuestionsBySubject(subject, {
+      center: CENTER_MAP[center],
+      shuffle: false,
+      limit: null,
+    });
+  }
+  if (difficulty && difficulty !== 'toate') {
+    rows = rows.filter(q => normDiff(q.difficulty) === difficulty);
+  }
+  return rows.length;
+}
+
+/* ── configurator și setări ─────────────────────────────── */
+function bindSubjectChoices() {
+  $('cfgSubject').addEventListener('click', async event => {
+    const button = event.target.closest('[data-val]');
+    if (!button) return;
+    subject = button.dataset.val;
+    setChoiceGroup('cfgSubject', subject);
+    resetSourceOptions();
+    $('sourceStep').hidden = false;
+    $('subjectStep').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+}
+
+$('cfgSource').addEventListener('click', event => {
+  const button = event.target.closest('[data-val]');
+  if (!button) return;
+  resetSourceOptions();
+  chooseSource(button.dataset.val);
+});
+
+bindSubjectChoices();
+$('cfgCenter').addEventListener('change', () => {
+  centerSel = $('cfgCenter').value;
+  updateAvail();
+});
+$('cfgDiff').addEventListener('change', () => {
+  diffSel = $('cfgDiff').value;
+  updateAvail();
+});
+$('cfgCount').addEventListener('change', () => {
+  countSel = Number.parseInt($('cfgCount').value, 10);
+  updateAvail();
+});
+
+async function updateAvail() {
+  const el = $('cfgAvail');
+  if (!el || !sourceSel || sourceSel === 'chapters') return;
+  if (sourceSel === 'exam' && !selectedExamId) return;
+
+  const requestId = ++availabilityRequest;
+  el.textContent = 'Se calculează disponibilitatea…';
+  $('cfgStart').disabled = true;
+
+  try {
+    const n = await countAvail({ subject, center: centerSel, difficulty: diffSel });
+    if (requestId !== availabilityRequest) return;
+    el.textContent = n === 1 ? '1 întrebare disponibilă' : `${n} întrebări disponibile`;
+    $('cfgStart').disabled = n === 0;
+    $('cfgStart').textContent = n ? 'Începe sesiunea' : 'Nu există întrebări pentru selecție';
+  } catch (error) {
+    if (requestId !== availabilityRequest) return;
+    el.textContent = 'Disponibilitatea nu a putut fi verificată.';
+    $('cfgStart').disabled = true;
+    $('cfgStart').textContent = 'Începe sesiunea';
+  }
+}
 $('cfgStart').addEventListener('click', startCustomSession);
 
 async function startCustomSession() {
   clearMsg();
+  const button = $('cfgStart');
+  if (button.disabled) return;
+  if (sourceSel === 'exam' && !selectedExamId) {
+    msg('Alege un examen înainte să începi.');
+    return;
+  }
+
+  button.disabled = true;
   const instant = $('cfgInstant').checked;
   const timed = $('cfgTimer').checked;
   const limit = countSel > 0 ? countSel : null;
-  const questions = await fetchQuestions({ subject, center: centerSel, difficulty: diffSel, limit });
-  if (!questions.length) { msg('Nu există întrebări pentru această combinație. Încearcă „Toate".'); return; }
-  const parts = [subject === 'biologie' ? 'Biologie' : 'Chimie', CENTER_LABEL[centerSel]];
-  if (diffSel !== 'toate') parts.push(DIFF_LABEL[diffSel]);
-  beginSession({
-    mode: instant ? 'practice' : 'exam', label: parts.join(' · '),
-    questions, timed, rerun: startCustomSession,
-  });
+
+  try {
+    const questions = await fetchQuestions({ subject, center: centerSel, difficulty: diffSel, limit });
+    if (!questions.length) {
+      msg('Nu există întrebări pentru această selecție. Schimbă filtrele sau alege altă sursă.');
+      return;
+    }
+
+    const exam = examCatalog.find(item => item.id === selectedExamId);
+    const parts = sourceSel === 'exam'
+      ? [exam?.name || 'Examen selectat', exam?.faculty_name, exam?.year, exam?.session, subject === 'biologie' ? 'Biologie' : 'Chimie'].filter(Boolean)
+      : [subject === 'biologie' ? 'Biologie' : 'Chimie', CENTER_LABEL[centerSel]];
+    if (diffSel !== 'toate') parts.push(DIFF_LABEL[diffSel]);
+
+    beginSession({
+      mode: instant ? 'practice' : 'exam',
+      label: parts.join(' · '),
+      questions,
+      timed,
+      rerun: startCustomSession,
+    });
+  } catch (error) {
+    msg(error.message || 'Nu am putut încărca întrebările. Verifică accesul și încearcă din nou.');
+  } finally {
+    if (!$('viewChapters').classList.contains('hidden')) updateAvail();
+  }
 }
 
 /* ── capitole ──────────────────────────────────────────── */
@@ -432,13 +771,21 @@ function mergeCellChapterAliases(chapters) {
 async function loadChapters() {
   const list = $('chapList'); list.innerHTML = '<div class="empty-hint">Se încarcă...</div>';
   let chapters = [];
+  let chapterLoadError = null;
   try { chapters = await Grile.listChapters(subject); }
-  catch (e) { chapters = []; }
+  catch (error) { chapterLoadError = error; }
   try { progress = canSave ? await Grile.myProgress() : {}; }
   catch (e) { progress = {}; }
-  if (!chapters.length) { chapters = DEMO.chapters(subject); }
   chapters = mergeCellChapterAliases(chapters);
   list.innerHTML = '';
+  if (chapterLoadError) {
+    list.innerHTML = '<div class="empty-hint">Capitolele nu au putut fi încărcate. Verifică accesul la materia selectată și încearcă din nou.</div>';
+    return;
+  }
+  if (!chapters.length) {
+    list.innerHTML = '<div class="empty-hint">Nu există capitole publicate pentru această materie.</div>';
+    return;
+  }
   chapters.forEach(c => {
     const p = (c.chapter_ids || [c.id]).reduce((total, id) => {
       const chapterProgress = progress[id] || {};
@@ -448,12 +795,12 @@ async function loadChapters() {
     }, { attempted: 0, correct: 0 });
     const pct = c.question_count ? Math.round(p.correct / c.question_count * 100) : 0;
     const row = document.createElement('div');
-    row.className = 'chap-card';
+    row.className = 'tool chap-card';
     row.innerHTML = `
       <div class="chap-body">
         <div class="chap-name">${c.name}</div>
         <div class="chap-meta">${c.question_count} întrebări · ${p.attempted} rezolvate · ${p.correct} corecte</div>
-        <div class="chap-prog"><div style="width:${pct}%"></div></div>
+        <div class="wq-bar-wrap chap-prog"><div class="wq-bar" style="width:${pct}%"></div></div>
       </div>
       <div class="chap-actions">
         <button class="btn-primary p-btn">Practică</button>
@@ -467,12 +814,12 @@ async function loadChapters() {
     const recommended = chapters.find(item => item.id === recommendedChapterId || item.chapter_ids?.includes(recommendedChapterId));
     if (recommended) {
       recommendedChapterOpened = true;
-      await startChapter(recommended, coachParams.get('mode') === 'exam' ? 'exam' : 'practice', { allowDemo: false });
+      await startChapter(recommended, coachParams.get('mode') === 'exam' ? 'exam' : 'practice');
     }
   }
 }
 
-async function startChapter(chapter, mode, { allowDemo = true } = {}) {
+async function startChapter(chapter, mode) {
   clearMsg();
   let questions = [];
   const requestedCount = Number.parseInt(coachParams.get('count'), 10);
@@ -488,14 +835,8 @@ async function startChapter(chapter, mode, { allowDemo = true } = {}) {
     } catch (e) { questions = []; }
   }
   if (!questions.length) {
-    if (!allowDemo) {
-      msg('Capitolul recomandat nu are încă întrebări publicate. Alege un alt capitol din listă.');
-      return;
-    }
-    usingDemo = true;
-    questions = shuffle(DEMO.filter(subject, {})).filter(q => (chapter.chapter_ids || [chapter.id]).includes(q.chapter_id));
-    if (!questions.length) questions = shuffle(DEMO.filter(subject, {})).slice(0, questionLimit || 12);
-    if (questionLimit) questions = questions.slice(0, questionLimit);
+    msg('Capitolul nu are încă întrebări publicate. Alege un alt capitol sau revino mai târziu.');
+    return;
   }
   beginSession({
     mode, label: chapter.name, questions, timed: mode === 'exam',
@@ -512,7 +853,7 @@ function beginSession({ mode, label, questions, timed, rerun }) {
     idx: 0, answers: {}, checked: new Set(), flags: new Set(), results: [],
     timed, timerId: null, timeLeft: timed ? questions.length * SEC_PER_Q : 0,
     pendingSaves: [], finishing: false,
-    startedAt: Date.now(), rerun, demo: usingDemo,
+    startedAt: Date.now(), rerun,
   };
   $('navGrid').classList.add('hidden');
   $('btnNav').classList.toggle('hidden', mode !== 'exam');
@@ -537,6 +878,9 @@ function revealFor(q) { return S.mode === 'review' || (S.mode === 'practice' && 
 
 function renderQuestion() {
   const q = S.questions[S.idx];
+  window.SubMedWallContext = q?.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(q.id))
+    ? { type:'question', id:q.id, category:q.subject || subject || 'altele', sourcePage:'grile.html' }
+    : null;
   const n = S.questions.length;
   $('quizProg').innerHTML = `${S.label} · <b>${S.idx + 1}</b>/${n}`;
   $('qbarFill').style.width = ((S.idx + 1) / n * 100) + '%';
@@ -645,7 +989,7 @@ function checkPractice() {
   const ok = gradeAnswer(sel, q.correct);
   S.results = S.results.filter(r => r.questionId !== q.id);
   S.results.push({ questionId: q.id, selected: sel, isCorrect: ok });
-  if (canSave && !S.demo) {
+  if (canSave) {
     const pending = Grile.recordAttempt(q.id, sel, ok).catch(error => {
       console.warn('Răspunsul nu a putut fi salvat:', error.message);
       throw error;
@@ -714,7 +1058,7 @@ async function finishSession() {
     const sel = S.answers[q.id] || [];
     return { questionId: q.id, selected: sel, isCorrect: gradeAnswer(sel, q.correct) };
   });
-  if (S.mode === 'exam' && canSave && !S.demo) {
+  if (S.mode === 'exam' && canSave) {
     try { await Grile.recordAttempts(S.results); }
     catch (error) { console.warn('Rezultatele examenului nu au putut fi salvate:', error.message); }
   }
@@ -736,7 +1080,7 @@ function showResult() {
   $('resPct').textContent = pct + '%';
   $('resTitle').textContent = pct >= 70 ? 'Foarte bine! 🎉' : pct >= 50 ? 'Bun progres 💪' : 'Continuă să exersezi';
   const mins = S.elapsed != null ? `${Math.floor(S.elapsed / 60)}:${String(S.elapsed % 60).padStart(2, '0')}` : '—';
-  $('resSub').innerHTML = `${S.label}` + (S.demo ? ' &nbsp;<span class="demo-note">mod demonstrativ</span>' : '');
+  $('resSub').textContent = S.label;
 
   $('resStats').innerHTML = `
     <div class="rstat good"><div class="v">${correct}</div><div class="k">corecte</div></div>
@@ -763,12 +1107,29 @@ $('quizExit').addEventListener('click', () => {
   if (S?.timerId) clearInterval(S.timerId);
   backHome();
 });
-function backHome() { if (S?.timerId) clearInterval(S.timerId); show('viewChapters'); loadChapters(); updateAvail(); }
+function backHome() {
+  if (S?.timerId) clearInterval(S.timerId);
+  window.SubMedWallContext = null;
+  show('viewChapters');
+  if (sourceSel === 'chapters') loadChapters();
+  else if (sourceSel === 'bank' || (sourceSel === 'exam' && selectedExamId)) updateAvail();
+}
 
 /* ── init ──────────────────────────────────────────────── */
-if (subject === 'chimie') {
-  document.querySelector('#cfgSubject [data-val="biologie"]')?.classList.remove('on');
-  document.querySelector('#cfgSubject [data-val="chimie"]')?.classList.add('on');
+setChoiceGroup('cfgSubject', subject);
+if (coachParams.get('mode') !== 'mistakes') {
+  if (recommendedChapterId) {
+    sourceSel = 'chapters';
+    $('sourceStep').hidden = false;
+    $('chapterOptions').hidden = false;
+    setChoiceGroup('cfgSource', 'chapters');
+    loadChapters();
+  } else if (subject) {
+    $('sourceStep').hidden = false;
+  } else {
+    $('sourceStep').hidden = true;
+    resetSourceOptions();
+  }
 }
 
 async function startDueMistakes() {
@@ -790,7 +1151,6 @@ async function startDueMistakes() {
     msg('Nu ai întrebări greșite programate pentru azi. Revino după următoarea sesiune de grile.', 'success');
     return;
   }
-  usingDemo = false;
   beginSession({
     mode: 'practice',
     label: 'Greșeli de reluat',
@@ -801,8 +1161,8 @@ async function startDueMistakes() {
 }
 if (coachParams.get('mode') === 'mistakes') startDueMistakes();
 else {
-  loadChapters();
-  updateAvail();
+  $('sourceStep').hidden = true;
+  resetSourceOptions();
 }
 </script>
 

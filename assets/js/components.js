@@ -44,6 +44,7 @@ const NAV_LINKS = [
   { label: 'Grile',      href: 'grile.html' },
   { label: 'Scanare',    href: 'scan.html' },
   { label: 'Flashcards', href: 'flashcards.html' },
+  { label: 'Peretele meu', href: 'personal-wall.html' },
   { label: 'Contact',    href: 'desprecontact.html' },
 ];
 
@@ -181,6 +182,7 @@ function buildFooter() {
           <a href="flashcards.html">Flashcards</a>
           <a href="lewis-structure.html">Lewis Builder</a>
           <a href="iupac-quiz.html">Quiz IUPAC</a>
+          <a href="personal-wall.html">Peretele meu</a>
           <a href="walkthrough.html">Ghid interactiv</a>
         </div>
         <div class="fcol"><h5>Centre</h5>
@@ -242,7 +244,10 @@ function initCookieBanner() {
 
 // ── Injectare ───────────────────────────────────────────────────
 function inject() {
-  if (MODE === 'none') return;
+  if (MODE === 'none') {
+    initQuickNote();
+    return;
+  }
 
   // simbolurile SVG ale mărcii + navbar la începutul body
   document.body.insertAdjacentHTML('afterbegin', AST_DEFS + buildNavbar());
@@ -265,6 +270,16 @@ function inject() {
   if (logoutBtn) logoutBtn.addEventListener('click', () => Auth.logout());
 
   if (MODE === 'full') populateUser();
+  if (MODE !== 'none') initQuickNote();
+}
+
+
+async function initQuickNote() {
+  try {
+    await import('./personal-wall-quicknote.js?v=wall-quick-popup-20261110');
+  } catch (error) {
+    console.warn('[SubMed] Notița rapidă nu a putut fi încărcată:', error);
+  }
 }
 
 // ── Umple pill-ul de user (sau ascunde dacă neautentificat) ─────
