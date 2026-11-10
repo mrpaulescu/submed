@@ -353,7 +353,7 @@ const banner = $('banner');
 const msg = (t, type='error') => { banner.textContent = t; banner.className = `alert-banner show ${type}`; };
 const clearMsg = () => { banner.className = 'alert-banner'; };
 
-/* ── autentificare opțională (mod demonstrativ pentru invitați) ── */
+/* ── autentificare și salvarea progresului ── */
 let currentUser = null;
 try { currentUser = await Auth.getUser(); } catch (e) { currentUser = null; }
 if (!currentUser) {
@@ -635,22 +635,6 @@ async function countAvail({ subject, center, difficulty }) {
 }
 
 /* ── configurator și setări ─────────────────────────────── */
-function bindChipGroup(id, onChange) {
-  const group = $(id);
-  if (!group) return;
-  group.addEventListener('click', event => {
-    const chip = event.target.closest('.cfg-chip');
-    if (!chip) return;
-    group.querySelectorAll('.cfg-chip').forEach(button => {
-      button.classList.remove('on');
-      button.setAttribute('aria-pressed', 'false');
-    });
-    chip.classList.add('on');
-    chip.setAttribute('aria-pressed', 'true');
-    onChange(chip.dataset.val);
-  });
-}
-
 function bindSubjectChoices() {
   $('cfgSubject').addEventListener('click', async event => {
     const button = event.target.closest('[data-val]');
@@ -814,12 +798,12 @@ async function loadChapters() {
     const recommended = chapters.find(item => item.id === recommendedChapterId || item.chapter_ids?.includes(recommendedChapterId));
     if (recommended) {
       recommendedChapterOpened = true;
-      await startChapter(recommended, coachParams.get('mode') === 'exam' ? 'exam' : 'practice', { allowDemo: false });
+      await startChapter(recommended, coachParams.get('mode') === 'exam' ? 'exam' : 'practice');
     }
   }
 }
 
-async function startChapter(chapter, mode, { allowDemo = true } = {}) {
+async function startChapter(chapter, mode) {
   clearMsg();
   let questions = [];
   const requestedCount = Number.parseInt(coachParams.get('count'), 10);
