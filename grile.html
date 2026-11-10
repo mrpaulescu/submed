@@ -345,7 +345,7 @@
 <script type="module" src="assets/js/components.js?v=personal-wall-20261110"></script>
 <script type="module">
 import { Auth } from './assets/js/auth.js?v=supabase-singleton-20261028';
-import { Grile, gradeAnswer } from './assets/js/api.js?v=personal-wall-exam-catalog-20261110';
+import { Grile, gradeAnswer } from './assets/js/api.js?v=grile-wizard-20261110';
 
 const $ = id => document.getElementById(id);
 const show = v => { for (const s of ['viewChapters','viewQuiz','viewResult']) $(s).classList.toggle('hidden', s !== v); };
@@ -358,7 +358,7 @@ let currentUser = null;
 try { currentUser = await Auth.getUser(); } catch (e) { currentUser = null; }
 if (!currentUser) {
   const g = $('guestBanner');
-  g.className = 'alert-banner show success';
+  g.className = 'alert-banner show error';
   g.innerHTML = 'Autentifică-te pentru a încărca grilele și a salva progresul. <a href="login.html" style="color:inherit;font-weight:700;text-decoration:underline">Intră în cont</a>.';
 }
 const canSave = !!currentUser;
@@ -378,6 +378,7 @@ let subject = routeSubject === 'biologie' || routeSubject === 'chimie'
   : recommendedChapterId ? 'biologie' : '';
 let centerSel = 'toate', diffSel = 'toate', countSel = 20;
 let sourceSel = '';
+let availabilityRequest = 0;
 let selectedExamId = '';
 let examCatalog = [];
 let progress = {};
@@ -565,6 +566,8 @@ function setChoiceGroup(groupId, value) {
 }
 
 function resetSourceOptions() {
+  availabilityRequest++;
+  sourceSel = '';
   selectedExamId = '';
   centerSel = 'toate';
   diffSel = 'toate';
