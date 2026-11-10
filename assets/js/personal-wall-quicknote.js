@@ -19,6 +19,7 @@ function markup() {
       #submedWallMenu button{display:flex;width:100%;align-items:center;gap:11px;border:0;border-radius:10px;background:transparent;padding:11px 10px;color:var(--ink,#111b33);text-align:left;font:600 .84rem var(--font,'Plus Jakarta Sans',sans-serif);cursor:pointer}
       #submedWallMenu button:hover{background:var(--blue-tint-2,#edf4ff);color:var(--blue-deep,#105aff)}
       #submedWallMenu button[hidden]{display:none!important}
+      #submedWallPostitSettings[hidden],#submedWallBoardLabel[hidden]{display:none!important}
       #submedWallMenu .sw-menu-icon{width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--line,#dbe3f0);border-radius:9px;background:var(--surface-2,#f5f8fd);color:var(--blue-deep,#105aff);font-size:.95rem;flex:none}
       #submedWallMenu .sw-menu-copy{display:flex;flex-direction:column;gap:2px;min-width:0}
       #submedWallMenu small{color:var(--ink-3,#64708a);font-size:.7rem;font-weight:500}
@@ -228,7 +229,7 @@ function initCaptureEvents() {
       setMenu(false);
       const type = capture.dataset.wallType;
       if(type === 'note' || type === 'postit') openTextDialog(type);
-      else setMenu(true);
+      else { refreshContextOption(); setMenu(true); }
       return;
     }
     if(!event.target.closest('#submedWallMenu') && !event.target.closest('#submedWallFab')){
