@@ -46,8 +46,6 @@
   .cfg-count { font-family:var(--mono); font-size:.8rem; color:var(--ink-3); }
   .cfg-count b { color:var(--blue-deep); }
 
-  .demo-note { display:inline-flex; align-items:center; gap:7px; font-family:var(--mono); font-size:.68rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--wip,#9a5a00); background:var(--orange-bg); border:1px solid #f4dcb2; border-radius:100px; padding:4px 11px; }
-
   /* ── sesiune ──────────────────────────────────────────── */
   .quiz-head { margin-bottom:16px; }
   .quiz-top { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
@@ -125,6 +123,11 @@
 
   /* Selection controls reuse the same card, type and control language as
      the dashboard. These rules only arrange existing components. */
+  /* The option cards reuse the dashboard's existing .tool component rules. */
+  .tool { display:flex; flex-direction:column; gap:8px; background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:18px 18px 16px; box-shadow:var(--shadow); text-decoration:none; color:var(--ink); transition:transform .16s var(--fx), box-shadow .16s, border-color .16s; position:relative; }
+  .tool:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:#d3e0f7; color:var(--ink); }
+  .tool-name { font-family:var(--font-display); font-weight:700; font-size:.98rem; letter-spacing:-.01em; }
+  .tool-desc { font-size:.82rem; color:var(--ink-2); line-height:1.45; }
   .selection-panel { display:grid; gap:22px; margin-bottom:18px; }
   .selection-step { min-width:0; }
   .selection-step + .selection-step { border-top:1px solid var(--line); padding-top:20px; }
@@ -437,22 +440,6 @@ function clearLaterExamFilters(fromIndex) {
   }
   selectedExamId = '';
 }
-function selectedRowsForExamFilters() {
-  let rows = examCatalog.slice();
-  const category = $('cfgExamCategory').value;
-  if (category) rows = rows.filter(exam => optionValue(exam.category) === category);
-
-  const faculty = $('cfgExamFaculty').value;
-  if (faculty) rows = rows.filter(exam => optionValue(exam.faculty_id) === faculty);
-
-  const year = $('cfgExamYear').value;
-  if (year) rows = rows.filter(exam => optionValue(exam.year) === year);
-
-  const session = $('cfgExamSession').value;
-  if (session) rows = rows.filter(exam => optionValue(exam.session) === session);
-  return rows;
-}
-
 function refreshExamFilters() {
   examFilterIds.forEach(id => { $(id).disabled = true; });
   examStepIds.forEach(id => showExamStep(id, false));
