@@ -442,6 +442,10 @@ async function init() {
   });
   $('wallExport').addEventListener('click',exportWall);
   $('wallExportSecondary').addEventListener('click',exportWall);
+  document.addEventListener('submed:wall-item-created',async()=>{
+    try{state.items=await PersonalWall.list();render();}
+    catch(error){toast(error.message || 'Peretele nu a putut fi actualizat.');}
+  });
   $('wallOverlay').addEventListener('click',closeDrawer);
   document.addEventListener('keydown',event=>{if(event.key==='Escape')closeDrawer();});
   document.addEventListener('click',async event=>{
