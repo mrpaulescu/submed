@@ -1302,6 +1302,9 @@ function rebuildSession() {
 function showCard(idx) {
   if (!sessionCards.length) return;
   const card = sessionCards[idx];
+  window.SubMedWallContext = card?.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(card.id))
+    ? { type:'flashcard', id:card.id, category:currentSubject === 'bio' ? 'biologie' : 'chimie', sourcePage:'flashcards.html' }
+    : null;
   document.getElementById('fcQuestion').textContent = card.q;
   document.getElementById('fcAnswer').textContent = card.a;
   const chapterTitle = getChapters()[card.chIdx]?.title || 'Flashcards';
@@ -1380,6 +1383,7 @@ function updateUI() {
 }
 
 function showEmpty() {
+  window.SubMedWallContext = null;
   document.getElementById('emptyState').style.display = 'flex';
   document.getElementById('quizArea').style.display = 'none';
   document.getElementById('doneState').style.display = 'none';
