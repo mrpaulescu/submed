@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Notițele și ideile tale personale din SubMed.">
+<title>SubMed · Peretele meu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css?v=personal-wall-20261110">
+<style>
+.wall-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:24px;flex-wrap:wrap}
+.wall-head .greeting{margin:0}
+.wall-intro{color:var(--ink-2);max-width:62ch;margin-top:8px}
+.wall-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.wall-search{height:44px;min-width:min(280px,100%);border:1.5px solid var(--line);border-radius:12px;padding:0 14px;background:var(--surface);font:500 .9rem var(--font);color:var(--ink)}
+.wall-search:focus,.wall-field:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px rgba(45,110,255,.12)}
+.wall-filter{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px}
+.wall-filter button{border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:100px;padding:8px 13px;font:700 .8rem var(--font);cursor:pointer}
+.wall-filter button.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.wall-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.note-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:190px;position:relative;overflow:hidden}
+.note-card:before{content:"";position:absolute;inset:0 0 auto;height:4px;background:var(--note-accent,var(--blue))}
+.note-card.cat-study{--note-accent:#407bff}.note-card.cat-idea{--note-accent:#8b72d9}.note-card.cat-todo{--note-accent:#16a36a}.note-card.cat-important{--note-accent:#e2a12d}.note-card.cat-general{--note-accent:#91a3bb}
+.note-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 12px}
+.note-cat{font:700 .65rem var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+.note-date{font:500 .65rem var(--mono);color:var(--ink-3)}
+.note-title{font:700 1rem var(--font-display);color:var(--ink);margin:0 0 8px;overflow-wrap:anywhere}
+.note-body{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink-2);font-size:.88rem;line-height:1.6;flex:1}
+.note-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:12px;margin-top:16px}
+.note-source{font:500 .65rem var(--mono);color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note-actions{display:flex;gap:6px;flex:0 0 auto}
+.note-action{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 9px;color:var(--ink-2);font:700 .72rem var(--font);cursor:pointer}
+.note-action:hover{border-color:var(--blue);color:var(--blue)}
+.wall-empty{background:var(--surface);border:1px dashed var(--line-2);border-radius:16px;padding:42px 22px;text-align:center;color:var(--ink-2);grid-column:1/-1}
+.wall-empty .empty-ic{font-size:2rem;margin-bottom:10px}
+.wall-empty h3{font:700 1.05rem var(--font-display);color:var(--ink);margin-bottom:5px}
+.wall-meta{font:600 .72rem var(--mono);color:var(--ink-3);margin:0 0 14px}
+.wall-modal[hidden]{display:none}
+.wall-modal{position:fixed;inset:0;z-index:2500;background:rgba(7,20,49,.48);display:grid;place-items:center;padding:18px}
+.wall-dialog{width:min(560px,100%);background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-lg);padding:22px}
+.wall-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.wall-dialog-head h2{font:700 1.15rem var(--font-display);margin:0}
+.wall-close{border:0;background:var(--surface-2);width:34px;height:34px;border-radius:10px;font-size:1.2rem}
+.wall-field-wrap{margin-bottom:14px}
+.wall-field-wrap label{display:block;font:700 .68rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+.wall-field{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 12px;background:var(--surface-2);font:500 .9rem var(--font);color:var(--ink)}
+.wall-field.body{min-height:150px;resize:vertical;line-height:1.55}
+.wall-form-meta{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--ink-3);font:500 .68rem var(--mono);margin-top:6px}
+.wall-form-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px;flex-wrap:wrap}
+.wall-status{font-size:.82rem;color:var(--blue-deep);margin-top:12px;min-height:1.2em}
+@media(max-width:900px){.wall-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.wall-grid{grid-template-columns:1fr}.wall-head{align-items:stretch}.wall-tools{width:100%}.wall-search{flex:1;min-width:0;width:100%}.wall-tools .btn-primary{width:100%;justify-content:center}.wall-dialog{padding:18px}.wall-modal{align-items:end;padding:10px}}
+</style>
+</head>
+<body data-nav="full">
+<main class="dash-shell">
+  <div class="wall-head">
+    <div class="greeting">
+      <h2>Peretele meu</h2>
+      <p class="wall-intro">Păstrează la îndemână idei, observații și lucruri de făcut. Poți adăuga o notiță din orice pagină SubMed.</p>
+    </div>
+    <div class="wall-tools">
+      <input class="wall-search" id="wallSearch" type="search" placeholder="Caută în notițe…" aria-label="Caută în notițe">
+      <button class="btn-primary" id="wallCreate" type="button">＋ Notiță nouă</button>
+    </div>
+  </div>
+  <div class="panel" style="margin-bottom:18px">
+    <div class="wall-meta" id="wallCount">Se încarcă notițele…</div>
+    <div class="wall-filter" id="wallFilters" aria-label="Filtrează după categorie">
+      <button type="button" data-category="all" class="active">Toate</button>
+      <button type="button" data-category="general">General</button>
+      <button type="button" data-category="study">Studiu</button>
+      <button type="button" data-category="idea">Idei</button>
+      <button type="button" data-category="todo">De făcut</button>
+      <button type="button" data-category="important">Important</button>
+    </div>
+    <div class="wall-grid" id="wallGrid" aria-live="polite"></div>
+  </div>
+</main>
+
+<div class="wall-modal" id="wallEditor" hidden>
+  <section class="wall-dialog" role="dialog" aria-modal="true" aria-labelledby="wallEditorTitle">
+    <div class="wall-dialog-head">
+      <h2 id="wallEditorTitle">Notiță nouă</h2>
+      <button class="wall-close" type="button" id="wallClose" aria-label="Închide">×</button>
+    </div>
+    <form id="wallForm">
+      <div class="wall-field-wrap">
+        <label for="wallTitle">Titlu (opțional)</label>
+        <input class="wall-field" id="wallTitle" name="title" maxlength="80" placeholder="Un titlu scurt">
+      </div>
+      <div class="wall-field-wrap">
+        <label for="wallCategory">Categorie</label>
+        <select class="wall-field" id="wallCategory" name="category">
+          <option value="general">General</option><option value="study">Studiu</option><option value="idea">Idee</option><option value="todo">De făcut</option><option value="important">Important</option>
+        </select>
+      </div>
+      <div class="wall-field-wrap">
+        <label for="wallBody">Notiță</label>
+        <textarea class="wall-field body" id="wallBody" name="body" maxlength="2000" required placeholder="Scrie aici…"></textarea>
+        <div class="wall-form-meta"><span>Text simplu · fără atașamente</span><span id="wallChars">0/2000</span></div>
+      </div>
+      <div class="wall-status" id="wallStatus" role="status" aria-live="polite"></div>
+      <div class="wall-form-actions">
+        <button class="btn-secondary" type="button" id="wallCancel">Renunță</button>
+        <button class="btn-primary" type="submit" id="wallSave">Salvează notița</button>
+      </div>
+    </form>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module" src="assets/js/components.js?v=personal-wall-20261110"></script>
+<script type="module" src="assets/js/personal-wall-page.js?v=20261110"></script>
+</body>
+</html>
