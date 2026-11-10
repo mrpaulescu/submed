@@ -24,7 +24,7 @@ function validateNote({ title = '', body = '', category = 'general' } = {}) {
   if (cleanTitle.length > MAX_TITLE) throw new Error(`Titlul poate avea maximum ${MAX_TITLE} de caractere.`);
   if (!cleanBody) throw new Error('Scrie un conținut pentru notiță.');
   if (cleanBody.length > MAX_BODY) throw new Error(`Notița poate avea maximum ${MAX_BODY} de caractere.`);
-  if (!Object.hasOwn(NOTE_CATEGORIES, category)) throw new Error('Categoria selectată nu este validă.');
+  if (!Object.prototype.hasOwnProperty.call(NOTE_CATEGORIES, category)) throw new Error('Categoria selectată nu este validă.');
   return { title: cleanTitle, body: cleanBody, category };
 }
 
@@ -36,7 +36,7 @@ export const PersonalWall = {
       .eq('user_id', user.id)
       .order('updated_at', { ascending: false })
       .limit(200);
-    if (category !== 'all' && Object.hasOwn(NOTE_CATEGORIES, category)) {
+    if (category !== 'all' && Object.prototype.hasOwnProperty.call(NOTE_CATEGORIES, category)) {
       query = query.eq('category', category);
     }
     const { data, error } = await query;
