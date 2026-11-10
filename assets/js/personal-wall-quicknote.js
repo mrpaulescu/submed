@@ -6,23 +6,23 @@ const WIDGET_CSS_ID = 'submedQuickNoteStyles';
 function widgetMarkup() {
   return `
     <style id="${WIDGET_CSS_ID}">
-      #submedQuickNoteFab{position:fixed;right:22px;bottom:22px;z-index:1100;display:flex;align-items:center;gap:9px;border:0;border-radius:999px;padding:13px 18px;background:var(--blue);color:#fff;font:700 .88rem var(--font);box-shadow:0 9px 24px rgba(16,70,170,.28);cursor:pointer;transition:transform .15s,box-shadow .15s}
+      #submedQuickNoteFab{position:fixed;right:22px;bottom:22px;z-index:1100;display:flex;align-items:center;gap:9px;border:0;border-radius:999px;padding:13px 18px;background:var(--blue,#2D6EFF);color:#fff;font:700 .88rem var(--font,'Plus Jakarta Sans',system-ui,sans-serif);box-shadow:0 9px 24px rgba(16,70,170,.28);cursor:pointer;transition:transform .15s,box-shadow .15s}
       #submedQuickNoteFab:hover{transform:translateY(-2px);box-shadow:0 13px 28px rgba(16,70,170,.34)}
       #submedQuickNoteFab .qnf-plus{width:23px;height:23px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.18);font-size:1.1rem;line-height:1}
       #${WIDGET_ID}[hidden]{display:none}
       #${WIDGET_ID}{position:fixed;inset:0;z-index:2400;background:rgba(7,20,49,.48);display:grid;place-items:center;padding:18px}
-      #${WIDGET_ID} .qnm-card{width:min(520px,100%);background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow-lg)}
+      #${WIDGET_ID} .qnm-card{width:min(520px,100%);background:var(--surface,#FFFFFF);border:1px solid var(--line,#D3DBEB);border-radius:20px;padding:22px;box-shadow:var(--shadow-lg,0 18px 44px rgba(11,30,77,.18))}
       #${WIDGET_ID} .qnm-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px}
-      #${WIDGET_ID} .qnm-head h2{margin:0;font:700 1.12rem var(--font-display);color:var(--ink)}
-      #${WIDGET_ID} .qnm-close{width:34px;height:34px;border:0;border-radius:10px;background:var(--surface-2);font-size:1.2rem;color:var(--ink)}
-      #${WIDGET_ID} label{display:block;margin:0 0 6px;color:var(--ink-3);font:700 .67rem var(--mono);letter-spacing:.08em;text-transform:uppercase}
-      #${WIDGET_ID} input,#${WIDGET_ID} select,#${WIDGET_ID} textarea{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:10px 12px;background:var(--surface-2);color:var(--ink);font:500 .9rem var(--font);margin-bottom:13px}
+      #${WIDGET_ID} .qnm-head h2{margin:0;font:700 1.12rem var(--font-display,'Sora','Plus Jakarta Sans',sans-serif);color:var(--ink,#111B33)}
+      #${WIDGET_ID} .qnm-close{width:34px;height:34px;border:0;border-radius:10px;background:var(--surface-2,#F8FBFF);font-size:1.2rem;color:var(--ink,#111B33)}
+      #${WIDGET_ID} label{display:block;margin:0 0 6px;color:var(--ink-3,#64708A);font:700 .67rem var(--mono,'JetBrains Mono',monospace);letter-spacing:.08em;text-transform:uppercase}
+      #${WIDGET_ID} input,#${WIDGET_ID} select,#${WIDGET_ID} textarea{width:100%;border:1.5px solid var(--line,#D3DBEB);border-radius:11px;padding:10px 12px;background:var(--surface-2,#F8FBFF);color:var(--ink,#111B33);font:500 .9rem var(--font,'Plus Jakarta Sans',system-ui,sans-serif);margin-bottom:13px}
       #${WIDGET_ID} textarea{min-height:140px;resize:vertical;line-height:1.55}
-      #${WIDGET_ID} input:focus,#${WIDGET_ID} select:focus,#${WIDGET_ID} textarea:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px rgba(45,110,255,.12)}
-      #${WIDGET_ID} .qnm-meta{display:flex;justify-content:space-between;gap:10px;margin-top:-8px;color:var(--ink-3);font:500 .66rem var(--mono)}
+      #${WIDGET_ID} input:focus,#${WIDGET_ID} select:focus,#${WIDGET_ID} textarea:focus{outline:0;border-color:var(--blue,#2D6EFF);box-shadow:0 0 0 3px rgba(45,110,255,.12)}
+      #${WIDGET_ID} .qnm-meta{display:flex;justify-content:space-between;gap:10px;margin-top:-8px;color:var(--ink-3,#64708A);font:500 .66rem var(--mono,'JetBrains Mono',monospace)}
       #${WIDGET_ID} .qnm-actions{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap;margin-top:16px}
-      #${WIDGET_ID} .qnm-save{border:0;border-radius:11px;padding:10px 16px;background:var(--blue);color:#fff;font:700 .84rem var(--font);cursor:pointer}
-      #${WIDGET_ID} .qnm-status{min-height:1.25em;margin-top:10px;font-size:.8rem;color:var(--blue-deep)}
+      #${WIDGET_ID} .qnm-save{border:0;border-radius:11px;padding:10px 16px;background:var(--blue,#2D6EFF);color:#fff;font:700 .84rem var(--font,'Plus Jakarta Sans',system-ui,sans-serif);cursor:pointer}
+      #${WIDGET_ID} .qnm-status{min-height:1.25em;margin-top:10px;font-size:.8rem;color:var(--blue-deep,#105AFF)}
       body.note-modal-open{overflow:hidden}
       @media(max-width:768px){#submedQuickNoteFab{right:14px;bottom:calc(88px + env(safe-area-inset-bottom));padding:11px 15px}#${WIDGET_ID}{align-items:end;padding:10px}#${WIDGET_ID} .qnm-card{padding:18px}}
     </style>
