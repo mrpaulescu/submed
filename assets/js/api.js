@@ -520,12 +520,21 @@ export const Grile = {
 
     let exams = data || [];
     if (subject === 'biologie' || subject === 'chimie') {
-      const { data: mappedRows, error: mappingError } = await supabase
-        .from('exam_questions')
-        .select('exam_id')
-        .eq('subject', subject);
-      if (mappingError) throw mappingError;
-      const examIds = new Set((mappedRows || []).map(row => row.exam_id).filter(Boolean));
+      const examIds = new Set();
+      const pageSize = 500;
+      for (let offset = 0; ; offset += pageSize) {
+        const { data: mappedRows, error: mappingError } = await supabase
+          .from('exam_questions')
+          .select('id, exam_id')
+          .eq('subject', subject)
+          .order('id')
+          .range(offset, offset + pageSize - 1);
+        if (mappingError) throw mappingError;
+        (mappedRows || []).forEach(row => {
+          if (row.exam_id) examIds.add(row.exam_id);
+        });
+        if (!mappedRows || mappedRows.length < pageSize) break;
+      }
       exams = exams.filter(exam => examIds.has(exam.id));
     }
 
