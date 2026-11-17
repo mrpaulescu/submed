@@ -1,7 +1,7 @@
 // ============================================================================
 // SubMed v2 — Stratul de date (Supabase + OCR Render)
 // ============================================================================
-import { supabase } from './supabase-client.js';
+import { supabase } from './supabase-client.js?v=supabase-umd-fallback-20261117';
 import { CONFIG } from './runtime-config.js';
 import { indexLatestReviews, scheduleFlashcardReview } from './flashcard-srs.js';
 import { scheduleQuestionReview, shouldScheduleQuestionReview } from './question-review-srs.js';
