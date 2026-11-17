@@ -124,7 +124,7 @@ function normalizeAppRedirect(href) {
   }
 }
 
-export const Auth = createAuth({
+const authMethods = createAuth({
   supabase: supabaseProxy,
   config: CONFIG,
   setLocation: href => {
@@ -142,3 +142,10 @@ export const Auth = createAuth({
     globalThis.location.href = normalized;
   },
 });
+
+export const Auth = {
+  ...authMethods,
+  onAuthStateChange(callback) {
+    return authProxy.onAuthStateChange(callback);
+  },
+};
