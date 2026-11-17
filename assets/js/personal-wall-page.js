@@ -1,5 +1,5 @@
 import { Auth } from './auth.js?v=supabase-singleton-20261028';
-import { PersonalWall, WALL_TYPES, WALL_CATEGORIES, WALL_COLORS } from './personal-wall-api.js?v=wall-second-brain-20261110';
+import { PersonalWall, WALL_TYPES, WALL_CATEGORIES, WALL_COLORS } from './personal-wall-api.js?v=auth-lazy-20261117';
 
 const $ = id => document.getElementById(id);
 const state = {
