@@ -18,7 +18,7 @@ let supabaseClientPromise = null;
 
 function getSupabaseClient() {
   if (!supabaseClientPromise) {
-    supabaseClientPromise = import('./supabase-client.js?v=supabase-umd-fallback-20261117)
+    supabaseClientPromise = import('./supabase-client.js?v=supabase-umd-fallback-20261117')
       .then(module => {
         if (!module?.supabase?.auth) {
           throw new Error('SDK-ul Supabase nu a furnizat un client valid.');
