@@ -1,4 +1,4 @@
-import { supabase } from './supabase-client.js';
+import { supabase } from './supabase-client.js?v=supabase-umd-fallback-20261117';
 
 export const WALL_TYPES = {
   note: 'Notiță',
