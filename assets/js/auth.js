@@ -15,10 +15,11 @@ export {
 } from './auth-core.js?v=auth-core-lazy-20261117';
 
 let supabaseClientPromise = null;
+let supabaseClientImportAttempt = 0;
 
 function getSupabaseClient() {
   if (!supabaseClientPromise) {
-    supabaseClientPromise = import('./supabase-client.js?v=supabase-umd-fallback-20261117')
+    supabaseClientPromise = import('./supabase-client.js?v=supabase-umd-fallback-20261117&attempt=' + (++supabaseClientImportAttempt))
       .then(module => {
         if (!module?.supabase?.auth) {
           throw new Error('SDK-ul Supabase nu a furnizat un client valid.');
