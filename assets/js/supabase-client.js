@@ -10,7 +10,7 @@ const SDK_SOURCES = [
   'https://unpkg.com/@supabase/supabase-js@2',
 ];
 
-function loadSdkScript(src, timeoutMs = 9000) {
+function loadSdkScript(src, timeoutMs = 6000) {
   if (globalThis.supabase?.createClient) return Promise.resolve(globalThis.supabase);
   if (typeof document === 'undefined') {
     return Promise.reject(new Error('Supabase SDK poate fi încărcat doar în browser.'));
@@ -59,6 +59,20 @@ async function loadSupabaseSdk() {
       failures.push(error?.message || String(error));
     }
   }
+
+  // Last fallback: Supabase also documents the browser ESM build on jsDelivr.
+  try {
+    const esmAttempt = import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+    const timeout = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Timeout la încărcarea fallback-ului ESM Supabase.')), 7000);
+    });
+    const module = await Promise.race([esmAttempt, timeout]);
+    if (typeof module?.createClient === 'function') return module;
+    failures.push('Fallback-ul ESM nu a exportat createClient.');
+  } catch (error) {
+    failures.push(error?.message || String(error));
+  }
+
   throw new Error(
     'Nu am putut încărca biblioteca de autentificare Supabase. Verifică conexiunea și încearcă din nou. ' +
     failures.join(' ')
