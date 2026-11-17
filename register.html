@@ -71,31 +71,109 @@
 <script type="module" src="assets/js/components.js?v=auth-lazy-20261117"></script>
 <script>
 (function () {
-  var shown = false;
-  function showAuthLoadError(message) {
-    if (shown) return;
-    shown = true;
-    var banner = document.getElementById('alertBanner');
-    if (banner) {
-      banner.textContent = message || 'Autentificarea nu s-a putut încărca. Verifică conexiunea și reîncarcă pagina.';
-      banner.className = 'alert-banner show error';
-    }
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var banner = $('alertBanner');
+  var authPromise = null;
+
+  function showAlert(message, type) {
+    if (!banner) return;
+    banner.textContent = message;
+    banner.className = 'alert-banner show ' + (type || 'error');
   }
-  window.addEventListener('error', function (event) {
-    if (event.target && event.target.id === 'authPageModule') {
-      showAuthLoadError('Modulul de autentificare nu s-a putut descărca. Verifică conexiunea și reîncarcă pagina.');
+  function hideAlert() {
+    if (banner) banner.className = 'alert-banner';
+  }
+  function loadAuth() {
+    if (!authPromise) {
+      authPromise = import('./assets/js/auth.js?v=auth-lazy-20261117')
+        .catch(function (error) {
+          authPromise = null;
+          throw error;
+        });
     }
-  }, true);
-  window.addEventListener('unhandledrejection', function (event) {
-    console.error('Eroare la inițializarea autentificării:', event.reason);
+    return authPromise;
+  }
+  function setLoading(on) {
+    $('submitBtn').disabled = on;
+    $('btnText').style.display = on ? 'none' : 'inline';
+    $('btnSpinner').style.display = on ? 'block' : 'none';
+    $('btnArrow').style.display = on ? 'none' : 'block';
+  }
+
+  var pwVisible = false;
+  $('pwToggle').addEventListener('click', function () {
+    pwVisible = !pwVisible;
+    $('password').type = pwVisible ? 'text' : 'password';
+    $('eyeIcon').innerHTML = pwVisible
+      ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8s4-8 11-8 11 8 11 8-4 8-11 8c-1.1 0-2.1-.2-3-.5"/><line x1="1" y1="1" x2="23" y2="23"/>'
+      : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
   });
-  window.setTimeout(function () {
-    if (document.documentElement.dataset.authPageReady !== 'true') {
-      showAuthLoadError('Autentificarea nu a pornit. Reîncarcă pagina; dacă problema persistă, contactează suportul SubMed.');
+
+  $('registerForm').addEventListener('submit', async function (event) {
+    event.preventDefault();
+    hideAlert();
+    var name = $('name').value.trim();
+    var email = $('email').value.trim();
+    var password = $('password').value;
+    if (!name || !email || !password) {
+      showAlert('Completează toate câmpurile.');
+      return;
     }
-  }, 8000);
+    if (password.length < 6) {
+      showAlert('Parola trebuie să aibă minim 6 caractere.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      var module = await loadAuth();
+      var result = await module.Auth.register(name, email, password);
+      if (result && result.session) {
+        showAlert('Cont creat! Te redirecționăm către contul tău.', 'success');
+        window.setTimeout(function () {
+          window.location.href = module.Auth.getPostLoginRedirect();
+        }, 700);
+      } else {
+        showAlert('Cont creat! Verifică-ți emailul pentru confirmare.', 'success');
+        window.setTimeout(function () { window.location.href = 'login.html'; }, 2000);
+      }
+    } catch (error) {
+      showAlert(error && error.message ? error.message : 'Nu am putut crea contul.');
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  $('googleBtn').addEventListener('click', async function (event) {
+    event.preventDefault();
+    hideAlert();
+    $('googleBtn').style.pointerEvents = 'none';
+    $('googleBtn').setAttribute('aria-busy', 'true');
+    try {
+      var module = await loadAuth();
+      await module.Auth.loginWithGoogle();
+    } catch (error) {
+      $('googleBtn').style.pointerEvents = '';
+      $('googleBtn').setAttribute('aria-busy', 'false');
+      showAlert('Google Sign-In indisponibil: ' + (error && error.message ? error.message : 'eroare necunoscută'));
+    }
+  });
+
+  ['name', 'email', 'password'].forEach(function (id) {
+    $(id).addEventListener('input', function () {
+      this.classList.remove('input-error');
+      hideAlert();
+    });
+  });
+
+  document.documentElement.dataset.authPageReady = 'true';
+  loadAuth().then(function (module) {
+    return module.Auth.redirectIfLoggedIn();
+  }).catch(function (error) {
+    console.warn('Verificarea sesiunii de autentificare nu a putut porni:', error);
+  });
 })();
 </script>
-<script type="module" id="authPageModule" src="assets/js/register-page.js?v=auth-lazy-20261117"></script>
 </body>
 </html>
