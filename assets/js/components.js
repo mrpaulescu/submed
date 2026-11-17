@@ -14,7 +14,7 @@
 //   data-nav="none"    → nu injectează nimic
 // ============================================================================
 
-import { Auth } from './auth.js?v=supabase-singleton-20261028';
+import { Auth } from './auth.js?v=auth-lazy-20261117';
 
 const RAW_PAGE = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
 const PAGE = RAW_PAGE.includes('.') ? RAW_PAGE : `${RAW_PAGE}.html`;
