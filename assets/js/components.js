@@ -276,7 +276,7 @@ function inject() {
 
 async function initQuickNote() {
   try {
-    await import('./personal-wall-quicknote.js?v=wall-quick-popup-20261110');
+    await import('./personal-wall-quicknote.js?v=auth-lazy-20261117');
   } catch (error) {
     console.warn('[SubMed] Notița rapidă nu a putut fi încărcată:', error);
   }
