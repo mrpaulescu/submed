@@ -2,7 +2,7 @@
 // SubMed — Lazy authentication facade
 // The login/register UI must not wait for a third-party CDN before it boots.
 // The real Supabase client is imported only when an auth/data method is used.
-// A failed CDN load can be retried by the next user action.
+// A failed CDN load is reported to the user; reloading the page starts a fresh CDN fallback sequence.
 // ============================================================================
 import { createAuth } from './auth-core.js?v=auth-core-lazy-20261117';
 import { CONFIG } from './runtime-config.js?v=auth-config-lazy-20261117';
@@ -26,9 +26,8 @@ function getSupabaseClient() {
         return module.supabase;
       })
       .catch(error => {
-        supabaseClientPromise = null;
         const detail = error?.message || 'biblioteca Supabase nu s-a putut încărca';
-        throw new Error('Supabase nu este disponibil momentan. Verifică conexiunea și încearcă din nou. ' + detail);
+        throw new Error('Supabase nu este disponibil momentan. Verifică conexiunea, reîncarcă pagina și încearcă din nou. ' + detail);
       });
   }
   return supabaseClientPromise;
