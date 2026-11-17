@@ -43,7 +43,6 @@ function loadSdkScript(src, timeoutMs = 6000) {
 
     script.async = true;
     script.src = src;
-    script.crossOrigin = 'anonymous';
     script.onload = () => finish();
     script.onerror = () => finish(new Error('Nu am putut descărca SDK-ul Supabase de la ' + new URL(src).hostname + '.'));
     document.head.appendChild(script);
