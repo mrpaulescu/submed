@@ -65,34 +65,115 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script type="module" src="assets/js/components.js?v=supabase-singleton-20261028"></script>
+<script type="module" src="assets/js/components.js?v=auth-lazy-20261117"></script>
 <script>
 (function () {
-  var shown = false;
-  function showAuthLoadError(message) {
-    if (shown) return;
-    shown = true;
-    var banner = document.getElementById('alertBanner');
-    if (banner) {
-      banner.textContent = message || 'Autentificarea nu s-a putut încărca. Verifică conexiunea și reîncarcă pagina.';
-      banner.className = 'alert-banner show error';
-    }
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var banner = $('alertBanner');
+  var authPromise = null;
+
+  function showAlert(message, type) {
+    if (!banner) return;
+    banner.textContent = message;
+    banner.className = 'alert-banner show ' + (type || 'error');
   }
-  window.addEventListener('error', function (event) {
-    if (event.target && event.target.id === 'authPageModule') {
-      showAuthLoadError('Modulul de autentificare nu s-a putut descărca. Verifică conexiunea și reîncarcă pagina.');
+  function hideAlert() {
+    if (banner) banner.className = 'alert-banner';
+  }
+  function loadAuth() {
+    if (!authPromise) {
+      authPromise = import('./assets/js/auth.js?v=auth-lazy-20261117')
+        .catch(function (error) {
+          authPromise = null;
+          throw error;
+        });
     }
-  }, true);
-  window.addEventListener('unhandledrejection', function (event) {
-    console.error('Eroare la inițializarea autentificării:', event.reason);
+    return authPromise;
+  }
+  function setLoading(on) {
+    $('submitBtn').disabled = on;
+    $('btnText').style.display = on ? 'none' : 'inline';
+    $('btnSpinner').style.display = on ? 'block' : 'none';
+    $('btnArrow').style.display = on ? 'none' : 'block';
+  }
+  function setGoogleLoading(on) {
+    $('googleBtn').style.pointerEvents = on ? 'none' : '';
+    $('googleBtn').setAttribute('aria-busy', on ? 'true' : 'false');
+  }
+
+  var pwVisible = false;
+  $('pwToggle').addEventListener('click', function () {
+    pwVisible = !pwVisible;
+    $('password').type = pwVisible ? 'text' : 'password';
+    $('eyeIcon').innerHTML = pwVisible
+      ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8s-4 8-11 8-11-8-11-8z"/><line x1="1" y1="1" x2="23" y2="23"/>'
+      : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
   });
-  window.setTimeout(function () {
-    if (document.documentElement.dataset.authPageReady !== 'true') {
-      showAuthLoadError('Autentificarea nu a pornit. Reîncarcă pagina; dacă problema persistă, contactează suportul SubMed.');
+
+  $('loginForm').addEventListener('submit', async function (event) {
+    event.preventDefault();
+    hideAlert();
+    var email = $('email').value.trim();
+    var password = $('password').value;
+    if (!email || !password) {
+      showAlert('Completează toate câmpurile.');
+      return;
     }
-  }, 8000);
+
+    setLoading(true);
+    try {
+      var module = await loadAuth();
+      await module.Auth.login(email, password);
+      showAlert('Autentificare reușită! Redirecționăm…', 'success');
+      window.setTimeout(function () {
+        window.location.href = module.Auth.getPostLoginRedirect();
+      }, 700);
+    } catch (error) {
+      showAlert(error && error.message ? error.message : 'Nu am putut porni autentificarea. Verifică conexiunea și încearcă din nou.');
+      $('email').classList.add('input-error');
+      $('password').classList.add('input-error');
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  $('googleBtn').addEventListener('click', async function (event) {
+    event.preventDefault();
+    hideAlert();
+    setGoogleLoading(true);
+    try {
+      var module = await loadAuth();
+      await module.Auth.loginWithGoogle();
+    } catch (error) {
+      setGoogleLoading(false);
+      showAlert('Autentificarea cu Google a eșuat.' + (error && error.message ? ' ' + error.message : ''));
+    }
+  });
+
+  ['email', 'password'].forEach(function (id) {
+    $(id).addEventListener('input', function () {
+      this.classList.remove('input-error');
+      hideAlert();
+    });
+  });
+
+  // The form is ready immediately; session restoration runs in the background.
+  document.documentElement.dataset.authPageReady = 'true';
+  loadAuth().then(function (module) {
+    var Auth = module.Auth;
+    var oauthError = Auth.getOAuthErrorMessage();
+    if (oauthError) {
+      showAlert(oauthError);
+      Auth.cleanAuthCallbackUrl();
+    } else if (new URLSearchParams(window.location.search).get('confirmed')) {
+      showAlert('Email confirmat! Acum te poți autentifica.', 'success');
+    }
+    return Auth.redirectIfLoggedIn();
+  }).catch(function (error) {
+    console.warn('Verificarea sesiunii de autentificare nu a putut porni:', error);
+  });
 })();
 </script>
-<script type="module" id="authPageModule" src="assets/js/login-page.js?v=20261109"></script>
 </body>
 </html>
