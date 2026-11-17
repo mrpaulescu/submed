@@ -1,4 +1,4 @@
-import { Auth } from './auth.js?v=supabase-singleton-20261028';
+import { Auth } from './auth.js?v=auth-lazy-20261117';
 
 const $ = id => document.getElementById(id);
 const banner = $('alertBanner');
